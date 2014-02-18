@@ -23,6 +23,7 @@ class Battery(QGraphicsView):
         self.temperature = None
 
         self.setMaximumWidth(52)
+        self.setMaximumHeight(102)
 
         defaultScene = QGraphicsScene(0,0,50,100,self)
         defaultScene.addRect(0,0,50,100)
@@ -120,15 +121,17 @@ class PlottingDataMonitor(QMainWindow):
 
         self.batteryLayout = QGridLayout()
         for i in range(5):
-            self.batteryLayout.setColumnMinimumWidth(i,50)
+            self.batteryLayout.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            self.batteryLayout.setRowMinimumHeight(i,100)
+            self.batteryLayout.setRowMinimumHeight(i,102)
             self.batteryLayout.setRowMinimumHeight(i+1,15)
         self.counter = 1
         for i in range(4):
             for j in range(5):
                 self.batteryLayout.addWidget(Battery(i),2*i,j)
-                self.batteryLayout.addWidget(QLabel(str(self.counter)),2*i+1,j)
+                self.tempLabel = QLabel(str(self.counter))
+                self.tempLabel.setAlignment(Qt.AlignHCenter)
+                self.batteryLayout.addWidget(self.tempLabel,2*i+1,j)
                 self.counter += 1
 
         # plot_groupbox = QGroupBox('Temperature')
