@@ -16,9 +16,8 @@ from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
 class Battery(QGraphicsView):
-    def __init__(self, inIndex, parent=None):
+    def __init__(self, parent=None):
         super(Battery, self).__init__(parent)
-        self.index = inIndex
         self.voltage = None
         self.temperature = None
 
@@ -55,13 +54,10 @@ class PlottingDataMonitor(QMainWindow):
         self.minBatteryVoltage = 26.5
         self.defaultSerialPort = "/dev/ttySy"
 
-        # self.batteries = []
-        # defaultBattery = {'temperature': None, 'voltage': None}
-        # for i in range(2):
-        #     tempBatteries = []
-        #     for i in range(20):
-        #         tempBatteries.append(defaultBattery)
-        #     self.batteries.append(tempBatteries)
+        self.batteries = [[],[]]
+        for i in range(20):
+            self.batteries[0].append(Battery())
+            self.batteries[1].append(Battery())
 
         self.monitor_active = False
         self.com_monitor = None
@@ -119,33 +115,56 @@ class PlottingDataMonitor(QMainWindow):
         # plot_layout.addLayout(thermo_layout)
         # plot_layout.addLayout(knob_layout)
 
-        self.batteryLayout = QGridLayout()
+        self.batteryLayout1 = QGridLayout()
         for i in range(5):
-            self.batteryLayout.setColumnMinimumWidth(i,52)
+            self.batteryLayout1.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            self.batteryLayout.setRowMinimumHeight(i,102)
-            self.batteryLayout.setRowMinimumHeight(i+1,15)
-        self.counter = 1
+            self.batteryLayout1.setRowMinimumHeight(i,102)
+            self.batteryLayout1.setRowMinimumHeight(i+1,15)
+        self.counter = 0
         for i in range(4):
             for j in range(5):
-                self.batteryLayout.addWidget(Battery(i),2*i,j)
-                self.tempLabel = QLabel(str(self.counter))
+                self.batteryLayout1.addWidget(self.batteries[0][self.counter],2*i,j)
+                self.tempLabel = QLabel(str(self.counter+1))
                 self.tempLabel.setAlignment(Qt.AlignHCenter)
-                self.batteryLayout.addWidget(self.tempLabel,2*i+1,j)
+                self.batteryLayout1.addWidget(self.tempLabel,2*i+1,j)
+                self.counter += 1
+
+        self.batteryLayout2 = QGridLayout()
+        for i in range(5):
+            self.batteryLayout2.setColumnMinimumWidth(i,52)
+        for i in range(0,8,2):
+            self.batteryLayout2.setRowMinimumHeight(i,102)
+            self.batteryLayout2.setRowMinimumHeight(i+1,15)
+        self.counter = 0
+        for i in range(4):
+            for j in range(5):
+                self.batteryLayout2.addWidget(self.batteries[1][self.counter],2*i,j)
+                self.tempLabel = QLabel(str(self.counter+1))
+                self.tempLabel.setAlignment(Qt.AlignHCenter)
+                self.batteryLayout2.addWidget(self.tempLabel,2*i+1,j)
                 self.counter += 1
 
         # plot_groupbox = QGroupBox('Temperature')
         # plot_groupbox.setLayout(plot_layout)
 
-        self.batteryWidget = QGroupBox('Batteries')
-        self.batteryWidget.setLayout(self.batteryLayout)
+        self.batteryWidget1 = QGroupBox('Battery Module 1')
+        self.batteryWidget1.setLayout(self.batteryLayout1)
+
+        self.batteryWidget2 = QGroupBox('Battery Module 2')
+        self.batteryWidget2.setLayout(self.batteryLayout2)
+
+        self.batteryWidget = QWidget()
+        self.batteryWidgetLayout = QHBoxLayout()
+        self.batteryWidgetLayout.addWidget(self.batteryWidget1)
+        self.batteryWidgetLayout.addWidget(self.batteryWidget2)
+        self.batteryWidget.setLayout(self.batteryWidgetLayout)
         
         # Main frame and layout
         #
         self.main_frame = QWidget()
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.batteryWidget)
-        # main_layout.addWidget(plot_groupbox)
         main_layout.addStretch(1)
         main_layout.addWidget(portname_groupbox)
         self.main_frame.setLayout(main_layout)
