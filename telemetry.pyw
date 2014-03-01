@@ -21,15 +21,22 @@ class Battery(QGraphicsView):
         self.voltage = None
         self.temperature = None
 
+        # Default values
+        self.maxBatteryTemp = 30
+        self.maxBatteryVoltage = 3.65
+        self.minBatteryVoltage = 2.65
+
         self.setMaximumWidth(52)
         self.setMaximumHeight(102)
 
-        defaultScene = QGraphicsScene(0,0,50,100,self)
-        defaultScene.addRect(0,0,50,100)
-        self.setScene(defaultScene)
+        self.scene = QGraphicsScene(0,0,50,100,self)
+        self.setScene(self.scene)
+
+        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def setVoltage(self, inVoltage):
-        self.voltage = inVoltage
+        self.voltage = inVoltage/1000.0
+        self.drawBattery()
 
     def getVoltage(self):
         return self.voltage
@@ -40,18 +47,29 @@ class Battery(QGraphicsView):
     def getTemperature(self):
         return self.temperature
 
-    # def paintEvent(self):
-    #     pass
+    def drawBattery(self):
+        self.scene.clear()
+
+        pen = QPen()
+        pen.setColor(QColor(255,255,100))
+        brush = QBrush()
+        brush.setStyle(Qt.SolidPattern)
+        brush.setColor(QColor(0,0,255))
+
+        if self.voltage > self.maxBatteryVoltage:
+            self.scene.addRect(0,0,50,100, pen, brush)
+
+        elif self.voltage > self.minBatteryVoltage:
+            dif = self.voltage - self.minBatteryVoltage
+            div = (self.maxBatteryVoltage - self.minBatteryVoltage) / 100.0
+            dist = int(dif / div)
+            self.scene.addRect(0,100-dist,50,dist,pen,brush)
 
 
 class PlottingDataMonitor(QMainWindow):
     def __init__(self, parent=None):
         super(PlottingDataMonitor, self).__init__(parent)
 
-        # Default values
-        self.maxBatteryTemp = 30
-        self.maxBatteryVoltage = 36.5
-        self.minBatteryVoltage = 26.5
         self.defaultSerialPort = "/dev/ttySy"
 
         self.batteries = [[],[]]
@@ -115,56 +133,56 @@ class PlottingDataMonitor(QMainWindow):
         # plot_layout.addLayout(thermo_layout)
         # plot_layout.addLayout(knob_layout)
 
-        self.batteryLayout1 = QGridLayout()
+        batteryLayout1 = QGridLayout()
         for i in range(5):
-            self.batteryLayout1.setColumnMinimumWidth(i,52)
+            batteryLayout1.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            self.batteryLayout1.setRowMinimumHeight(i,102)
-            self.batteryLayout1.setRowMinimumHeight(i+1,15)
-        self.counter = 0
+            batteryLayout1.setRowMinimumHeight(i,102)
+            batteryLayout1.setRowMinimumHeight(i+1,15)
+        counter = 0
         for i in range(4):
             for j in range(5):
-                self.batteryLayout1.addWidget(self.batteries[0][self.counter],2*i,j)
-                self.tempLabel = QLabel(str(self.counter+1))
-                self.tempLabel.setAlignment(Qt.AlignHCenter)
-                self.batteryLayout1.addWidget(self.tempLabel,2*i+1,j)
-                self.counter += 1
+                batteryLayout1.addWidget(self.batteries[0][counter],2*i,j)
+                tempLabel = QLabel(str(counter+1))
+                tempLabel.setAlignment(Qt.AlignHCenter)
+                batteryLayout1.addWidget(tempLabel,2*i+1,j)
+                counter += 1
 
-        self.batteryLayout2 = QGridLayout()
+        batteryLayout2 = QGridLayout()
         for i in range(5):
-            self.batteryLayout2.setColumnMinimumWidth(i,52)
+            batteryLayout2.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            self.batteryLayout2.setRowMinimumHeight(i,102)
-            self.batteryLayout2.setRowMinimumHeight(i+1,15)
-        self.counter = 0
+            batteryLayout2.setRowMinimumHeight(i,102)
+            batteryLayout2.setRowMinimumHeight(i+1,15)
+        counter = 0
         for i in range(4):
             for j in range(5):
-                self.batteryLayout2.addWidget(self.batteries[1][self.counter],2*i,j)
-                self.tempLabel = QLabel(str(self.counter+1))
-                self.tempLabel.setAlignment(Qt.AlignHCenter)
-                self.batteryLayout2.addWidget(self.tempLabel,2*i+1,j)
-                self.counter += 1
+                batteryLayout2.addWidget(self.batteries[1][counter],2*i,j)
+                tempLabel = QLabel(str(counter+1))
+                tempLabel.setAlignment(Qt.AlignHCenter)
+                batteryLayout2.addWidget(tempLabel,2*i+1,j)
+                counter += 1
 
         # plot_groupbox = QGroupBox('Temperature')
         # plot_groupbox.setLayout(plot_layout)
 
-        self.batteryWidget1 = QGroupBox('Battery Module 1')
-        self.batteryWidget1.setLayout(self.batteryLayout1)
+        batteryWidget1 = QGroupBox('Battery Box 1')
+        batteryWidget1.setLayout(batteryLayout1)
 
-        self.batteryWidget2 = QGroupBox('Battery Module 2')
-        self.batteryWidget2.setLayout(self.batteryLayout2)
+        batteryWidget2 = QGroupBox('Battery Box 2')
+        batteryWidget2.setLayout(batteryLayout2)
 
-        self.batteryWidget = QWidget()
-        self.batteryWidgetLayout = QHBoxLayout()
-        self.batteryWidgetLayout.addWidget(self.batteryWidget1)
-        self.batteryWidgetLayout.addWidget(self.batteryWidget2)
-        self.batteryWidget.setLayout(self.batteryWidgetLayout)
+        batteryWidget = QWidget()
+        batteryWidgetLayout = QHBoxLayout()
+        batteryWidgetLayout.addWidget(batteryWidget1)
+        batteryWidgetLayout.addWidget(batteryWidget2)
+        batteryWidget.setLayout(batteryWidgetLayout)
         
         # Main frame and layout
         #
         self.main_frame = QWidget()
         main_layout = QVBoxLayout()
-        main_layout.addWidget(self.batteryWidget)
+        main_layout.addWidget(batteryWidget)
         main_layout.addStretch(1)
         main_layout.addWidget(portname_groupbox)
         self.main_frame.setLayout(main_layout)
@@ -384,6 +402,8 @@ class PlottingDataMonitor(QMainWindow):
 
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()
+                if int(info[1]) < 20:
+                    self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
 
             elif batteryTemperatureRX.match(data):
                 info = batteryTemperatureRX.search(data).groups()
