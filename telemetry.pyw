@@ -43,6 +43,7 @@ class Battery(QGraphicsView):
 
     def setTemperature(self, inTemperature):
         self.temperature = inTemperature
+        self.drawBattery()
 
     def getTemperature(self):
         return self.temperature
@@ -50,20 +51,33 @@ class Battery(QGraphicsView):
     def drawBattery(self):
         self.scene.clear()
 
+        red = QColor(255,0,0)
+        blue = QColor(0,0,255)
+
+        if self.temperature > self.maxBatteryTemp:
+            color = red
+        else:
+            color = blue
+
         pen = QPen()
-        pen.setColor(QColor(255,255,100))
+        pen.setColor(color)
         brush = QBrush()
         brush.setStyle(Qt.SolidPattern)
-        brush.setColor(QColor(0,0,255))
+        brush.setColor(color)
 
         if self.voltage > self.maxBatteryVoltage:
-            self.scene.addRect(0,0,50,100, pen, brush)
+            self.scene.addRect(0,0,50,85, pen, brush)
 
         elif self.voltage > self.minBatteryVoltage:
             dif = self.voltage - self.minBatteryVoltage
-            div = (self.maxBatteryVoltage - self.minBatteryVoltage) / 100.0
+            div = (self.maxBatteryVoltage - self.minBatteryVoltage) / 85.0
             dist = int(dif / div)
-            self.scene.addRect(0,100-dist,50,dist,pen,brush)
+            self.scene.addRect(0,85-dist,50,dist,pen,brush)
+
+        vText = QGraphicsTextItem('%0.2f V' %(self.voltage))
+        vText.setPos(0,80)
+
+        self.scene.addItem(vText)
 
 
 class PlottingDataMonitor(QMainWindow):
@@ -91,10 +105,10 @@ class PlottingDataMonitor(QMainWindow):
         self.portname.setText(self.defaultSerialPort)            
         self.set_actions_enable_state()
 
+        self.setWindowTitle('University of Kentucky Solar Car Telemetry')
+
 
     def create_main_frame(self):
-        # Port name
-        #
         portname_l, self.portname = self.make_data_box('COM Port:')
         
         portname_layout = QHBoxLayout()
@@ -107,31 +121,6 @@ class PlottingDataMonitor(QMainWindow):
 
         portname_groupbox = QGroupBox('COM Port')
         portname_groupbox.setLayout(portname_layout)
-        
-        # Plot and thermo
-        #
-        # self.plot, self.curve = self.create_plot()
-        # self.thermo = self.create_thermo()
-        
-        # thermo_l = QLabel('Average')
-        # thermo_layout = QHBoxLayout()
-        # thermo_layout.addWidget(thermo_l)
-        # thermo_layout.addWidget(self.thermo)
-        # thermo_layout.setSpacing(5)
-        
-        # self.updatespeed_knob = self.create_knob()
-        # self.connect(self.updatespeed_knob, SIGNAL('valueChanged(double)'),
-        #     self.on_knob_change)
-        # self.knob_l = QLabel('Update speed = %s (Hz)' % self.updatespeed_knob.value())
-        # self.knob_l.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
-        # knob_layout = QVBoxLayout()
-        # knob_layout.addWidget(self.updatespeed_knob)
-        # knob_layout.addWidget(self.knob_l)
-        
-        # plot_layout = QVBoxLayout()
-        # plot_layout.addWidget(self.plot)
-        # plot_layout.addLayout(thermo_layout)
-        # plot_layout.addLayout(knob_layout)
 
         batteryLayout1 = QGridLayout()
         for i in range(5):
@@ -163,13 +152,12 @@ class PlottingDataMonitor(QMainWindow):
                 batteryLayout2.addWidget(tempLabel,2*i+1,j)
                 counter += 1
 
-        # plot_groupbox = QGroupBox('Temperature')
-        # plot_groupbox.setLayout(plot_layout)
-
         batteryWidget1 = QGroupBox('Battery Box 1')
+        batteryWidget1.setAlignment(Qt.AlignHCenter)
         batteryWidget1.setLayout(batteryLayout1)
 
         batteryWidget2 = QGroupBox('Battery Box 2')
+        batteryWidget2.setAlignment(Qt.AlignHCenter)
         batteryWidget2.setLayout(batteryLayout2)
 
         batteryWidget = QWidget()
@@ -178,8 +166,6 @@ class PlottingDataMonitor(QMainWindow):
         batteryWidgetLayout.addWidget(batteryWidget2)
         batteryWidget.setLayout(batteryWidgetLayout)
         
-        # Main frame and layout
-        #
         self.main_frame = QWidget()
         main_layout = QVBoxLayout()
         main_layout.addWidget(batteryWidget)
@@ -196,44 +182,6 @@ class PlottingDataMonitor(QMainWindow):
         qle.setEnabled(False)
         qle.setFrame(True)
         return (label, qle)
-        
-    # def create_plot(self):
-    #     plot = Qwt.QwtPlot(self)
-    #     plot.setCanvasBackground(Qt.black)
-    #     plot.setAxisTitle(Qwt.QwtPlot.xBottom, 'Time')
-    #     plot.setAxisScale(Qwt.QwtPlot.xBottom, 0, 10, 1)
-    #     plot.setAxisTitle(Qwt.QwtPlot.yLeft, 'Temperature')
-    #     plot.setAxisScale(Qwt.QwtPlot.yLeft, 0, 250, 40)
-    #     plot.replot()
-        
-    #     curve = Qwt.QwtPlotCurve('')
-    #     curve.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
-    #     pen = QPen(QColor('limegreen'))
-    #     pen.setWidth(2)
-    #     curve.setPen(pen)
-    #     curve.attach(plot)
-        
-    #     return plot, curve
-
-    # def create_thermo(self):
-    #     thermo = Qwt.QwtThermo(self)
-    #     thermo.setPipeWidth(6)
-    #     thermo.setRange(0, 120)
-    #     thermo.setAlarmLevel(80)
-    #     thermo.setAlarmEnabled(True)
-    #     thermo.setFillColor(Qt.green)
-    #     thermo.setAlarmColor(Qt.red)
-    #     thermo.setOrientation(Qt.Horizontal, Qwt.QwtThermo.BottomScale)
-        
-    #     return thermo
-
-    # def create_knob(self):
-    #     knob = Qwt.QwtKnob(self)
-    #     knob.setRange(0, 20, 0, 1)
-    #     knob.setScaleMaxMajor(10)
-    #     knob.setKnobWidth(50)
-    #     knob.setValue(10)
-    #     return knob
 
     def create_menu(self):
         self.file_menu = self.menuBar().addMenu("&File")
@@ -341,10 +289,6 @@ class PlottingDataMonitor(QMainWindow):
         self.timer = QTimer()
         self.connect(self.timer, SIGNAL('timeout()'), self.on_timer)
         
-        # update_freq = self.updatespeed_knob.value()
-        # update_freq =  1 # TODO fix this to the correct update (baudrate)
-        # if update_freq > 0:
-        #     self.timer.start(0.05)
         self.timer.start(0.05)
         
         self.status_text.setText('Monitor running')
@@ -379,8 +323,6 @@ class PlottingDataMonitor(QMainWindow):
         """
         qdata = list(get_all_from_queue(self.data_q))
         if len(qdata) > 0:
-            # data = dict(timestamp=qdata[-1][1], 
-            #             temperature=ord(qdata[-1][0]))
             data = qdata[-1][0]
             self.livefeed.add_data(data)
 
@@ -393,8 +335,12 @@ class PlottingDataMonitor(QMainWindow):
         if self.livefeed.has_new_data:
             data = self.livefeed.read_data()
 
-            batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
-            batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
+            # batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
+            # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
+            # These next two lines do not accept 20 as a battery number, the above do
+            batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)$")
+            batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)$")
+
             batteryCurrentRX = re.compile("^C\s=\s(\d+)$")
             motorControllerVelocityRX = re.compile("^S\s=\s(\d+)$")
             motorControllerEnergyRX = re.compile("^E\s=\s(\d+)$")
@@ -402,11 +348,11 @@ class PlottingDataMonitor(QMainWindow):
 
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()
-                if int(info[1]) < 20:
-                    self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
+                self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
 
             elif batteryTemperatureRX.match(data):
                 info = batteryTemperatureRX.search(data).groups()
+                self.batteries[int(info[0])][int(info[1])].setTemperature(int(info[2]))
 
             elif batteryCurrentRX.match(data):
                 info = batteryCurrentRX.search(data).groups()
@@ -424,23 +370,6 @@ class PlottingDataMonitor(QMainWindow):
                 info =  "*** Could not match input: " + data + "***"
 
             print info
-
-            # self.temperature_samples.append(
-            #     (data['timestamp'], data['temperature']))
-            # print data
-            # if len(self.temperature_samples) > 100:
-            #     self.temperature_samples.pop(0)
-            
-            # xdata = [s[0] for s in self.temperature_samples]
-            # ydata = [s[1] for s in self.temperature_samples]
-            
-            # avg = sum(ydata) / float(len(ydata))
-                
-            # self.plot.setAxisScale(Qwt.QwtPlot.xBottom, xdata[0], max(20, xdata[-1]))
-            # self.curve.setData(xdata, ydata)
-            # self.plot.replot()
-            
-            # self.thermo.setValue(avg)
 
 def main():
     app = QApplication(sys.argv)

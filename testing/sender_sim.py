@@ -22,13 +22,6 @@ def delay():
 	return
 
 while True:
-	# t = int(random.randint(60, 80) * (1 + math.sin(incycle)))
-	# x = ser.write(chr(t))
-	# delay()
-
-	# incycle += 0.01
-	# if incycle >= 2 * math.pi:
-	# 	incycle = 0
 
 	for i in range(4):
 		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))
@@ -102,7 +95,7 @@ while True:
 	delay()
 
 	for i in range(21):
-		writestr = ("T[0][%02d] = "+str(random.randint(0,100))) %(i)
+		writestr = ("T[0][%02d] = "+str(random.randint(20,35))) %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
@@ -123,7 +116,7 @@ while True:
 	delay()
 
 	for i in range(21):
-		writestr = ("T[1][%02d] = "+str(random.randint(0,100))) %(i)
+		writestr = ("T[1][%02d] = "+str(random.randint(20,35))) %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
