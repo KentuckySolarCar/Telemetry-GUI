@@ -8,6 +8,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import Queue
 import re
+import time
 
 from lib.com_monitor import ComMonitorThread
 from lib.livedatafeed import LiveDataFeed
@@ -18,8 +19,8 @@ from lib.utils import get_all_from_queue, get_item_from_queue
 class Battery(QGraphicsView):
     def __init__(self, parent=None):
         super(Battery, self).__init__(parent)
-        self.voltage = None
-        self.temperature = None
+        self.voltage = 0
+        self.temperature = 0
 
         # Default values
         self.maxBatteryTemp = 30
@@ -118,6 +119,9 @@ class PlottingDataMonitor(QMainWindow):
 
         self.setWindowTitle('University of Kentucky Solar Car Telemetry')
 
+        self.time = time.time()
+        self.startTime = time.time()
+        self.timeSinceStart = 0
 
     def create_main_frame(self):
         portname_l, self.portname = self.make_data_box('COM Port:')
@@ -144,7 +148,7 @@ class PlottingDataMonitor(QMainWindow):
 
         portname_layout.addStretch(1)
 
-        portname_groupbox = QGroupBox('Settings')
+        portname_groupbox = QGroupBox('Controls')
         portname_groupbox.setLayout(portname_layout)
 
         batteryLayout1 = QGridLayout()
@@ -191,23 +195,50 @@ class PlottingDataMonitor(QMainWindow):
         batteryWidgetLayout.addWidget(batteryWidget2)
         batteryWidget.setLayout(batteryWidgetLayout)
         
-        self.main_frame = QWidget()
-        main_layout = QVBoxLayout()
-        main_layout.addWidget(batteryWidget)
-        main_layout.addStretch(1)
-        main_layout.addWidget(portname_groupbox)
-        self.main_frame.setLayout(main_layout)
+        self.main_frame1 = QWidget()
+        main_layout1 = QVBoxLayout()
+        main_layout1.addWidget(batteryWidget)
+        main_layout1.addStretch(1)
+        main_layout1.addWidget(portname_groupbox)
+        self.main_frame1.setLayout(main_layout1)
+
+        timeWidget = QGroupBox('Time')
+        timeLayout = QVBoxLayout()
+        timeWidget.setLayout(timeLayout)
+
+
+        self.main_frame2 = QWidget()
+        main_layout2 = QVBoxLayout()
+        main_layout2.addWidget(timeWidget)
+        main_layout2.addStretch(1)
+        self.main_frame2.setLayout(main_layout2)
         
+        self.main_frame = QWidget()
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(self.main_frame1)
+        main_layout.addWidget(self.main_frame2)
+        self.main_frame.setLayout(main_layout)
+
         self.setCentralWidget(self.main_frame)
         self.set_actions_enable_state()
+
+        self.secTimer = QTimer()
+        self.secTimer.timeout.connect(self.writeLog)
+        self.secTimer.timeout.connect(self.updateTime)
+        self.secTimer.start(1000)
+
+    def updateTime(self):
+        self.time = time.time()
+        self.timeSinceStart = self.time - self.startTime
+        # print time.strftime("%d.%m.%Y.%H:%M:%S")
 
     def toggleLogging(self):
         if self.logging_active:
             self.logging_active = False
+            self.stop_logging()
             self.loggingToggle.setText('Start Logging')
         else:
-            self.logging_active = True
-            self.loggingToggle.setText('Stop  Logging')
+            self.start_logging()
 
     def on_start_stop(self):
         if self.monitor_active:
@@ -334,6 +365,20 @@ class PlottingDataMonitor(QMainWindow):
 
         self.startStop.setText('Stop  Monitor')
 
+    def start_logging(self):
+        self.logging_active = True
+        self.loggingToggle.setText('Stop  Logging')
+        fileName = "logs/log" + time.strftime("%d.%m.%Y.%H:%M:%S") + ".csv"
+        self.logFile = open(fileName, 'a')
+
+    def writeLog(self):
+        pass
+
+    def stop_logging(self):
+        self.logging_active = False
+        self.loggingToggle.setText('Start Logging')
+        self.logFile.close()
+
     def on_stop(self):
         """ Stop the monitor
         """
@@ -412,7 +457,7 @@ class PlottingDataMonitor(QMainWindow):
             else:
                 info =  "*** Could not match input: " + data + "***"
 
-            print info
+            # print info # debug
 
 def main():
     app = QApplication(sys.argv)
