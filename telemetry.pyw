@@ -81,15 +81,13 @@ class Battery(QGraphicsView):
 
         self.scene.addItem(vText)
 
-        if self.temperature > self.maxBatteryTemp:
-            color = white
-            pen.setColor(red)
-            brush.setColor(white)
-            self.scene.addRect(5,65,40,15,pen,brush)
-            tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature))
-            tText.setPos(3,60)
-            tText.setDefaultTextColor(red)
-            self.scene.addItem(tText)
+        pen.setColor(color)
+        brush.setColor(white)
+        self.scene.addRect(5,65,40,15,pen,brush)
+        tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature))
+        tText.setPos(3,60)
+        tText.setDefaultTextColor(color)
+        self.scene.addItem(tText)
 
 
 class PlottingDataMonitor(QMainWindow):
@@ -104,6 +102,7 @@ class PlottingDataMonitor(QMainWindow):
             self.batteries[1].append(Battery())
 
         self.monitor_active = False
+        self.logging_active = False
         self.com_monitor = None
         self.com_data_q = None
         self.com_error_q = None
@@ -126,12 +125,26 @@ class PlottingDataMonitor(QMainWindow):
         portname_layout = QHBoxLayout()
         portname_layout.addWidget(portname_l)
         portname_layout.addWidget(self.portname, 0)
+
         change_port = QPushButton('Change Port')
         change_port.clicked.connect(self.on_select_port)
         portname_layout.addWidget(change_port)
+
+        self.startStop = QPushButton('Start Monitor')
+        self.startStop.clicked.connect(self.on_start_stop)
+        portname_layout.addWidget(self.startStop)
+
+        self.loggingToggle = QPushButton('Start Logging')
+        self.loggingToggle.clicked.connect(self.toggleLogging)
+        portname_layout.addWidget(self.loggingToggle)
+
+        exit = QPushButton('Exit')
+        exit.clicked.connect(self.close)
+        portname_layout.addWidget(exit)
+
         portname_layout.addStretch(1)
 
-        portname_groupbox = QGroupBox('COM Port')
+        portname_groupbox = QGroupBox('Settings')
         portname_groupbox.setLayout(portname_layout)
 
         batteryLayout1 = QGridLayout()
@@ -187,6 +200,20 @@ class PlottingDataMonitor(QMainWindow):
         
         self.setCentralWidget(self.main_frame)
         self.set_actions_enable_state()
+
+    def toggleLogging(self):
+        if self.logging_active:
+            self.logging_active = False
+            self.loggingToggle.setText('Start Logging')
+        else:
+            self.logging_active = True
+            self.loggingToggle.setText('Stop  Logging')
+
+    def on_start_stop(self):
+        if self.monitor_active:
+            self.on_stop()
+        else:
+            self.on_start()
 
     def make_data_box(self, name):
         label = QLabel(name)
@@ -305,6 +332,8 @@ class PlottingDataMonitor(QMainWindow):
         
         self.status_text.setText('Monitor running')
 
+        self.startStop.setText('Stop  Monitor')
+
     def on_stop(self):
         """ Stop the monitor
         """
@@ -317,6 +346,8 @@ class PlottingDataMonitor(QMainWindow):
         self.set_actions_enable_state()
         
         self.status_text.setText('Monitor idle')
+
+        self.startStop.setText('Start Monitor')
 
     def on_about(self):
         msg = __doc__
