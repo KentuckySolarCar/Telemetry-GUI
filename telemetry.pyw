@@ -52,17 +52,19 @@ class Battery(QGraphicsView):
         self.scene.clear()
 
         red = QColor(255,0,0)
+        white = QColor(255,255,255)
         blue = QColor(0,0,255)
+
+        pen = QPen()
+        brush = QBrush()
+        brush.setStyle(Qt.SolidPattern)
 
         if self.temperature > self.maxBatteryTemp:
             color = red
         else:
             color = blue
 
-        pen = QPen()
         pen.setColor(color)
-        brush = QBrush()
-        brush.setStyle(Qt.SolidPattern)
         brush.setColor(color)
 
         if self.voltage > self.maxBatteryVoltage:
@@ -78,6 +80,16 @@ class Battery(QGraphicsView):
         vText.setPos(0,80)
 
         self.scene.addItem(vText)
+
+        if self.temperature > self.maxBatteryTemp:
+            color = white
+            pen.setColor(red)
+            brush.setColor(white)
+            self.scene.addRect(5,65,40,15,pen,brush)
+            tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature))
+            tText.setPos(3,60)
+            tText.setDefaultTextColor(red)
+            self.scene.addItem(tText)
 
 
 class PlottingDataMonitor(QMainWindow):
