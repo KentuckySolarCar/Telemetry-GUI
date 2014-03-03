@@ -3,7 +3,7 @@ UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
 """
 
-import random, sys
+import random, sys, os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import Queue
@@ -15,6 +15,41 @@ from lib.livedatafeed import LiveDataFeed
 
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
+
+class MPPT(QLabel):
+    def __init__(self, num, parent=None):
+        super(MPPT, self).__init__(parent)
+        self.inVoltage = -1
+        self.outVoltage = -1
+        self.inCurrent = -1
+        self.outCurrent = -1
+        self.num = num
+        if not self.outVoltage == 0:
+            self.outCurrent = self.inVoltage * self.inCurrent / self.outVoltage
+            if self.outCurrent < 10:
+                self.setText("  %.3f A" %self.outCurrent)
+            else:
+                self.setText("%.3f A" %self.outCurrent)
+
+    def setInVoltage(self, voltage):
+        self.inVoltage = voltage
+        self.calcOutCurrent()
+
+    def setOutVoltage(self, voltage):
+        self.outVoltage = voltage
+        self.calcOutCurrent()
+
+    def setInCurrent(self, current):
+        self.inCurrent = current / 100.0
+        self.calcOutCurrent()
+
+    def calcOutCurrent(self):
+        if not self.outVoltage == 0:
+            self.outCurrent = self.inVoltage * self.inCurrent / self.outVoltage
+            if self.outCurrent < 10:
+                self.setText("  %.3f A" %self.outCurrent)
+            else:
+                self.setText("%.3f A" %self.outCurrent)
 
 class Battery(QGraphicsView):
     def __init__(self, parent=None):
@@ -77,7 +112,7 @@ class Battery(QGraphicsView):
             dist = int(dif / div)
             self.scene.addRect(0,85-dist,50,dist,pen,brush)
 
-        vText = QGraphicsTextItem('%0.2f V' %(self.voltage))
+        vText = QGraphicsTextItem("%0.2f V" %self.voltage)
         vText.setPos(0,80)
 
         self.scene.addItem(vText)
@@ -102,6 +137,10 @@ class PlottingDataMonitor(QMainWindow):
             self.batteries[0].append(Battery())
             self.batteries[1].append(Battery())
 
+        self.mppts = []
+        for i in range(4):
+            self.mppts.append(MPPT(i))
+
         self.monitor_active = False
         self.logging_active = False
         self.com_monitor = None
@@ -109,6 +148,10 @@ class PlottingDataMonitor(QMainWindow):
         self.com_error_q = None
         self.livefeed = LiveDataFeed()
         self.timer = QTimer()
+
+        self.curTime = time.time()
+        self.startTime = time.time()
+        self.timeSinceStart = self.curTime - self.startTime
 
         self.create_menu()
         self.create_main_frame()
@@ -118,10 +161,6 @@ class PlottingDataMonitor(QMainWindow):
         self.set_actions_enable_state()
 
         self.setWindowTitle('University of Kentucky Solar Car Telemetry')
-
-        self.time = time.time()
-        self.startTime = time.time()
-        self.timeSinceStart = 0
 
     def create_main_frame(self):
         portname_l, self.portname = self.make_data_box('COM Port:')
@@ -204,12 +243,22 @@ class PlottingDataMonitor(QMainWindow):
 
         timeWidget = QGroupBox('Time')
         timeLayout = QVBoxLayout()
+        self.currentTime = QLabel('Current time: ' + time.strftime("%H:%M:%S", time.localtime(self.curTime)))
+        self.timeSince = QLabel('Run time:        ' + time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
+        timeLayout.addWidget(self.currentTime)
+        timeLayout.addWidget(self.timeSince)
         timeWidget.setLayout(timeLayout)
 
+        mpptWidget = QGroupBox('MPPTs')
+        mpptLayout = QVBoxLayout()
+        for i in range(4):
+            mpptLayout.addWidget(self.mppts[i])
+        mpptWidget.setLayout(mpptLayout)
 
         self.main_frame2 = QWidget()
         main_layout2 = QVBoxLayout()
         main_layout2.addWidget(timeWidget)
+        main_layout2.addWidget(mpptWidget)
         main_layout2.addStretch(1)
         self.main_frame2.setLayout(main_layout2)
         
@@ -228,8 +277,10 @@ class PlottingDataMonitor(QMainWindow):
         self.secTimer.start(1000)
 
     def updateTime(self):
-        self.time = time.time()
-        self.timeSinceStart = self.time - self.startTime
+        self.curTime = time.time()
+        self.timeSinceStart = self.curTime - self.startTime
+        self.currentTime.setText('Current time: ' + time.strftime("%H:%M:%S", time.localtime(self.curTime)))
+        self.timeSince.setText('Run time:        ' + time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
         # print time.strftime("%d.%m.%Y.%H:%M:%S")
 
     def toggleLogging(self):
@@ -366,6 +417,8 @@ class PlottingDataMonitor(QMainWindow):
         self.startStop.setText('Stop  Monitor')
 
     def start_logging(self):
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
         self.logging_active = True
         self.loggingToggle.setText('Stop  Logging')
         fileName = "logs/log" + time.strftime("%d.%m.%Y.%H:%M:%S") + ".csv"
@@ -453,6 +506,9 @@ class PlottingDataMonitor(QMainWindow):
 
             elif MPPTDataRX.match(data):
                 info = MPPTDataRX.search(data).groups()
+                self.mppts[int(info[0])].setInVoltage(int(info[1]))
+                self.mppts[int(info[0])].setInCurrent(int(info[2]))
+                self.mppts[int(info[0])].setOutVoltage(int(info[3]))
 
             else:
                 info =  "*** Could not match input: " + data + "***"
