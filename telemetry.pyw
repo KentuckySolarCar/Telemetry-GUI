@@ -9,6 +9,7 @@ from PyQt4.QtGui import *
 import Queue
 import re
 import time
+from sys import platform as _platform
 
 from lib.com_monitor import ComMonitorThread
 from lib.livedatafeed import LiveDataFeed
@@ -16,46 +17,111 @@ from lib.livedatafeed import LiveDataFeed
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
+class MotorController(QGroupBox):
+    def __init__(self, parent=None):
+        super(MotorController, self).__init__(parent)
+        self.speed = []
+        self.current = []
+        self.energy = []
+        self.averageSpeed = 0
+        self.conversion = 0.223693629
+        self.checkFromAv = 0
+        self.checkFromE = 0
+
+        self.tSpeed = QLabel('0.00')
+        self.tCurrent = QLabel('0.00')
+        self.tEnergy = QLabel('0.00')
+        self.tAverageSpeed = QLabel('0.00')
+
+        self.resetEnergyButton = QPushButton('Reset')
+        self.resetAvSpeedButton = QPushButton('Reset')
+        self.resetEnergyButton.clicked.connect(self.resetEnergy)
+        self.resetAvSpeedButton.clicked.connect(self.resetAvSpeed)
+
+        motorControllerLayout = QGridLayout()
+        motorControllerLayout.setColumnMinimumWidth(1,52)
+        motorControllerLayout.addWidget(QLabel('Speed:'),0,0)
+        motorControllerLayout.addWidget(self.tSpeed,0,1)
+        motorControllerLayout.addWidget(QLabel('mph'),0,2)
+        motorControllerLayout.addWidget(QLabel('Current:'),1,0)
+        motorControllerLayout.addWidget(self.tCurrent,1,1)
+        motorControllerLayout.addWidget(QLabel('A'),1,2)
+        motorControllerLayout.addWidget(QLabel('Energy:'),2,0)
+        motorControllerLayout.addWidget(self.tEnergy,2,1)
+        motorControllerLayout.addWidget(QLabel('Ah'),2,2)
+        motorControllerLayout.addWidget(self.resetEnergyButton,2,3)
+        motorControllerLayout.addWidget(QLabel('Av. Speed:'),3,0)
+        motorControllerLayout.addWidget(self.tAverageSpeed,3,1)
+        motorControllerLayout.addWidget(QLabel('mph'),3,2)
+        motorControllerLayout.addWidget(self.resetAvSpeedButton,3,3)
+
+        self.setLayout(motorControllerLayout)
+
+    def setSpeed(self, inSpeed):
+        # convert to miles per hour
+        self.speed.append(inSpeed*self.conversion)
+        self.tSpeed.setText('%.3f' %self.speed[-1])
+        self.calcAverageSpeed()
+
+    def setCurrent(self):
+        pass
+
+    def setEnergy(self, energy):
+        self.energy.append(energy)
+        self.calcEnergy()
+
+    def calcAverageSpeed(self):
+        self.averageSpeed = sum(self.speed[self.checkFromAv:])/float(len(self.speed[self.checkFromAv:]))
+        self.tAverageSpeed.setText('%.3f' %self.averageSpeed)
+
+    def resetEnergy(self):
+        self.checkFromE = len(self.energy) - 1
+        self.calcEnergy()
+
+    def calcEnergy(self):
+        self.tEnergy.setText(str(self.energy[-1] - self.energy[self.checkFromE]))
+
+    def resetAvSpeed(self):
+        self.checkFromAv = len(self.speed) - 1
+        self.calcAverageSpeed()
+
+
 class MPPT(QLabel):
     def __init__(self, num, parent=None):
         super(MPPT, self).__init__(parent)
-        self.inVoltage = -1
-        self.outVoltage = -1
-        self.inCurrent = -1
-        self.outCurrent = -1
+        self.inVoltage = [0]
+        self.outVoltage = [0]
+        self.inCurrent = [0]
+        self.outCurrent = [0]
         self.num = num
-        if not self.outVoltage == 0:
-            self.outCurrent = self.inVoltage * self.inCurrent / self.outVoltage
-            if self.outCurrent < 10:
-                self.setText("  %.3f A" %self.outCurrent)
-            else:
-                self.setText("%.3f A" %self.outCurrent)
+        self.outCurrent = [0]
+        self.setText("%.3f" %self.outCurrent[-1])
 
     def setInVoltage(self, voltage):
-        self.inVoltage = voltage
+        self.inVoltage.append(voltage)
         self.calcOutCurrent()
 
     def setOutVoltage(self, voltage):
-        self.outVoltage = voltage
+        self.outVoltage.append(voltage)
         self.calcOutCurrent()
 
     def setInCurrent(self, current):
-        self.inCurrent = current / 100.0
+        self.inCurrent.append(current / 100.0)
         self.calcOutCurrent()
 
     def calcOutCurrent(self):
-        if not self.outVoltage == 0:
-            self.outCurrent = self.inVoltage * self.inCurrent / self.outVoltage
-            if self.outCurrent < 10:
-                self.setText("  %.3f A" %self.outCurrent)
-            else:
-                self.setText("%.3f A" %self.outCurrent)
+        if not self.outVoltage[-1] == 0:
+            self.outCurrent.append(self.inVoltage[-1] * self.inCurrent[-1] / self.outVoltage[-1])
+            self.setText("%.3f" %self.outCurrent[-1])
+
+    def getOutCurrent(self):
+        return self.outCurrent[-1]
 
 class Battery(QGraphicsView):
     def __init__(self, parent=None):
         super(Battery, self).__init__(parent)
-        self.voltage = 0
-        self.temperature = 0
+        self.voltage = [0]
+        self.temperature = [0]
 
         # Default values
         self.maxBatteryTemp = 30
@@ -71,18 +137,18 @@ class Battery(QGraphicsView):
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def setVoltage(self, inVoltage):
-        self.voltage = inVoltage/1000.0
+        self.voltage.append(inVoltage/1000.0)
         self.drawBattery()
 
     def getVoltage(self):
-        return self.voltage
+        return self.voltage[-1]
 
     def setTemperature(self, inTemperature):
-        self.temperature = inTemperature
+        self.temperature.append(inTemperature)
         self.drawBattery()
 
     def getTemperature(self):
-        return self.temperature
+        return self.temperature[-1]
 
     def drawBattery(self):
         self.scene.clear()
@@ -95,7 +161,7 @@ class Battery(QGraphicsView):
         brush = QBrush()
         brush.setStyle(Qt.SolidPattern)
 
-        if self.temperature > self.maxBatteryTemp:
+        if self.temperature[-1] > self.maxBatteryTemp:
             color = red
         else:
             color = blue
@@ -103,16 +169,17 @@ class Battery(QGraphicsView):
         pen.setColor(color)
         brush.setColor(color)
 
-        if self.voltage > self.maxBatteryVoltage:
+        if self.voltage[-1] > self.maxBatteryVoltage:
             self.scene.addRect(0,0,50,85, pen, brush)
 
-        elif self.voltage > self.minBatteryVoltage:
-            dif = self.voltage - self.minBatteryVoltage
+        elif self.voltage[-1] > self.minBatteryVoltage:
+            dif = self.voltage[-1] - self.minBatteryVoltage
             div = (self.maxBatteryVoltage - self.minBatteryVoltage) / 85.0
             dist = int(dif / div)
             self.scene.addRect(0,85-dist,50,dist,pen,brush)
 
-        vText = QGraphicsTextItem("%0.2f V" %self.voltage)
+        vText = QGraphicsTextItem("%0.2f V" %self.voltage[-1])
+        vText.setFont(QFont('Arial Unicode MS', 10))
         vText.setPos(0,80)
 
         self.scene.addItem(vText)
@@ -120,7 +187,8 @@ class Battery(QGraphicsView):
         pen.setColor(color)
         brush.setColor(white)
         self.scene.addRect(5,65,40,15,pen,brush)
-        tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature))
+        tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature[-1]))
+        tText.setFont(QFont('Arial Unicode MS', 10))
         tText.setPos(3,60)
         tText.setDefaultTextColor(color)
         self.scene.addItem(tText)
@@ -130,7 +198,17 @@ class PlottingDataMonitor(QMainWindow):
     def __init__(self, parent=None):
         super(PlottingDataMonitor, self).__init__(parent)
 
-        self.defaultSerialPort = "/dev/ttySy"
+        if _platform == "linux" or _platform == "linux2":
+            # linux
+            self.defaultSerialPort = "/dev/ttySy"
+        elif _platform == "darwin":
+            # OS X
+            self.defaultSerialPort = "/dev/ttySy"
+        elif _platform == "win32":
+            # Windows...
+            self.defaultSerialPort = "COM4"
+
+        self.setFont(QFont('Arial Unicode MS', 10))
 
         self.batteries = [[],[]]
         for i in range(20):
@@ -242,23 +320,36 @@ class PlottingDataMonitor(QMainWindow):
         self.main_frame1.setLayout(main_layout1)
 
         timeWidget = QGroupBox('Time')
-        timeLayout = QVBoxLayout()
-        self.currentTime = QLabel('Current time: ' + time.strftime("%H:%M:%S", time.localtime(self.curTime)))
-        self.timeSince = QLabel('Run time:        ' + time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
-        timeLayout.addWidget(self.currentTime)
-        timeLayout.addWidget(self.timeSince)
+        timeLayout = QGridLayout()
+        self.currentTime = QLabel(time.strftime("%H:%M:%S", time.localtime(self.curTime)))
+        self.timeSince = QLabel(time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
+        timeLayout.addWidget(self.currentTime,0,1)
+        timeLayout.addWidget(self.timeSince,1,1)
+        timeLayout.addWidget(QLabel('Current time:'),0,0)
+        timeLayout.addWidget(QLabel('Run time:'),1,0)
         timeWidget.setLayout(timeLayout)
 
         mpptWidget = QGroupBox('MPPTs')
-        mpptLayout = QVBoxLayout()
+        mpptLayout = QGridLayout()
+        mpptLayout.addWidget(QLabel('#'),0,0)
+        mpptLayout.addWidget(QLabel('Out Current'),0,1,1,2)
         for i in range(4):
-            mpptLayout.addWidget(self.mppts[i])
+            mpptLayout.addWidget(QLabel(str(i)),i+1,0)
+            mpptLayout.addWidget(self.mppts[i],i+1,1)
+            mpptLayout.addWidget(QLabel('A'),i+1,2)
+        self.MPPTTotal = QLabel('0.000')
+        mpptLayout.addWidget(QLabel('Total'),5,0)
+        mpptLayout.addWidget(self.MPPTTotal,5,1)
+        mpptLayout.addWidget(QLabel('A'),5,2)
         mpptWidget.setLayout(mpptLayout)
+
+        self.motorControllerWidget = MotorController('Motor Controller')
 
         self.main_frame2 = QWidget()
         main_layout2 = QVBoxLayout()
         main_layout2.addWidget(timeWidget)
         main_layout2.addWidget(mpptWidget)
+        main_layout2.addWidget(self.motorControllerWidget)
         main_layout2.addStretch(1)
         self.main_frame2.setLayout(main_layout2)
         
@@ -279,8 +370,8 @@ class PlottingDataMonitor(QMainWindow):
     def updateTime(self):
         self.curTime = time.time()
         self.timeSinceStart = self.curTime - self.startTime
-        self.currentTime.setText('Current time: ' + time.strftime("%H:%M:%S", time.localtime(self.curTime)))
-        self.timeSince.setText('Run time:        ' + time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
+        self.currentTime.setText(time.strftime("%H:%M:%S", time.localtime(self.curTime)))
+        self.timeSince.setText(time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
         # print time.strftime("%d.%m.%Y.%H:%M:%S")
 
     def toggleLogging(self):
@@ -500,20 +591,30 @@ class PlottingDataMonitor(QMainWindow):
 
             elif motorControllerVelocityRX.match(data):
                 info = motorControllerVelocityRX.search(data).groups()
+                self.motorControllerWidget.setSpeed(int(info[0]))
 
             elif motorControllerEnergyRX.match(data):
                 info = motorControllerEnergyRX.search(data).groups()
+                self.motorControllerWidget.setEnergy(int(info[0]))
 
             elif MPPTDataRX.match(data):
                 info = MPPTDataRX.search(data).groups()
                 self.mppts[int(info[0])].setInVoltage(int(info[1]))
                 self.mppts[int(info[0])].setInCurrent(int(info[2]))
                 self.mppts[int(info[0])].setOutVoltage(int(info[3]))
+                self.updateMPPT()
 
             else:
-                info =  "*** Could not match input: " + data + "***"
+                info =  "*** Could not match input: " + data + " ***"
+                print info
 
             # print info # debug
+
+    def updateMPPT(self):
+        total = 0.0
+        for i in range(4):
+            total += self.mppts[i].getOutCurrent()
+        self.MPPTTotal.setText("%.3f" %total)
 
 def main():
     app = QApplication(sys.argv)
