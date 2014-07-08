@@ -24,8 +24,7 @@ def delay():
 while True:
 
 	for i in range(4):
-		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))
-			+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))
+		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))
 		print writestr
 		ser.write(writestr)
 		delay()

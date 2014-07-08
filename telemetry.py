@@ -507,6 +507,8 @@ class PlottingDataMonitor(QMainWindow):
 
         self.startStop.setText('Stop  Monitor')
 
+        self.start_logging()
+
     def start_logging(self):
         if not os.path.exists('logs'):
             os.makedirs('logs')
@@ -537,6 +539,8 @@ class PlottingDataMonitor(QMainWindow):
         self.status_text.setText('Monitor idle')
 
         self.startStop.setText('Start Monitor')
+
+        self.stop_logging()
 
     def on_about(self):
         msg = __doc__
