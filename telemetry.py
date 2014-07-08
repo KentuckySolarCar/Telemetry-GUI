@@ -514,11 +514,12 @@ class PlottingDataMonitor(QMainWindow):
             os.makedirs('logs')
         self.logging_active = True
         self.loggingToggle.setText('Stop  Logging')
-        fileName = "logs/log" + time.strftime("%d.%m.%Y.%H:%M:%S") + ".csv"
-        self.logFile = open(fileName, 'a')
+        fileName = "logs/log" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv"
+        self.logFile = open(fileName, "a+")
 
     def writeLog(self):
-        pass
+        if self.logging_active:
+            self.logFile.write("line\n")
 
     def stop_logging(self):
         self.logging_active = False
@@ -609,7 +610,7 @@ class PlottingDataMonitor(QMainWindow):
                 self.updateMPPT()
 
             else:
-                info =  "*** Could not match input: " + data + " ***"
+                info =  "Could not match input '" + data + "'"
                 print info
 
             # print info # debug
