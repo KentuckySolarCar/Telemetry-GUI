@@ -1,7 +1,7 @@
 UKY Solar Car Telemetry
 =======================
 
-This program is written by [Stephen Parsons](stephen.parsons@uky.edu).
+This program is written by [Stephen Parsons](mailto:stephen.parsons@uky.edu).
 The underlying functionality to manage the serial connection and the graphical interface borrows heavily from [Eli Bendersky's work](http://eli.thegreenplace.net/2009/08/07/a-live-data-monitor-with-python-pyqt-and-pyserial/).
 
 Getting Started
