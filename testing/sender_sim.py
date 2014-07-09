@@ -44,7 +44,7 @@ while True:
 	ser.write(writestr)
 	delay()
 
-	for i in range(21):
+	for i in range(20):
 		writestr = ("V[0][%02d] = "+str(random.randint(2500,3800))) %(i)
 		print writestr
 		ser.write(writestr)
@@ -65,7 +65,7 @@ while True:
 	ser.write(writestr)
 	delay()
 
-	for i in range(21):
+	for i in range(20):
 		writestr = ("V[1][%02d] = "+str(random.randint(2500,3800))) %(i)
 		print writestr
 		ser.write(writestr)
@@ -93,7 +93,7 @@ while True:
 	ser.write(writestr)
 	delay()
 
-	for i in range(21):
+	for i in range(20):
 		writestr = ("T[0][%02d] = "+str(random.randint(20,35))) %(i)
 		print writestr
 		ser.write(writestr)
@@ -114,7 +114,7 @@ while True:
 	ser.write(writestr)
 	delay()
 
-	for i in range(21):
+	for i in range(20):
 		writestr = ("T[1][%02d] = "+str(random.randint(20,35))) %(i)
 		print writestr
 		ser.write(writestr)
