@@ -137,7 +137,7 @@ class Battery(QGraphicsView):
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def setVoltage(self, inVoltage):
-        self.voltage.append(inVoltage/1000.0)
+        self.voltage.append(inVoltage/10000.0)
         self.drawBattery()
 
     def getVoltage(self):
@@ -516,10 +516,13 @@ class PlottingDataMonitor(QMainWindow):
         self.loggingToggle.setText('Stop  Logging')
         fileName = "logs/log" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv"
         self.logFile = open(fileName, "a+")
+        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppt voltages\n")
 
     def writeLog(self):
         if self.logging_active:
-            self.logFile.write("line\n")
+            self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
+            # self.logFile.write((self.motorControllerWidget.speed[-1] if self.speed.len() > 0 else "") + ",")
+            self.logFile.write("\n")
 
     def stop_logging(self):
         self.logging_active = False
@@ -562,6 +565,8 @@ class PlottingDataMonitor(QMainWindow):
         if len(qdata) > 0:
             data = qdata[-1][0]
             self.livefeed.add_data(data)
+            filename = open("test.txt", "a+")
+            filename.write("below\n"+data+"\n")
 
     def update_monitor(self):
         """ Updates the state of the monitor window with new 
@@ -575,7 +580,7 @@ class PlottingDataMonitor(QMainWindow):
             # batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # These next two lines do not accept 20 as a battery number, the above do
-            batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)$")
+            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
             batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)$")
 
             batteryCurrentRX = re.compile("^C\s=\s(\d+)$")
