@@ -565,8 +565,6 @@ class PlottingDataMonitor(QMainWindow):
         if len(qdata) > 0:
             data = qdata[-1][0]
             self.livefeed.add_data(data)
-            filename = open("test.txt", "a+")
-            filename.write("below\n"+data+"\n")
 
     def update_monitor(self):
         """ Updates the state of the monitor window with new 
@@ -581,12 +579,12 @@ class PlottingDataMonitor(QMainWindow):
             # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # These next two lines do not accept 20 as a battery number, the above do
             batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
-            batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)$")
+            batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
 
-            batteryCurrentRX = re.compile("^C\s=\s(\d+)$")
-            motorControllerVelocityRX = re.compile("^S\s=\s(\d+)$")
-            motorControllerEnergyRX = re.compile("^E\s=\s(\d+)$")
-            MPPTDataRX = re.compile("^M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)$")
+            batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$", re.MULTILINE)
+            motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$", re.MULTILINE)
+            motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$", re.MULTILINE)
+            MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$", re.MULTILINE)
 
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()
