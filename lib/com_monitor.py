@@ -41,7 +41,7 @@ class ComMonitorThread(threading.Thread):
                     port_baud,
                     port_stopbits=serial.STOPBITS_ONE,
                     port_parity=serial.PARITY_NONE,
-                    port_timeout=0.01):
+                    port_timeout=1):
         threading.Thread.__init__(self)
         
         self.serial_port = None

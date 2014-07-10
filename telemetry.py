@@ -321,6 +321,7 @@ class PlottingDataMonitor(QMainWindow):
         main_layout1.addWidget(portname_groupbox)
         self.main_frame1.setLayout(main_layout1)
 
+        #Time
         timeWidget = QGroupBox('Time')
         timeLayout = QGridLayout()
         self.currentTime = QLabel(time.strftime("%H:%M:%S", time.localtime(self.curTime)))
@@ -331,6 +332,36 @@ class PlottingDataMonitor(QMainWindow):
         timeLayout.addWidget(QLabel('Run time:'),1,0)
         timeWidget.setLayout(timeLayout)
 
+        #Batteries
+        batteryStatsWidget = QGroupBox('Batteries')
+        batteryStatsLayout = QGridLayout()
+        self.tBatteryCurrent = QLabel('0.00')
+        self.tBatteryAverage = QLabel('0.00')
+        self.tBatteryValueHigh = QLabel('0.00')
+        self.tBatteryModuleHigh = QLabel('(#)')
+        self.tBatteryValueLow = QLabel('0.00')
+        self.tBatteryModuleLow = QLabel('(#)')
+        self.tBatteryCurrent.setText('%.2f' %self.batteryCurrent)
+        batteryStatsLayout.addWidget(QLabel('Pack Current:'),0,0)
+        batteryStatsLayout.addWidget(self.tBatteryCurrent,0,1)
+        batteryStatsLayout.addWidget(QLabel('A'),0,2)
+        batteryStatsLayout.addWidget(QLabel('Average:'),1,0)
+        batteryStatsLayout.addWidget(self.tBatteryAverage,1,1)
+        batteryStatsLayout.addWidget(QLabel('V'),1,2)
+        batteryStatsLayout.addWidget(QLabel('High:'),2,0)
+        batteryStatsLayout.addWidget(self.tBatteryValueHigh,2,1)
+        batteryStatsLayout.addWidget(QLabel('V'),2,2)
+        batteryStatsLayout.addWidget(self.tBatteryModuleHigh,2,3)
+        batteryStatsLayout.addWidget(QLabel('Low:'),3,0)
+        batteryStatsLayout.addWidget(self.tBatteryValueLow,3,1)
+        batteryStatsLayout.addWidget(QLabel('V'),3,2)
+        batteryStatsLayout.addWidget(self.tBatteryModuleLow,3,3)
+        batteryStatsWidget.setLayout(batteryStatsLayout)
+
+        #Motor Controller
+        self.motorControllerWidget = MotorController('MotorController')
+
+        #MPPTs
         mpptWidget = QGroupBox('MPPTs')
         mpptLayout = QGridLayout()
         mpptLayout.addWidget(QLabel('#'),0,0)
@@ -345,13 +376,13 @@ class PlottingDataMonitor(QMainWindow):
         mpptLayout.addWidget(QLabel('A'),5,2)
         mpptWidget.setLayout(mpptLayout)
 
-        self.motorControllerWidget = MotorController('Motor Controller')
-
+        #Main Layout
         self.main_frame2 = QWidget()
         main_layout2 = QVBoxLayout()
         main_layout2.addWidget(timeWidget)
-        main_layout2.addWidget(mpptWidget)
+        main_layout2.addWidget(batteryStatsWidget)
         main_layout2.addWidget(self.motorControllerWidget)
+        main_layout2.addWidget(mpptWidget)
         main_layout2.addStretch(1)
         self.main_frame2.setLayout(main_layout2)
         
@@ -591,6 +622,7 @@ class PlottingDataMonitor(QMainWindow):
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()
                 self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
+                self.updateBatteries()
 
             elif batteryTemperatureRX.match(data):
                 info = batteryTemperatureRX.search(data).groups()
@@ -598,6 +630,7 @@ class PlottingDataMonitor(QMainWindow):
 
             elif batteryCurrentRX.match(data):
                 info = batteryCurrentRX.search(data).groups()
+                self.batteryCurrent = info[0]
 
             elif motorControllerVelocityRX.match(data):
                 info = motorControllerVelocityRX.search(data).groups()
@@ -625,6 +658,31 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             total += self.mppts[i].getOutCurrent()
         self.MPPTTotal.setText("%.3f" %total)
+
+    def updateBatteries(self):
+        #find highest, lowest, and average values
+        highestBatteryValue = 0.0
+        highestBatteryModule = 0
+        lowestBatteryValue = 4.0
+        lowestBatteryModule = 0
+        averageBatteryValue = 0.0
+        batterySum = 0.0
+        for i in range(2):            
+            for j in range(20):
+                voltage = self.batteries[i][j].getVoltage()
+                batterySum = batterySum + voltage
+                if voltage > highestBatteryValue:
+                    highestBatteryValue = voltage
+                    highestBatteryModule = (20*i + j)
+                if voltage < lowestBatteryValue:
+                    lowestBatteryValue = voltage
+                    lowestBatteryModule = (20*i + j)
+        averageBatteryValue = batterySum / 40;
+        self.tBatteryAverage.setText('%.2f' %averageBatteryValue)
+        self.tBatteryValueHigh.setText('%.2f' %highestBatteryValue)
+        self.tBatteryModuleHigh.setText('(%d)' %highestBatteryModule)
+        self.tBatteryValueLow.setText('%.2f' %lowestBatteryValue)
+        self.tBatteryModuleHigh.setText('(%d)' %lowestBatteryModule)
 
 def main():
     app = QApplication(sys.argv)
