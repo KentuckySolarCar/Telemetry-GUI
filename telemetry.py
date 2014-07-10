@@ -219,6 +219,8 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             self.mppts.append(MPPT(i))
 
+        self.batteryCurrent = 0
+
         self.monitor_active = False
         self.logging_active = False
         self.com_monitor = None
@@ -278,7 +280,7 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             for j in range(5):
                 batteryLayout1.addWidget(self.batteries[0][counter],2*i,j)
-                tempLabel = QLabel(str(counter+1))
+                tempLabel = QLabel(str(counter))
                 tempLabel.setAlignment(Qt.AlignHCenter)
                 batteryLayout1.addWidget(tempLabel,2*i+1,j)
                 counter += 1
@@ -293,16 +295,16 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             for j in range(5):
                 batteryLayout2.addWidget(self.batteries[1][counter],2*i,j)
-                tempLabel = QLabel(str(counter+1))
+                tempLabel = QLabel(str(counter+20))
                 tempLabel.setAlignment(Qt.AlignHCenter)
                 batteryLayout2.addWidget(tempLabel,2*i+1,j)
                 counter += 1
 
-        batteryWidget1 = QGroupBox('Battery Box 1')
+        batteryWidget1 = QGroupBox('Batman')
         batteryWidget1.setAlignment(Qt.AlignHCenter)
         batteryWidget1.setLayout(batteryLayout1)
 
-        batteryWidget2 = QGroupBox('Battery Box 2')
+        batteryWidget2 = QGroupBox('Robin')
         batteryWidget2.setAlignment(Qt.AlignHCenter)
         batteryWidget2.setLayout(batteryLayout2)
 
@@ -486,7 +488,7 @@ class PlottingDataMonitor(QMainWindow):
             self.data_q,
             self.error_q,
             full_port_name(str(self.portname.text())),
-            19200)
+            20200)
         self.com_monitor.start()
         
         com_error = get_item_from_queue(self.error_q)
@@ -501,7 +503,7 @@ class PlottingDataMonitor(QMainWindow):
         self.timer = QTimer()
         self.connect(self.timer, SIGNAL('timeout()'), self.on_timer)
         
-        self.timer.start(0.05)
+        self.timer.start(0.2)
         
         self.status_text.setText('Monitor running')
 
@@ -573,12 +575,12 @@ class PlottingDataMonitor(QMainWindow):
             nothing is updated.
         """
         if self.livefeed.has_new_data:
-            data = self.livefeed.read_data()
+            data = self.livefeed.read_data().strip("\r")
 
             # batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # These next two lines do not accept 20 as a battery number, the above do
-            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
+            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d\d\d\d\d)\s*$", re.MULTILINE)
             batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
 
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$", re.MULTILINE)
