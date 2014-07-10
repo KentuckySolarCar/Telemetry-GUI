@@ -313,13 +313,6 @@ class PlottingDataMonitor(QMainWindow):
         batteryWidgetLayout.addWidget(batteryWidget1)
         batteryWidgetLayout.addWidget(batteryWidget2)
         batteryWidget.setLayout(batteryWidgetLayout)
-        
-        self.main_frame1 = QWidget()
-        main_layout1 = QVBoxLayout()
-        main_layout1.addWidget(batteryWidget)
-        main_layout1.addStretch(1)
-        main_layout1.addWidget(portname_groupbox)
-        self.main_frame1.setLayout(main_layout1)
 
         #Time
         timeWidget = QGroupBox('Time')
@@ -377,10 +370,17 @@ class PlottingDataMonitor(QMainWindow):
         mpptWidget.setLayout(mpptLayout)
 
         #Main Layout
+        self.main_frame1 = QWidget()
+        main_layout1 = QVBoxLayout()
+        main_layout1.addWidget(batteryWidget)
+        main_layout1.addStretch(1)
+        main_layout1.addWidget(batteryStatsWidget)
+        main_layout1.addWidget(portname_groupbox)
+        self.main_frame1.setLayout(main_layout1)
+
         self.main_frame2 = QWidget()
         main_layout2 = QVBoxLayout()
         main_layout2.addWidget(timeWidget)
-        main_layout2.addWidget(batteryStatsWidget)
         main_layout2.addWidget(self.motorControllerWidget)
         main_layout2.addWidget(mpptWidget)
         main_layout2.addStretch(1)
@@ -655,8 +655,8 @@ class PlottingDataMonitor(QMainWindow):
 
     def updateMPPT(self):
         total = 0.0
-        for i in range(4):
-            total += self.mppts[i].getOutCurrent()
+        for mppt in self.mppts:
+            total += mppt.getOutCurrent()
         self.MPPTTotal.setText("%.3f" %total)
 
     def updateBatteries(self):
@@ -681,9 +681,9 @@ class PlottingDataMonitor(QMainWindow):
         self.tBatteryCurrent.setText('%.2f' %self.batteryCurrent)
         self.tBatteryAverage.setText('%.2f' %averageBatteryValue)
         self.tBatteryValueHigh.setText('%.2f' %highestBatteryValue)
-        self.tBatteryModuleHigh.setText('(%d)' %highestBatteryModule)
+        self.tBatteryModuleHigh.setText('(#%d)' %highestBatteryModule)
         self.tBatteryValueLow.setText('%.2f' %lowestBatteryValue)
-        self.tBatteryModuleLow.setText('(%d)' %lowestBatteryModule)
+        self.tBatteryModuleLow.setText('(#%d)' %lowestBatteryModule)
 
 def main():
     app = QApplication(sys.argv)
