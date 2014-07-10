@@ -519,7 +519,7 @@ class PlottingDataMonitor(QMainWindow):
             self.data_q,
             self.error_q,
             full_port_name(str(self.portname.text())),
-            20200)
+            19200)
         self.com_monitor.start()
         
         com_error = get_item_from_queue(self.error_q)
@@ -606,12 +606,12 @@ class PlottingDataMonitor(QMainWindow):
             nothing is updated.
         """
         if self.livefeed.has_new_data:
-            data = self.livefeed.read_data().strip("\r")
+            data = self.livefeed.read_data().strip("\r\n")
 
             # batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
             # These next two lines do not accept 20 as a battery number, the above do
-            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d\d\d\d\d)\s*$", re.MULTILINE)
+            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
             batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
 
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$", re.MULTILINE)
@@ -630,7 +630,7 @@ class PlottingDataMonitor(QMainWindow):
 
             elif batteryCurrentRX.match(data):
                 info = batteryCurrentRX.search(data).groups()
-                self.batteryCurrent = info[0]
+                self.batteryCurrent = float(info[0])
 
             elif motorControllerVelocityRX.match(data):
                 info = motorControllerVelocityRX.search(data).groups()
@@ -678,11 +678,12 @@ class PlottingDataMonitor(QMainWindow):
                     lowestBatteryValue = voltage
                     lowestBatteryModule = (20*i + j)
         averageBatteryValue = batterySum / 40;
+        self.tBatteryCurrent.setText('%.2f' %self.batteryCurrent)
         self.tBatteryAverage.setText('%.2f' %averageBatteryValue)
         self.tBatteryValueHigh.setText('%.2f' %highestBatteryValue)
         self.tBatteryModuleHigh.setText('(%d)' %highestBatteryModule)
         self.tBatteryValueLow.setText('%.2f' %lowestBatteryValue)
-        self.tBatteryModuleHigh.setText('(%d)' %lowestBatteryModule)
+        self.tBatteryModuleLow.setText('(%d)' %lowestBatteryModule)
 
 def main():
     app = QApplication(sys.argv)
