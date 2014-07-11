@@ -32,7 +32,7 @@ Run the telemetry program by double clicking or from a shell with ```python tele
 
 Select a serial port by clicking "Change Port" or with <kbd>Ctrl</kbd>+<kbd>p</kbd>.  
 Begin monitoring with "Start Monitor" or <kbd>Ctrl</kbd>+<kbd>m</kbd>.  
-Stop monitoring with "Stop Monitor" or <kbd>Ctrl</kbd>+<kbd>t</kbd>.
+Stop monitoring with "Stop Monitor" or <kbd>Ctrl</kbd>+<kbd>t</kbd>.  
 You can exit with "Exit" or <kbd>Ctrl</kbd>+<kbd>x</kbd>.
 
 Log files will be automatically written in the ```logs/``` directory.  
