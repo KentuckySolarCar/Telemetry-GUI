@@ -32,7 +32,7 @@ Run the telemetry program by double clicking or from a shell with ```python tele
 
 Select a serial port by clicking "Change Port" or with <kbd>Ctrl</kbd>+<kbd>p</kbd>. Begin monitoring with "Start Monitor" or <kbd>Ctrl</kbd>+<kbd>m</kbd>. Log files will be automatically written in the ```logs/``` directory. You can exit with "Exit" or <kbd>Ctrl</kbd>+<kbd>x</kbd>.
 
-Each battery is displayed for each battery box. The bar level in the battery indicates the voltage (also noted at the bottom of each battery) and the temperature is recorded as well. Should a battery exceed 30&deg C, it will turn red. High, low, and average voltages are displayed for each box and for the pack as a whole.
+Info for each battery is displayed in each box. The bar level in the battery indicates the voltage (also noted at the bottom of each battery) and the temperature is recorded as well. Should a battery exceed 30&deg; C, it will turn red. High, low, and average voltages are displayed for each box and for the pack as a whole.
 
 License
 -----------------------
