@@ -89,6 +89,9 @@ class MotorController(QGroupBox):
         self.checkFromAv = len(self.speed) - 1
         self.calcAverageSpeed()
 
+    def getSpeed(self):
+        return 0 if not self.speed else self.speed[-1]
+
 
 class MPPT(QLabel):
     def __init__(self, num, parent=None):
@@ -367,7 +370,7 @@ class PlottingDataMonitor(QMainWindow):
         # batteryStatsLayout.addWidget(self.tBatteryHigh,2,5)
         # batteryStatsLayout.addWidget(QLabel('Low:'),3,4)
         # batteryStatsLayout.addWidget(self.tBatteryLow,3,5)
-        
+
         self.tBatmanAverage = QLabel('0.00 V')
         self.tBatmanHigh = QLabel('0.00 V (#)')
         self.tBatmanLow = QLabel('0.00 V (#)')
@@ -590,12 +593,12 @@ class PlottingDataMonitor(QMainWindow):
         self.loggingToggle.setText('Stop  Logging')
         fileName = "logs/log" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv"
         self.logFile = open(fileName, "a+")
-        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppt voltages\n")
+        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppts, battery voltages\n")
 
     def writeLog(self):
         if self.logging_active:
             self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
-            # self.logFile.write((self.motorControllerWidget.speed[-1] if self.speed.len() > 0 else "") + ",")
+            self.logFile.write(str(self.motorControllerWidget.getSpeed())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
