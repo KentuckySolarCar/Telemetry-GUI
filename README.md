@@ -9,13 +9,10 @@ Getting Started
 
 The program connects to a serial port and then processes the incoming information, displaying it in real time. The following are needed to run the telemetry:
 
-[Python 2.7](https://www.python.org/download/) (source program)
-
-[pySerial](http://sourceforge.net/projects/pyserial/files/pyserial/) (serial connection)
-
-[PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/download) (Graphical User Interface)
-
-[matplotlib](http://matplotlib.org/downloads.html) (realtime graphs)
+[Python 2.7](https://www.python.org/download/) (source program) 
+[pySerial](http://sourceforge.net/projects/pyserial/files/pyserial/) (serial connection) 
+[PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/download) (Graphical User Interface) 
+[matplotlib](http://matplotlib.org/downloads.html) (realtime graphs) 
 
 Each must be installed/configured per machine. This can be a pain. Sometimes it takes a combination of source installations, binary downloads, and package manager installations. Keep trying until it works! It can be done.
 
