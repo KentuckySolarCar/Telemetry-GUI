@@ -30,9 +30,20 @@ Usage
 
 Run the telemetry program by double clicking or from a shell with ```python telemetry.py```.
 
-Select a serial port by clicking "Change Port" or with <kbd>Ctrl</kbd>+<kbd>p</kbd>. Begin monitoring with "Start Monitor" or <kbd>Ctrl</kbd>+<kbd>m</kbd>. Log files will be automatically written in the ```logs/``` directory. You can exit with "Exit" or <kbd>Ctrl</kbd>+<kbd>x</kbd>.
+Select a serial port by clicking "Change Port" or with <kbd>Ctrl</kbd>+<kbd>p</kbd>.  
+Begin monitoring with "Start Monitor" or <kbd>Ctrl</kbd>+<kbd>m</kbd>.  
+You can exit with "Exit" or <kbd>Ctrl</kbd>+<kbd>x</kbd>.
 
-Info for each battery is displayed in each box. The bar level in the battery indicates the voltage (also noted at the bottom of each battery) and the temperature is recorded as well. Should a battery exceed 30&deg; C, it will turn red. High, low, and average voltages are displayed for each box and for the pack as a whole.
+Log files will be automatically written in the ```logs/``` directory.  
+
+Info for each battery is displayed. The bar level indicates the voltage (also noted at the bottom of each battery) and the temperature is displayed as well. Should a battery exceed 30&deg; C, it will turn red. High, low, and average voltages are displayed for each box and for the pack as a whole.
+
+Various stats for the motor controller and the MPPTs are displayed as well as some graphs.
+
+Maintenance
+-----------
+
+A large part of the maintenance work will be parsing serial data, storing it, and displaying it. This is functional now but the team may decide to add or change information in the car's output as time goes on. Find ```# Regular Expressions``` in the code and update them as necessary. Below this section you can write update functions to parse the data and store it internally. Changing the display requires writing layouts and widgets and adding them to the existing window. This should be self explanatory after reading the existing interface code.
 
 License
 -----------------------

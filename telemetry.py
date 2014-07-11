@@ -398,7 +398,7 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsWidget.setLayout(batteryStatsLayout)
 
         #Motor Controller
-        self.motorControllerWidget = MotorController('MotorController')
+        self.motorControllerWidget = MotorController('Motor Controller')
 
         #MPPTs
         mpptWidget = QGroupBox('MPPTs')
@@ -654,12 +654,9 @@ class PlottingDataMonitor(QMainWindow):
         if self.livefeed.has_new_data:
             data = self.livefeed.read_data().strip("\r\n")
 
-            # batteryVoltageRX = re.compile("^V\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
-            # batteryTemperatureRX = re.compile("^T\[([0-1])\]\[([0-1][0-9]|20)\]\s\=\s(\d+)$")
-            # These next two lines do not accept 20 as a battery number, the above do
+            # Regular Expressions
             batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
             batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
-
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$", re.MULTILINE)
             motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$", re.MULTILINE)
             motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$", re.MULTILINE)
