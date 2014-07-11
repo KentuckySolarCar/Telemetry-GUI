@@ -9,17 +9,15 @@ from sys import platform as _platform
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-# from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
-# from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
-# import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+import matplotlib.pyplot as plt
 
 from lib.com_monitor import ComMonitorThread
 from lib.livedatafeed import LiveDataFeed
 
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
-
-print "hello"
 
 class MotorController(QGroupBox):
     def __init__(self, parent=None):
