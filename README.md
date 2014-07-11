@@ -5,7 +5,7 @@ This program is written by [Stephen Parsons](mailto:stephen.parsons@uky.edu).
 The underlying functionality to manage the serial connection and the graphical interface borrows heavily from [Eli Bendersky's work](http://eli.thegreenplace.net/2009/08/07/a-live-data-monitor-with-python-pyqt-and-pyserial/).
 
 Getting Started
------------------------
+---------------
 
 The program connects to a serial port and then processes the incoming information, displaying it in real time. The following are needed to run the telemetry:
 
@@ -44,6 +44,17 @@ Maintenance
 -----------
 
 A large part of the maintenance work will be parsing serial data, storing it, and displaying it. This is functional now but the team may decide to add or change information in the car's output as time goes on. Find ```# Regular Expressions``` in the code and update them as necessary. Below this section you can write update functions to parse the data and store it internally. Changing the display requires writing layouts and widgets and adding them to the existing window. This should be self explanatory after reading the existing interface code.
+
+Todo
+----
+
+* Add graphs
+* Beautify battery stats grid layout
+* Parse all serial data correctly and check calculations
+* Log all info correctly
+* Add display to indicate BPS failure
+* Add solar car logo
+* Investigate packaging as one .exe file with pyInstaller
 
 License
 -----------------------
