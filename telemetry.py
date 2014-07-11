@@ -133,10 +133,10 @@ class Battery(QGraphicsView):
         self.minBatteryVoltage = 2.65
         self.bad = False
 
-        self.setMaximumWidth(42)
-        self.setMaximumHeight(77)
+        self.setMaximumWidth(52)
+        self.setMaximumHeight(92)
 
-        self.scene = QGraphicsScene(0,0,40,75,self)
+        self.scene = QGraphicsScene(0,0,50,90,self)
         self.setScene(self.scene)
 
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
@@ -181,26 +181,26 @@ class Battery(QGraphicsView):
         brush.setColor(color)
 
         if self.voltage[-1] > self.maxBatteryVoltage:
-            self.scene.addRect(0,0,40,65, pen, brush)
+            self.scene.addRect(0,0,50,75, pen, brush)
 
         elif self.voltage[-1] > self.minBatteryVoltage:
             dif = self.voltage[-1] - self.minBatteryVoltage
-            div = (self.maxBatteryVoltage - self.minBatteryVoltage) / 85.0
+            div = (self.maxBatteryVoltage - self.minBatteryVoltage) /75.0
             dist = int(dif / div)
-            self.scene.addRect(0,85-dist,50,dist,pen,brush)
+            self.scene.addRect(0,75-dist,50,dist,pen,brush)
 
         vText = QGraphicsTextItem("%0.2f V" %self.voltage[-1])
         vText.setFont(QFont('Arial Unicode MS', 10))
-        vText.setPos(0,75)
+        vText.setPos(0,70)
 
         self.scene.addItem(vText)
 
         pen.setColor(color)
         brush.setColor(white)
-        self.scene.addRect(5,65,40,15,pen,brush)
+        self.scene.addRect(5,55,40,15,pen,brush)
         tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature[-1]))
         tText.setFont(QFont('Arial Unicode MS', 10))
-        tText.setPos(3,60)
+        tText.setPos(3,50)
         tText.setDefaultTextColor(color)
         self.scene.addItem(tText)
 
@@ -298,9 +298,9 @@ class PlottingDataMonitor(QMainWindow):
 
         batteryLayout1 = QGridLayout()
         for i in range(5):
-            batteryLayout1.setColumnMinimumWidth(i,42)
+            batteryLayout1.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            batteryLayout1.setRowMinimumHeight(i,77)
+            batteryLayout1.setRowMinimumHeight(i,92)
             batteryLayout1.setRowMinimumHeight(i+1,15)
         counter = 0
         for i in range(4):
@@ -313,9 +313,9 @@ class PlottingDataMonitor(QMainWindow):
 
         batteryLayout2 = QGridLayout()
         for i in range(5):
-            batteryLayout2.setColumnMinimumWidth(i,42)
+            batteryLayout2.setColumnMinimumWidth(i,52)
         for i in range(0,8,2):
-            batteryLayout2.setRowMinimumHeight(i,77)
+            batteryLayout2.setRowMinimumHeight(i,92)
             batteryLayout2.setRowMinimumHeight(i+1,15)
         counter = 0
         for i in range(4):
@@ -377,18 +377,18 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsLayout.addWidget(QLabel('Low:'),3,2)
         batteryStatsLayout.addWidget(self.tRobinLow,3,3)
 
-        self.tBatteryCurrent = QLabel('0.00 A')
-        self.tBatteryAverage = QLabel('0.00 V')
-        self.tBatteryHigh = QLabel('0.00 V (#)')
-        self.tBatteryLow = QLabel('0.00 V (#)')
-        batteryStatsLayout.addWidget(QLabel('Total Current:'),0,4)
-        batteryStatsLayout.addWidget(self.tBatteryCurrent,0,5)
-        batteryStatsLayout.addWidget(QLabel('Average:'),1,4)
-        batteryStatsLayout.addWidget(self.tBatteryAverage,1,5)
-        batteryStatsLayout.addWidget(QLabel('High:'),2,4)
-        batteryStatsLayout.addWidget(self.tBatteryHigh,2,5)
-        batteryStatsLayout.addWidget(QLabel('Low:'),3,4)
-        batteryStatsLayout.addWidget(self.tBatteryLow,3,5)
+        # self.tBatteryCurrent = QLabel('0.00 A')
+        # self.tBatteryAverage = QLabel('0.00 V')
+        # self.tBatteryHigh = QLabel('0.00 V (#)')
+        # self.tBatteryLow = QLabel('0.00 V (#)')
+        # batteryStatsLayout.addWidget(QLabel('Total Current:'),0,4)
+        # batteryStatsLayout.addWidget(self.tBatteryCurrent,0,5)
+        # batteryStatsLayout.addWidget(QLabel('Average:'),1,4)
+        # batteryStatsLayout.addWidget(self.tBatteryAverage,1,5)
+        # batteryStatsLayout.addWidget(QLabel('High:'),2,4)
+        # batteryStatsLayout.addWidget(self.tBatteryHigh,2,5)
+        # batteryStatsLayout.addWidget(QLabel('Low:'),3,4)
+        # batteryStatsLayout.addWidget(self.tBatteryLow,3,5)
 
         batteryStatsWidget.setLayout(batteryStatsLayout)
 
@@ -414,7 +414,6 @@ class PlottingDataMonitor(QMainWindow):
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
         main_layout1.addWidget(batteryWidget)
-        main_layout1.addWidget(batteryStatsWidget)
         main_layout1.addWidget(portname_groupbox)
         main_layout1.addStretch(1)
         self.main_frame1.setLayout(main_layout1)
@@ -424,6 +423,7 @@ class PlottingDataMonitor(QMainWindow):
         main_layout2.addWidget(timeWidget)
         main_layout2.addWidget(self.motorControllerWidget)
         main_layout2.addWidget(mpptWidget)
+        main_layout2.addWidget(batteryStatsWidget)
         main_layout2.addStretch(1)
         self.main_frame2.setLayout(main_layout2)
         
@@ -741,10 +741,10 @@ class PlottingDataMonitor(QMainWindow):
         self.tRobinHigh.setText('%.2f V (#%d)' %(highestRobinValue, highestRobinModule))
         self.tRobinLow.setText('%.2f V (#%d)' %(lowestRobinValue, lowestRobinModule))
 
-        self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
-        self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
-        self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
-        self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
+        # self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
+        # self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
+        # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
+        # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
 
 def main():
     app = QApplication(sys.argv)
