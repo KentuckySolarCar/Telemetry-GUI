@@ -1,6 +1,7 @@
 """
 UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
+
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
@@ -656,12 +657,12 @@ class PlottingDataMonitor(QMainWindow):
             data = self.livefeed.read_data().strip("\r\n")
 
             # Regular Expressions
-            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
-            batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$", re.MULTILINE)
-            batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$", re.MULTILINE)
-            motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$", re.MULTILINE)
-            motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$", re.MULTILINE)
-            MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$", re.MULTILINE)
+            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
+            batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
+            batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$")
+            motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
+            motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
+            MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
 
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()

@@ -56,6 +56,7 @@ Todo
 * Add display to indicate BPS failure
 * Add solar car logo
 * Check to see if re.MULTILINE is necessary
+* Temperature color gradient
 * Investigate packaging as one .exe file with pyInstaller
 
 License
