@@ -24,98 +24,98 @@ def delay():
 while True:
 
 	for i in range(4):
-		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))
+		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))+"\n"
 		print writestr
 		ser.write(writestr)
 		delay()
 
-	writestr = ("C = "+str(random.randint(0,100)))
+	writestr = ("C = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("S = "+str(random.randint(0,100)))
+	writestr = ("S = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("E = "+str(random.randint(0,10000)))
+	writestr = ("E = "+str(random.randint(0,10000)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
 	for i in range(20):
-		writestr = ("V[0][%02d] = "+str(random.randint(25000,38000))) %(i)
+		writestr = ("V[0][%02d] = "+str(random.randint(25000,38000))+"\n") %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
 
-	writestr = ("C = "+str(random.randint(0,100)))
+	writestr = ("C = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("S = "+str(random.randint(0,100)))
+	writestr = ("S = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("E = "+str(random.randint(0,10000)))
+	writestr = ("E = "+str(random.randint(0,10000)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
 	for i in range(20):
-		writestr = ("V[1][%02d] = "+str(random.randint(25000,38000))) %(i)
+		writestr = ("V[1][%02d] = "+str(random.randint(25000,38000))+"\n") %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
 
 	for i in range(4):
 		writestr = ("M["+str(i)+"] "+str(random.randint(0,100))
-			+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))
+			+" "+str(random.randint(0,100))+" "+str(random.randint(0,10)))+"\n"
 		print writestr
 		ser.write(writestr)
 		delay()
 
-	writestr = ("C = "+str(random.randint(0,100)))
+	writestr = ("C = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("S = "+str(random.randint(0,100)))
+	writestr = ("S = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("E = "+str(random.randint(0,10000)))
+	writestr = ("E = "+str(random.randint(0,10000)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
 	for i in range(20):
-		writestr = ("T[0][%02d] = "+str(random.randint(20,35))) %(i)
+		writestr = ("T[0][%02d] = "+str(random.randint(20,35))+"\n") %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
 
-	writestr = ("C = "+str(random.randint(0,100)))
+	writestr = ("C = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("S = "+str(random.randint(0,100)))
+	writestr = ("S = "+str(random.randint(0,100)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
-	writestr = ("E = "+str(random.randint(0,10000)))
+	writestr = ("E = "+str(random.randint(0,10000)))+"\n"
 	print writestr
 	ser.write(writestr)
 	delay()
 
 	for i in range(20):
-		writestr = ("T[1][%02d] = "+str(random.randint(20,35))) %(i)
+		writestr = ("T[1][%02d] = "+str(random.randint(20,35))+"\n") %(i)
 		print writestr
 		ser.write(writestr)
 		delay()
