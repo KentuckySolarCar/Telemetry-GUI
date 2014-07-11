@@ -204,18 +204,18 @@ class Battery(QGraphicsView):
         tText.setDefaultTextColor(color)
         self.scene.addItem(tText)
 
-        # if self.bad:
-        pen.setColor(red)
-        brush.setColor(red)
-        self.scene.addRect(5,5,40,40,pen,brush)
-        pen.setColor(white)
-        brush.setColor(white)
-        self.scene.addRect(10,10,30,30,pen,brush)
-        bText = QGraphicsTextItem("  ???")
-        bText.setFont(QFont('Arial Unicode MS', 10))
-        bText.setPos(3,10)
-        bText.setDefaultTextColor(red)
-        self.scene.addItem(bText)
+        if self.bad:
+            pen.setColor(red)
+            brush.setColor(red)
+            self.scene.addRect(5,5,40,40,pen,brush)
+            pen.setColor(white)
+            brush.setColor(white)
+            self.scene.addRect(10,10,30,30,pen,brush)
+            bText = QGraphicsTextItem("  ???")
+            bText.setFont(QFont('Arial Unicode MS', 10))
+            bText.setPos(3,10)
+            bText.setDefaultTextColor(red)
+            self.scene.addItem(bText)
 
 
 class PlottingDataMonitor(QMainWindow):
@@ -377,12 +377,12 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsLayout.addWidget(QLabel('Low:'),3,2)
         batteryStatsLayout.addWidget(self.tRobinLow,3,3)
 
-        # self.tBatteryCurrent = QLabel('0.00 A')
+        self.tBatteryCurrent = QLabel('0.00 A')
         # self.tBatteryAverage = QLabel('0.00 V')
         # self.tBatteryHigh = QLabel('0.00 V (#)')
         # self.tBatteryLow = QLabel('0.00 V (#)')
-        # batteryStatsLayout.addWidget(QLabel('Total Current:'),0,4)
-        # batteryStatsLayout.addWidget(self.tBatteryCurrent,0,5)
+        batteryStatsLayout.addWidget(QLabel('Current:'),4,0)
+        batteryStatsLayout.addWidget(self.tBatteryCurrent,4,1)
         # batteryStatsLayout.addWidget(QLabel('Average:'),1,4)
         # batteryStatsLayout.addWidget(self.tBatteryAverage,1,5)
         # batteryStatsLayout.addWidget(QLabel('High:'),2,4)
@@ -734,14 +734,14 @@ class PlottingDataMonitor(QMainWindow):
         averageRobinValue = sum(robin.getVoltage() for robin in self.batteries[1]) / 20.0
 
         self.tBatmanAverage.setText('%.2f V' %averageBatmanValue)
-        self.tBatmanHigh.setText('%.2f V (#%d)' %(highestBatmanValue, highestBatmanModule))
-        self.tBatmanLow.setText('%.2f V (#%d)' %(lowestBatmanValue, lowestBatmanModule))
+        self.tBatmanHigh.setText('%.2f V (%d)' %(highestBatmanValue, highestBatmanModule))
+        self.tBatmanLow.setText('%.2f V (%d)' %(lowestBatmanValue, lowestBatmanModule))
 
         self.tRobinAverage.setText('%.2f V' %averageRobinValue)
-        self.tRobinHigh.setText('%.2f V (#%d)' %(highestRobinValue, highestRobinModule))
-        self.tRobinLow.setText('%.2f V (#%d)' %(lowestRobinValue, lowestRobinModule))
+        self.tRobinHigh.setText('%.2f V (%d)' %(highestRobinValue, highestRobinModule))
+        self.tRobinLow.setText('%.2f V (%d)' %(lowestRobinValue, lowestRobinModule))
 
-        # self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
+        self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
         # self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
         # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
         # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
