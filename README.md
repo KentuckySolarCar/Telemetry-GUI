@@ -55,6 +55,7 @@ Todo
 * Log all info correctly
 * Add display to indicate BPS failure
 * Add solar car logo
+* Check to see if re.MULTILINE is necessary
 * Investigate packaging as one .exe file with pyInstaller
 
 License
