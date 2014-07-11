@@ -50,13 +50,11 @@ Todo
 ----
 
 * Add graphs
-* Beautify battery stats grid layout
 * Parse all serial data correctly and check calculations
 * Log all info correctly
-* Add display to indicate BPS failure
 * Add solar car logo
-* Check to see if re.MULTILINE is necessary
 * Temperature color gradient
+* Additional data from Chris' suggestion
 * Investigate packaging as one .exe file with pyInstaller
 
 License

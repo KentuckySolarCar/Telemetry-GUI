@@ -131,6 +131,7 @@ class Battery(QGraphicsView):
         self.maxBatteryTemp = 30
         self.maxBatteryVoltage = 3.65
         self.minBatteryVoltage = 2.65
+        self.bad = False
 
         self.setMaximumWidth(52)
         self.setMaximumHeight(102)
@@ -141,6 +142,7 @@ class Battery(QGraphicsView):
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
     def setVoltage(self, inVoltage):
+        self.bad = False
         self.voltage.append(inVoltage/10000.0)
         self.drawBattery()
 
@@ -148,7 +150,12 @@ class Battery(QGraphicsView):
         return self.voltage[-1]
 
     def setTemperature(self, inTemperature):
+        self.bad = False
         self.temperature.append(inTemperature)
+        self.drawBattery()
+
+    def setBad(self):
+        self.bad = True
         self.drawBattery()
 
     def getTemperature(self):
@@ -196,6 +203,19 @@ class Battery(QGraphicsView):
         tText.setPos(3,60)
         tText.setDefaultTextColor(color)
         self.scene.addItem(tText)
+
+        if self.bad:
+            pen.setColor(red)
+            brush.setColor(red)
+            self.scene.addRect(5,5,40,40,pen,brush)
+            pen.setColor(white)
+            brush.setColor(white)
+            self.scene.addRect(10,10,30,30,pen,brush)
+            bText = QGraphicsTextItem("  ???")
+            bText.setFont(QFont('Arial Unicode MS', 10))
+            bText.setPos(3,10)
+            bText.setDefaultTextColor(red)
+            self.scene.addItem(bText)
 
 
 class PlottingDataMonitor(QMainWindow):
@@ -335,67 +355,40 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsWidget = QGroupBox('Batteries')
         batteryStatsLayout = QGridLayout()
 
-        self.tBatmanCurrent = QLabel('0.00')
-        self.tBatmanAverage = QLabel('0.00')
-        self.tBatmanValueHigh = QLabel('0.00')
-        self.tBatmanModuleHigh = QLabel('(#)')
-        self.tBatmanValueLow = QLabel('0.00')
-        self.tBatmanModuleLow = QLabel('(#)')
-        self.tBatmanCurrent.setText('%.2f' %self.BatmanCurrent)
+        self.tBatmanAverage = QLabel('0.00 V')
+        self.tBatmanHigh = QLabel('0.00 V (#)')
+        self.tBatmanLow = QLabel('0.00 V (#)')
         batteryStatsLayout.addWidget(QLabel('Batman'),0,0)
         batteryStatsLayout.addWidget(QLabel('Average:'),1,0)
         batteryStatsLayout.addWidget(self.tBatmanAverage,1,1)
-        batteryStatsLayout.addWidget(QLabel('V'),1,2)
         batteryStatsLayout.addWidget(QLabel('High:'),2,0)
-        batteryStatsLayout.addWidget(self.tBatmanValueHigh,2,1)
-        batteryStatsLayout.addWidget(QLabel('V'),2,2)
-        batteryStatsLayout.addWidget(self.tBatmanModuleHigh,2,3)
+        batteryStatsLayout.addWidget(self.tBatmanHigh,2,1)
         batteryStatsLayout.addWidget(QLabel('Low:'),3,0)
-        batteryStatsLayout.addWidget(self.tBatmanValueLow,3,1)
-        batteryStatsLayout.addWidget(QLabel('V'),3,2)
-        batteryStatsLayout.addWidget(self.tBatmanModuleLow,3,3)
+        batteryStatsLayout.addWidget(self.tBatmanLow,3,1)
 
-        self.tRobinCurrent = QLabel('0.00')
-        self.tRobinAverage = QLabel('0.00')
-        self.tRobinValueHigh = QLabel('0.00')
-        self.tRobinModuleHigh = QLabel('(#)')
-        self.tRobinValueLow = QLabel('0.00')
-        self.tRobinModuleLow = QLabel('(#)')
-        self.tRobinCurrent.setText('%.2f' %self.RobinCurrent)
-        batteryStatsLayout.addWidget(QLabel('Robin'),0,4)
+        self.tRobinAverage = QLabel('0.00 V')
+        self.tRobinHigh = QLabel('0.00 V (#)')
+        self.tRobinLow = QLabel('0.00 V (#)')
+        batteryStatsLayout.addWidget(QLabel('Robin'),0,2)
+        batteryStatsLayout.addWidget(QLabel('Average:'),1,2)
+        batteryStatsLayout.addWidget(self.tRobinAverage,1,3)
+        batteryStatsLayout.addWidget(QLabel('High:'),2,2)
+        batteryStatsLayout.addWidget(self.tRobinHigh,2,3)
+        batteryStatsLayout.addWidget(QLabel('Low:'),3,2)
+        batteryStatsLayout.addWidget(self.tRobinLow,3,3)
+
+        self.tBatteryCurrent = QLabel('0.00 A')
+        self.tBatteryAverage = QLabel('0.00 V')
+        self.tBatteryHigh = QLabel('0.00 V (#)')
+        self.tBatteryLow = QLabel('0.00 V (#)')
+        batteryStatsLayout.addWidget(QLabel('Total Current:'),0,4)
+        batteryStatsLayout.addWidget(self.tBatteryCurrent,0,5)
         batteryStatsLayout.addWidget(QLabel('Average:'),1,4)
-        batteryStatsLayout.addWidget(self.tRobinAverage,1,5)
-        batteryStatsLayout.addWidget(QLabel('V'),1,6)
+        batteryStatsLayout.addWidget(self.tBatteryAverage,1,5)
         batteryStatsLayout.addWidget(QLabel('High:'),2,4)
-        batteryStatsLayout.addWidget(self.tRobinValueHigh,2,5)
-        batteryStatsLayout.addWidget(QLabel('V'),2,6)
-        batteryStatsLayout.addWidget(self.tRobinModuleHigh,2,7)
+        batteryStatsLayout.addWidget(self.tBatteryHigh,2,5)
         batteryStatsLayout.addWidget(QLabel('Low:'),3,4)
-        batteryStatsLayout.addWidget(self.tRobinValueLow,3,5)
-        batteryStatsLayout.addWidget(QLabel('V'),3,6)
-        batteryStatsLayout.addWidget(self.tRobinModuleLow,3,7)
-
-        self.tBatteryCurrent = QLabel('0.00')
-        self.tBatteryAverage = QLabel('0.00')
-        self.tBatteryValueHigh = QLabel('0.00')
-        self.tBatteryModuleHigh = QLabel('(#)')
-        self.tBatteryValueLow = QLabel('0.00')
-        self.tBatteryModuleLow = QLabel('(#)')
-        self.tBatteryCurrent.setText('%.2f' %self.batteryCurrent)
-        batteryStatsLayout.addWidget(QLabel('Total Current:'),0,8)
-        batteryStatsLayout.addWidget(self.tBatteryCurrent,0,9)
-        batteryStatsLayout.addWidget(QLabel('A'),0,10)
-        batteryStatsLayout.addWidget(QLabel('Average:'),1,8)
-        batteryStatsLayout.addWidget(self.tBatteryAverage,1,9)
-        batteryStatsLayout.addWidget(QLabel('V'),1,10)
-        batteryStatsLayout.addWidget(QLabel('High:'),2,8)
-        batteryStatsLayout.addWidget(self.tBatteryValueHigh,2,9)
-        batteryStatsLayout.addWidget(QLabel('V'),2,10)
-        batteryStatsLayout.addWidget(self.tBatteryModuleHigh,2,11)
-        batteryStatsLayout.addWidget(QLabel('Low:'),3,8)
-        batteryStatsLayout.addWidget(self.tBatteryValueLow,3,9)
-        batteryStatsLayout.addWidget(QLabel('V'),3,10)
-        batteryStatsLayout.addWidget(self.tBatteryModuleLow,3,11)
+        batteryStatsLayout.addWidget(self.tBatteryLow,3,5)
 
         batteryStatsWidget.setLayout(batteryStatsLayout)
 
@@ -421,9 +414,9 @@ class PlottingDataMonitor(QMainWindow):
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
         main_layout1.addWidget(batteryWidget)
-        main_layout1.addStretch(1)
         main_layout1.addWidget(batteryStatsWidget)
         main_layout1.addWidget(portname_groupbox)
+        main_layout1.addStretch(1)
         self.main_frame1.setLayout(main_layout1)
 
         self.main_frame2 = QWidget()
@@ -663,6 +656,7 @@ class PlottingDataMonitor(QMainWindow):
             motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
             motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
             MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
+            BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
 
             if batteryVoltageRX.match(data):
                 info = batteryVoltageRX.search(data).groups()
@@ -692,11 +686,16 @@ class PlottingDataMonitor(QMainWindow):
                 self.mppts[int(info[0])].setOutVoltage(int(info[3]))
                 self.updateMPPT()
 
+            elif BPSbadRX.match(data):
+                info = BPSbadRX.search(data).groups()
+                box = int(info[0])
+                cell = int(info[1])
+                print "WARNING BPS TIMEOUT number [%d][%2d]" %(box, cell)
+                self.batteries[box][cell].setBad()
+
             else:
                 info =  "Could not match input '" + data + "'"
                 print info
-
-            # print info # debug
 
     def updateMPPT(self):
         total = 0.0
@@ -734,26 +733,18 @@ class PlottingDataMonitor(QMainWindow):
         lowestRobinModule += 20
         averageRobinValue = sum(robin.getVoltage() for robin in self.batteries[1]) / 20.0
 
-        self.tBatmanCurrent.setText('%.2f' %self.BatmanCurrent)
-        self.tBatmanAverage.setText('%.2f' %averageBatmanValue)
-        self.tBatmanValueHigh.setText('%.2f' %highestBatmanValue)
-        self.tBatmanModuleHigh.setText('(#%d)' %highestBatmanModule)
-        self.tBatmanValueLow.setText('%.2f' %lowestBatmanValue)
-        self.tBatmanModuleLow.setText('(#%d)' %lowestBatmanModule)
+        self.tBatmanAverage.setText('%.2f V' %averageBatmanValue)
+        self.tBatmanHigh.setText('%.2f V (#%d)' %(highestBatmanValue, highestBatmanModule))
+        self.tBatmanLow.setText('%.2f V (#%d)' %(lowestBatmanValue, lowestBatmanModule))
 
-        self.tRobinCurrent.setText('%.2f' %self.RobinCurrent)
-        self.tRobinAverage.setText('%.2f' %averageRobinValue)
-        self.tRobinValueHigh.setText('%.2f' %highestRobinValue)
-        self.tRobinModuleHigh.setText('(#%d)' %highestRobinModule)
-        self.tRobinValueLow.setText('%.2f' %lowestRobinValue)
-        self.tRobinModuleLow.setText('(#%d)' %lowestRobinModule)
+        self.tRobinAverage.setText('%.2f V' %averageRobinValue)
+        self.tRobinHigh.setText('%.2f V (#%d)' %(highestRobinValue, highestRobinModule))
+        self.tRobinLow.setText('%.2f V (#%d)' %(lowestRobinValue, lowestRobinModule))
 
-        self.tBatteryCurrent.setText('%.2f' %self.batteryCurrent)
-        self.tBatteryAverage.setText('%.2f' %averageBatteryValue)
-        self.tBatteryValueHigh.setText('%.2f' %highestBatteryValue)
-        self.tBatteryModuleHigh.setText('(#%d)' %highestBatteryModule)
-        self.tBatteryValueLow.setText('%.2f' %lowestBatteryValue)
-        self.tBatteryModuleLow.setText('(#%d)' %lowestBatteryModule)
+        self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
+        self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
+        self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
+        self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
 
 def main():
     app = QApplication(sys.argv)
