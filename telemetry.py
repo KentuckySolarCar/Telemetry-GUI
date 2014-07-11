@@ -133,10 +133,10 @@ class Battery(QGraphicsView):
         self.minBatteryVoltage = 2.65
         self.bad = False
 
-        self.setMaximumWidth(52)
-        self.setMaximumHeight(102)
+        self.setMaximumWidth(42)
+        self.setMaximumHeight(77)
 
-        self.scene = QGraphicsScene(0,0,50,100,self)
+        self.scene = QGraphicsScene(0,0,40,75,self)
         self.setScene(self.scene)
 
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
@@ -181,7 +181,7 @@ class Battery(QGraphicsView):
         brush.setColor(color)
 
         if self.voltage[-1] > self.maxBatteryVoltage:
-            self.scene.addRect(0,0,50,85, pen, brush)
+            self.scene.addRect(0,0,40,65, pen, brush)
 
         elif self.voltage[-1] > self.minBatteryVoltage:
             dif = self.voltage[-1] - self.minBatteryVoltage
@@ -191,7 +191,7 @@ class Battery(QGraphicsView):
 
         vText = QGraphicsTextItem("%0.2f V" %self.voltage[-1])
         vText.setFont(QFont('Arial Unicode MS', 10))
-        vText.setPos(0,80)
+        vText.setPos(0,75)
 
         self.scene.addItem(vText)
 
@@ -204,18 +204,18 @@ class Battery(QGraphicsView):
         tText.setDefaultTextColor(color)
         self.scene.addItem(tText)
 
-        if self.bad:
-            pen.setColor(red)
-            brush.setColor(red)
-            self.scene.addRect(5,5,40,40,pen,brush)
-            pen.setColor(white)
-            brush.setColor(white)
-            self.scene.addRect(10,10,30,30,pen,brush)
-            bText = QGraphicsTextItem("  ???")
-            bText.setFont(QFont('Arial Unicode MS', 10))
-            bText.setPos(3,10)
-            bText.setDefaultTextColor(red)
-            self.scene.addItem(bText)
+        # if self.bad:
+        pen.setColor(red)
+        brush.setColor(red)
+        self.scene.addRect(5,5,40,40,pen,brush)
+        pen.setColor(white)
+        brush.setColor(white)
+        self.scene.addRect(10,10,30,30,pen,brush)
+        bText = QGraphicsTextItem("  ???")
+        bText.setFont(QFont('Arial Unicode MS', 10))
+        bText.setPos(3,10)
+        bText.setDefaultTextColor(red)
+        self.scene.addItem(bText)
 
 
 class PlottingDataMonitor(QMainWindow):
@@ -298,9 +298,9 @@ class PlottingDataMonitor(QMainWindow):
 
         batteryLayout1 = QGridLayout()
         for i in range(5):
-            batteryLayout1.setColumnMinimumWidth(i,52)
+            batteryLayout1.setColumnMinimumWidth(i,42)
         for i in range(0,8,2):
-            batteryLayout1.setRowMinimumHeight(i,102)
+            batteryLayout1.setRowMinimumHeight(i,77)
             batteryLayout1.setRowMinimumHeight(i+1,15)
         counter = 0
         for i in range(4):
@@ -313,9 +313,9 @@ class PlottingDataMonitor(QMainWindow):
 
         batteryLayout2 = QGridLayout()
         for i in range(5):
-            batteryLayout2.setColumnMinimumWidth(i,52)
+            batteryLayout2.setColumnMinimumWidth(i,42)
         for i in range(0,8,2):
-            batteryLayout2.setRowMinimumHeight(i,102)
+            batteryLayout2.setRowMinimumHeight(i,77)
             batteryLayout2.setRowMinimumHeight(i+1,15)
         counter = 0
         for i in range(4):
