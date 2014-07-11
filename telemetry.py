@@ -1,6 +1,7 @@
 """
 UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
+https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
 import random, sys, os, Queue, re, time, operator
