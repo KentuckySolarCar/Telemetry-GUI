@@ -7,9 +7,26 @@ The underlying functionality to manage the serial connection and the graphical i
 Getting Started
 -----------------------
 
-The program connects to a serial port and then processes the incoming information. This is handled through [PySerial](http://pyserial.sourceforge.net/). For use with the actual car, you can select the desired port from the program GUI.
+The program connects to a serial port and then processes the incoming information, displaying it in real time. The following are needed to run the telemetry:
 
-There are tools included for testing/developing this program without a connection to the actual car. ```testing/sender_sim.py``` simulates the incoming messages and writes them out to a port. In order for the program to think it is connected to the output of ```sender_sim.py```, it is necessary to link two serial ports together. In Windows this can be done with the program [com0com](http://com0com.sourceforge.net/) (with Windows 8 you will run into driver signature issues and will need to be clever and work around them). On Linux machines the program ```link_sim.py``` will link two ports together (```socat``` must be installed).
+[Python 2.7](https://www.python.org/download/) (source program)
+[pySerial](http://sourceforge.net/projects/pyserial/files/pyserial/) (serial connection)
+[PyQt4](http://www.riverbankcomputing.co.uk/software/pyqt/download) (Graphical User Interface)
+[matplotlib](http://matplotlib.org/downloads.html) (realtime graphs)
+
+Each must be installed/configured per machine. This can be a pain. Sometimes it takes a combination of source installations, binary downloads, and package manager installations. Keep trying until it works! It can be done.
+
+Standalone Testing (no connection to car)
+-----------------------------------------
+
+First, link two serial ports together so that you can write to one and the program can read from another. On Windows, this is best done with [com0com](http://com0com.sourceforge.net/). On other systems, install ```socat``` and run ```testing/link_sim.py```.
+Next, send false data to the serial connection using ```testing/sender_sim.py```.
+From this point, use the program as if it were connected to the car.
+
+Usage
+-----
+
+
 
 License
 -----------------------
