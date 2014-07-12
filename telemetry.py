@@ -80,11 +80,13 @@ class MotorController(QGroupBox):
         self.tAverageSpeed.setText('%.2f' %self.averageSpeed)
 
     def resetEnergy(self):
-        self.checkFromE = len(self.energy) - 1
-        self.calcEnergy()
+        if self.energy:
+            self.checkFromE = len(self.energy) - 1
+            self.calcEnergy()
 
     def calcEnergy(self):
-        self.tEnergy.setText(str(self.energy[-1] - self.energy[self.checkFromE]))
+        if self.energy:
+            self.tEnergy.setText(str(self.energy[-1] - self.energy[self.checkFromE]))
 
     def resetAvSpeed(self):
         self.checkFromAv = len(self.speed) - 1
@@ -708,6 +710,7 @@ class PlottingDataMonitor(QMainWindow):
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$")
             motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
             motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
+            motorControllerBusVoltageRX = re.compile("^\s*W\s=\s(\d+)\s*$")
             MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
             BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
 
@@ -731,6 +734,10 @@ class PlottingDataMonitor(QMainWindow):
             elif motorControllerEnergyRX.match(data):
                 info = motorControllerEnergyRX.search(data).groups()
                 self.motorControllerWidget.setEnergy(int(info[0]))
+
+            elif motorControllerBusVoltageRX.match(data):
+                info = motorControllerBusVoltageRX.search(data).groups()
+                busVoltage = int(info[0])
 
             elif MPPTDataRX.match(data):
                 info = MPPTDataRX.search(data).groups()
