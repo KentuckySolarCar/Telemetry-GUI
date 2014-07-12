@@ -107,6 +107,9 @@ class MotorController(QGroupBox):
     def getSpeeds(self):
         return self.speed
 
+    def getCurrents(self):
+        return self.current
+
 
 class MPPT(QLabel):
     def __init__(self, num, parent=None):
@@ -430,6 +433,7 @@ class PlottingDataMonitor(QMainWindow):
 
         #Graphs
         self.speedGraph = QGroupBox('Speed (mph)')
+        self.speedGraph.setFlat(True)
         self.speedGraph.setMinimumWidth(150)
         self.speedFig = plt.figure()
         self.speedCanvas = FigureCanvas(self.speedFig)
@@ -437,7 +441,26 @@ class PlottingDataMonitor(QMainWindow):
         self.speedLayout.addWidget(self.speedCanvas)
         self.speedGraph.setLayout(self.speedLayout)
 
-        self.voltageGraph = QGroupBox('Total Battery Voltage')
+        self.mCurrentGraph = QGroupBox('Motor Current (A)')
+        self.mCurrentGraph.setFlat(True)
+        self.mCurrentGraph.setMinimumWidth(150)
+        self.mCurrentFig = plt.figure()
+        self.mCurrentCanvas = FigureCanvas(self.mCurrentFig)
+        self.mCurrentLayout = QVBoxLayout()
+        self.mCurrentLayout.addWidget(self.mCurrentCanvas)
+        self.mCurrentGraph.setLayout(self.mCurrentLayout)
+
+        self.aCurrentGraph = QGroupBox('Array Current (A)')
+        self.aCurrentGraph.setFlat(True)
+        self.aCurrentGraph.setMinimumWidth(150)
+        self.aCurrentFig = plt.figure()
+        self.aCurrentCanvas = FigureCanvas(self.aCurrentFig)
+        self.aCurrentLayout = QVBoxLayout()
+        self.aCurrentLayout.addWidget(self.aCurrentCanvas)
+        self.aCurrentGraph.setLayout(self.aCurrentLayout)
+
+        self.voltageGraph = QGroupBox('Total Battery Voltage (V)')
+        self.voltageGraph.setFlat(True)
         self.voltageGraph.setMinimumWidth(150)
         self.voltageFig = plt.figure()
         self.voltageCanvas = FigureCanvas(self.voltageFig)
@@ -465,6 +488,8 @@ class PlottingDataMonitor(QMainWindow):
         self.graphs_frame = QWidget()
         graphs_layout = QVBoxLayout()
         graphs_layout.addWidget(self.speedGraph)
+        graphs_layout.addWidget(self.mCurrentGraph)
+        graphs_layout.addWidget(self.aCurrentGraph)
         graphs_layout.addWidget(self.voltageGraph)
         self.graphs_frame.setLayout(graphs_layout)
         
@@ -488,17 +513,25 @@ class PlottingDataMonitor(QMainWindow):
         speedData = self.motorControllerWidget.getSpeeds()
         speeds = [item[0] for item in speedData]
         times = [dt.utcfromtimestamp(item[1]) for item in speedData]
-        axSpeed = self.speedFig.add_subplot(111)
+        axSpeed = self.speedFig.add_axes([.1,0,1,1])
         axSpeed.hold(False)
-        axSpeed.plot_date(times, speeds, '.-')
+        axSpeed.plot_date(times, speeds, '')
         self.speedCanvas.draw()
+
+        mCurrentData = self.motorControllerWidget.getCurrents()
+        mCurrents = [item[0] for item in mCurrentData]
+        times = [dt.utcfromtimestamp(item[1]) for item in mCurrentData]
+        axMCurrent = self.mCurrentFig.add_axes([.1,0,1,1])
+        axMCurrent.hold(False)
+        axMCurrent.plot_date(times, mCurrents, '')
+        self.mCurrentCanvas.draw()
 
         voltageData = self.totalVoltage
         voltages = [item[0] for item in voltageData]
         times = [dt.utcfromtimestamp(item[1]) for item in voltageData]
-        axVoltages = self.voltageFig.add_subplot(111)
+        axVoltages = self.voltageFig.add_axes([.1,0,1,1])
         axVoltages.hold(False)
-        axVoltages.plot_date(times, voltages, '.-')
+        axVoltages.plot_date(times, voltages, '')
         self.voltageCanvas.draw()
 
     def updateTime(self):
