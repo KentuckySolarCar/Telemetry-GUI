@@ -526,6 +526,14 @@ class PlottingDataMonitor(QMainWindow):
         axMCurrent.plot_date(times, mCurrents, '')
         self.mCurrentCanvas.draw()
 
+        aCurrentData = self.getArrayCurrents()
+        aCurrents = [item[0] for item in aCurrentData]
+        times = [dt.utcfromtimestamp(item[1]) for item in aCurrentData]
+        axACurrent = self.aCurrentFig.add_axes([.1,0,1,1])
+        axACurrent.hold(False)
+        axACurrent.plot_date(times, aCurrents, '')
+        self.aCurrentCanvas.draw()
+
         voltageData = self.totalVoltage
         voltages = [item[0] for item in voltageData]
         times = [dt.utcfromtimestamp(item[1]) for item in voltageData]
@@ -831,6 +839,9 @@ class PlottingDataMonitor(QMainWindow):
 
     def getArrayCurrent(self):
         return self.arrayCurrent[-1][0] if self.arrayCurrent else 0
+
+    def getArrayCurrents(self):
+        return self.arrayCurrent
 
     def getBatteryCurrent(self):
         return self.batteryCurrent[-1][0] if self.batteryCurrent else 0
