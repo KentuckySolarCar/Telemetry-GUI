@@ -137,7 +137,7 @@ class MPPT(QLabel):
             self.setText("%.3f" %self.outCurrent[-1])
 
     def getOutCurrent(self):
-        return self.outCurrent[-1]
+        return self.outCurrent[-1] if self.outCurrent else 0
 
 class Battery(QGraphicsView):
     def __init__(self, parent=None):
@@ -650,7 +650,7 @@ class PlottingDataMonitor(QMainWindow):
         self.loggingToggle.setText('Stop  Logging')
         fileName = "logs/log" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv"
         self.logFile = open(fileName, "a+")
-        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppts, battery voltages\n")
+        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppt0, mppt1, mppt2, mppt3, battery voltages\n")
 
     def writeLog(self):
         if self.logging_active:
@@ -659,6 +659,8 @@ class PlottingDataMonitor(QMainWindow):
             self.logFile.write(str(self.motorControllerWidget.getCurrent())+",")
             self.logFile.write(str(self.getArrayCurrent())+",")
             self.logFile.write(str(self.getBatteryCurrent())+",")
+            for mppt in self.mppts:
+                self.logFile.write(str(mppt.getOutCurrent())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
