@@ -49,7 +49,6 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Log voltage of each battery
 * Add motor current graph
 * Add array current graph
 * Tag versioned release and use develop branch rather than master
