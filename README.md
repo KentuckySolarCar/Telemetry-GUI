@@ -49,14 +49,15 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Get/set/log motor controller current
-* Get/set/log array current
-* Get/set motor controller energy
+* Get/set/log motor controller current (known)
+* Get/set/log array current = MPPT (known)
+* Get/set motor controller energy (mostly known)
 * Figure out what 'W = 0 ' is in the input and deal with it
 * Log battery current
 * Log MPPTs
 * Log voltage of each battery
-* Add graphs
+* Add motor current graph
+* Add array current graph
 * Fix tick spacing on graphs
 * Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
