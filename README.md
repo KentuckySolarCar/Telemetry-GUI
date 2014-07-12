@@ -50,6 +50,8 @@ Todo
 ----
 
 * Add graphs
+* Get/set motor controller current
+* Get/set array current
 * Parse all serial data correctly and check calculations
 * Log all info correctly
 * Add solar car logo

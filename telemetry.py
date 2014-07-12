@@ -67,8 +67,8 @@ class MotorController(QGroupBox):
         self.tSpeed.setText('%.3f' %self.speed[-1])
         self.calcAverageSpeed()
 
-    def setCurrent(self):
-        pass
+    def setCurrent(self, inCurrent):
+        self.current.append(inCurrent)
 
     def setEnergy(self, energy):
         self.energy.append(energy)
@@ -91,6 +91,9 @@ class MotorController(QGroupBox):
 
     def getSpeed(self):
         return 0 if not self.speed else self.speed[-1]
+
+    def getCurrent(self):
+        return 0 if not self.current else self.current[-1]
 
 
 class MPPT(QLabel):
@@ -599,6 +602,7 @@ class PlottingDataMonitor(QMainWindow):
         if self.logging_active:
             self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
             self.logFile.write(str(self.motorControllerWidget.getSpeed())+",")
+            self.logFile.write(str(self.motorControllerWidget.getCurrent())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
