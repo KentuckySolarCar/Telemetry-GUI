@@ -15,7 +15,7 @@ elif _platform == "win32":
 baud_rate = 19200
 ser = serial.Serial(port, baud_rate)
 incycle = 0
-time_delay = 0.02
+time_delay = 0.03234234
 
 def delay():
 	time.sleep(time_delay)

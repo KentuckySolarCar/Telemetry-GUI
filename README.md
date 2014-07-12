@@ -41,6 +41,8 @@ Info for each battery is displayed. The bar level indicates the voltage (also no
 
 Various stats for the motor controller and the MPPTs are displayed as well as some graphs.
 
+![Screenshot](img/screenshot.png)
+
 Maintenance
 -----------
 
