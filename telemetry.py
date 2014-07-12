@@ -5,7 +5,8 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, datetime, operator
+import random, sys, os, Queue, re, time, operator
+from datetime import datetime as dt
 from sys import platform as _platform
 
 from PyQt4.QtCore import *
@@ -63,7 +64,7 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append((inSpeed*self.conversion, time.time()))
+        self.speed.append([inSpeed*self.conversion, time.time()])
         self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
@@ -94,6 +95,9 @@ class MotorController(QGroupBox):
 
     def getCurrent(self):
         return 0 if not self.current else self.current[-1]
+
+    def getSpeeds(self):
+        return self.speed
 
 
 class MPPT(QLabel):
@@ -416,7 +420,8 @@ class PlottingDataMonitor(QMainWindow):
         mpptWidget.setLayout(mpptLayout)
 
         #Graphs
-        self.speedGraph = QWidget()
+        self.speedGraph = QGroupBox('Speed (mph)')
+        self.speedGraph.setMinimumWidth(150)
         self.speedFig = plt.figure()
         self.speedCanvas = FigureCanvas(self.speedFig)
         self.speedLayout = QVBoxLayout()
@@ -462,16 +467,18 @@ class PlottingDataMonitor(QMainWindow):
         self.secTimer.start(1000)
 
     def updateGraphs(self):
-        data = [random.random() for i in range(10)]
+        data = self.motorControllerWidget.getSpeeds()
+        speeds = [item[0] for item in data]
+        times = [dt.utcfromtimestamp(item[1]) for item in data]
 
         # create an axis
-        ax = self.speedFig.add_subplot(111)
+        axSpeed = self.speedFig.add_subplot(111)
 
         # discards the old graph
-        ax.hold(False)
+        axSpeed.hold(False)
 
         # plot data
-        ax.plot(data, '*-')
+        axSpeed.plot_date(times, speeds, '*-')
 
         # refresh canvas
         self.speedCanvas.draw()
@@ -733,7 +740,7 @@ class PlottingDataMonitor(QMainWindow):
                 info =  "Could not match input '" + data + "'"
                 print info
 
-            print data #debug
+            # print data #debug
 
     def updateMPPT(self):
         total = 0.0

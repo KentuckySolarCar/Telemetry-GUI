@@ -57,6 +57,7 @@ Todo
 * Log MPPTs
 * Log voltage of each battery
 * Add graphs
+* Fix tick spacing on graphs
 * Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
 * Temperature color gradient
