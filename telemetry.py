@@ -482,7 +482,7 @@ class PlottingDataMonitor(QMainWindow):
         times = [dt.utcfromtimestamp(item[1]) for item in speedData]
         axSpeed = self.speedFig.add_subplot(111)
         axSpeed.hold(False)
-        axSpeed.plot_date(times, speeds, '*-')
+        axSpeed.plot_date(times, speeds, '.-')
         self.speedCanvas.draw()
 
         voltageData = self.totalVoltage
@@ -490,7 +490,7 @@ class PlottingDataMonitor(QMainWindow):
         times = [dt.utcfromtimestamp(item[1]) for item in voltageData]
         axVoltages = self.voltageFig.add_subplot(111)
         axVoltages.hold(False)
-        axVoltages.plot_date(times, voltages, '*-')
+        axVoltages.plot_date(times, voltages, '.-')
         self.voltageCanvas.draw()
 
     def updateTime(self):
