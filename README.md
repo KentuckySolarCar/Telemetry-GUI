@@ -59,7 +59,7 @@ Todo
 * Fix tick spacing on graphs
 * Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
-* Temperature color gradient
+* Temperature color gradient rather than just turn red at 30&deg; C
 * Investigate packaging as one .exe file with pyInstaller
 
 License

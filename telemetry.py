@@ -705,13 +705,30 @@ class PlottingDataMonitor(QMainWindow):
             data = self.livefeed.read_data().strip("\r\n")
 
             # Regular Expressions
+            # with data examples commented above
+
+            # V[1][16] = 33421
             batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
+
+            # T[1][15] = 26
             batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
+
+            # C = 0
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$")
+
+            # S = 0
             motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
+
+            # E = 0
             motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
+
+            # W = 0
             motorControllerBusVoltageRX = re.compile("^\s*W\s=\s(\d+)\s*$")
+
+            # M[2] 22 91 140
             MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
+
+            # #   BPS TIMEOUT number [1][08]= ??
             BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
 
             if batteryVoltageRX.match(data):
