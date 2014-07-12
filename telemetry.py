@@ -63,8 +63,8 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append(inSpeed*self.conversion)
-        self.tSpeed.setText('%.3f' %self.speed[-1])
+        self.speed.append((inSpeed*self.conversion, time.time()))
+        self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
@@ -75,8 +75,8 @@ class MotorController(QGroupBox):
         self.calcEnergy()
 
     def calcAverageSpeed(self):
-        self.averageSpeed = sum(self.speed[self.checkFromAv:])/float(len(self.speed[self.checkFromAv:]))
-        self.tAverageSpeed.setText('%.3f' %self.averageSpeed)
+        self.averageSpeed = sum(item[0] for item in self.speed[self.checkFromAv:])/float(len(self.speed[self.checkFromAv:]))
+        self.tAverageSpeed.setText('%.2f' %self.averageSpeed)
 
     def resetEnergy(self):
         self.checkFromE = len(self.energy) - 1
@@ -90,7 +90,7 @@ class MotorController(QGroupBox):
         self.calcAverageSpeed()
 
     def getSpeed(self):
-        return 0 if not self.speed else self.speed[-1]
+        return 0 if not self.speed else self.speed[-1][0]
 
     def getCurrent(self):
         return 0 if not self.current else self.current[-1]
@@ -249,9 +249,8 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             self.mppts.append(MPPT(i))
 
-        self.batteryCurrent = 0
-        self.BatmanCurrent = 0
-        self.RobinCurrent = 0
+        self.batteryCurrent = []
+        self.arrayCurrent = []
 
         self.monitor_active = False
         self.logging_active = False
@@ -676,7 +675,7 @@ class PlottingDataMonitor(QMainWindow):
 
             elif batteryCurrentRX.match(data):
                 info = batteryCurrentRX.search(data).groups()
-                self.batteryCurrent = float(info[0])
+                self.batteryCurrent.append((float(info[0]), time.time()))
 
             elif motorControllerVelocityRX.match(data):
                 info = motorControllerVelocityRX.search(data).groups()
@@ -703,6 +702,8 @@ class PlottingDataMonitor(QMainWindow):
             else:
                 info =  "Could not match input '" + data + "'"
                 print info
+
+            # print data #debug
 
     def updateMPPT(self):
         total = 0.0
@@ -748,7 +749,7 @@ class PlottingDataMonitor(QMainWindow):
         self.tRobinHigh.setText('%.2f V (%d)' %(highestRobinValue, highestRobinModule))
         self.tRobinLow.setText('%.2f V (%d)' %(lowestRobinValue, lowestRobinModule))
 
-        self.tBatteryCurrent.setText('%.2f A' %self.batteryCurrent)
+        self.tBatteryCurrent.setText('%.2f A' %(self.batteryCurrent[-1][0] if self.batteryCurrent else 0))
         # self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
         # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
         # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))

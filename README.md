@@ -49,13 +49,15 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
+* Get/set/log motor controller current
+* Get/set/log array current
+* Get/set motor controller energy
+* Log battery current
+* Log MPPTs
+* Log voltage of each battery
 * Add graphs
-* Get/set motor controller current
-* Get/set array current
-* Parse all serial data correctly and check calculations
-* Log all info correctly
 * Add solar car logo
-* Incorporate calculations/data per suggestion of Chris
+* Incorporate additional calculations/data per suggestion of Chris
 * Temperature color gradient
 * Investigate packaging as one .exe file with pyInstaller
 
