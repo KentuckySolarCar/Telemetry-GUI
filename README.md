@@ -49,7 +49,6 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Log battery current
 * Log MPPTs
 * Log voltage of each battery
 * Add motor current graph
@@ -59,6 +58,8 @@ Todo
 * Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
 * Temperature color gradient rather than just turn red at 30&deg; C
+* Make sure TelSpec.pdf or similar documentation somewhere stays up to date with the car output (already outdated)
+* Add util to take multiple log files and turn them into one
 * Investigate packaging as one .exe file with pyInstaller
 
 License
