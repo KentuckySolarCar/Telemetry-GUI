@@ -5,7 +5,7 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator
+import random, sys, os, Queue, re, time, datetime, operator
 from sys import platform as _platform
 
 from PyQt4.QtCore import *
@@ -415,6 +415,14 @@ class PlottingDataMonitor(QMainWindow):
         mpptLayout.addWidget(QLabel('A'),5,2)
         mpptWidget.setLayout(mpptLayout)
 
+        #Graphs
+        self.speedGraph = QWidget()
+        self.speedFig = plt.figure()
+        self.speedCanvas = FigureCanvas(self.speedFig)
+        self.speedLayout = QVBoxLayout()
+        self.speedLayout.addWidget(self.speedCanvas)
+        self.speedGraph.setLayout(self.speedLayout)
+
         #Main Layout
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
@@ -431,11 +439,17 @@ class PlottingDataMonitor(QMainWindow):
         main_layout2.addWidget(batteryStatsWidget)
         main_layout2.addStretch(1)
         self.main_frame2.setLayout(main_layout2)
+
+        self.graphs_frame = QWidget()
+        graphs_layout = QVBoxLayout()
+        graphs_layout.addWidget(self.speedGraph)
+        self.graphs_frame.setLayout(graphs_layout)
         
         self.main_frame = QWidget()
         main_layout = QHBoxLayout()
         main_layout.addWidget(self.main_frame1)
         main_layout.addWidget(self.main_frame2)
+        main_layout.addWidget(self.graphs_frame)
         self.main_frame.setLayout(main_layout)
 
         self.setCentralWidget(self.main_frame)
@@ -444,7 +458,23 @@ class PlottingDataMonitor(QMainWindow):
         self.secTimer = QTimer()
         self.secTimer.timeout.connect(self.writeLog)
         self.secTimer.timeout.connect(self.updateTime)
+        self.secTimer.timeout.connect(self.updateGraphs)
         self.secTimer.start(1000)
+
+    def updateGraphs(self):
+        data = [random.random() for i in range(10)]
+
+        # create an axis
+        ax = self.speedFig.add_subplot(111)
+
+        # discards the old graph
+        ax.hold(False)
+
+        # plot data
+        ax.plot(data, '*-')
+
+        # refresh canvas
+        self.speedCanvas.draw()
 
     def updateTime(self):
         self.curTime = time.time()
@@ -703,7 +733,7 @@ class PlottingDataMonitor(QMainWindow):
                 info =  "Could not match input '" + data + "'"
                 print info
 
-            # print data #debug
+            print data #debug
 
     def updateMPPT(self):
         total = 0.0

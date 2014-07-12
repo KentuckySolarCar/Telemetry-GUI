@@ -52,6 +52,7 @@ Todo
 * Get/set/log motor controller current
 * Get/set/log array current
 * Get/set motor controller energy
+* Figure out what 'W = 0 ' is in the input and deal with it
 * Log battery current
 * Log MPPTs
 * Log voltage of each battery
