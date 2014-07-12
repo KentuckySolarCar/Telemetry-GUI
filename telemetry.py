@@ -657,6 +657,7 @@ class PlottingDataMonitor(QMainWindow):
             self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
             self.logFile.write(str(self.motorControllerWidget.getSpeed())+",")
             self.logFile.write(str(self.motorControllerWidget.getCurrent())+",")
+            self.logFile.write(str(self.getArrayCurrent())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
@@ -780,6 +781,10 @@ class PlottingDataMonitor(QMainWindow):
         for mppt in self.mppts:
             total += mppt.getOutCurrent()
         self.MPPTTotal.setText("%.3f" %total)
+        self.arrayCurrent.append((total, time.time()))
+
+    def getArrayCurrent(self):
+        return self.arrayCurrent[-1][0] if self.arrayCurrent else 0
 
     def updateBatteries(self):
         #find highest, lowest, and average values

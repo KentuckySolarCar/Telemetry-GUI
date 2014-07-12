@@ -49,12 +49,12 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Get/set/log array current = MPPT (known)
 * Log battery current
 * Log MPPTs
 * Log voltage of each battery
 * Add motor current graph
 * Add array current graph
+* Tag versioned release and use develop branch rather than master
 * Fix tick spacing on graphs
 * Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
