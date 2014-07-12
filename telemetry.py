@@ -165,7 +165,7 @@ class Battery(QGraphicsView):
         self.drawBattery()
 
     def getVoltage(self):
-        return self.voltage[-1]
+        return self.voltage[-1] if self.voltage else 0
 
     def setTemperature(self, inTemperature):
         self.bad = False
@@ -650,7 +650,14 @@ class PlottingDataMonitor(QMainWindow):
         self.loggingToggle.setText('Stop  Logging')
         fileName = "logs/log" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".csv"
         self.logFile = open(fileName, "a+")
-        self.logFile.write("timestamp, speed, motor current, array current, battery current, mppt0, mppt1, mppt2, mppt3, battery voltages\n")
+        self.logFile.write("timestamp,speed,motor current,array current,battery current,")
+        for i in range(4):
+            self.logFile.write("mppt[%d]," %i)
+        for i in range(20):
+            self.logFile.write("batman[%d]," %i)
+        for i in range(20):
+            self.logFile.write("robin[%d]," %i)
+        self.logFile.write("\n")
 
     def writeLog(self):
         if self.logging_active:
@@ -661,6 +668,9 @@ class PlottingDataMonitor(QMainWindow):
             self.logFile.write(str(self.getBatteryCurrent())+",")
             for mppt in self.mppts:
                 self.logFile.write(str(mppt.getOutCurrent())+",")
+            for pack in self.batteries:
+                for battery in pack:
+                    self.logFile.write(str(battery.getVoltage())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
