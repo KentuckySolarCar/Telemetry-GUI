@@ -255,6 +255,7 @@ class PlottingDataMonitor(QMainWindow):
 
         self.batteryCurrent = []
         self.arrayCurrent = []
+        self.totalVoltage = []
 
         self.monitor_active = False
         self.logging_active = False
@@ -428,6 +429,14 @@ class PlottingDataMonitor(QMainWindow):
         self.speedLayout.addWidget(self.speedCanvas)
         self.speedGraph.setLayout(self.speedLayout)
 
+        self.voltageGraph = QGroupBox('Total Battery Voltage')
+        self.voltageGraph.setMinimumWidth(150)
+        self.voltageFig = plt.figure()
+        self.voltageCanvas = FigureCanvas(self.voltageFig)
+        self.voltageLayout = QVBoxLayout()
+        self.voltageLayout.addWidget(self.voltageCanvas)
+        self.voltageGraph.setLayout(self.voltageLayout)
+
         #Main Layout
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
@@ -448,6 +457,7 @@ class PlottingDataMonitor(QMainWindow):
         self.graphs_frame = QWidget()
         graphs_layout = QVBoxLayout()
         graphs_layout.addWidget(self.speedGraph)
+        graphs_layout.addWidget(self.voltageGraph)
         self.graphs_frame.setLayout(graphs_layout)
         
         self.main_frame = QWidget()
@@ -467,21 +477,21 @@ class PlottingDataMonitor(QMainWindow):
         self.secTimer.start(1000)
 
     def updateGraphs(self):
-        data = self.motorControllerWidget.getSpeeds()
-        speeds = [item[0] for item in data]
-        times = [dt.utcfromtimestamp(item[1]) for item in data]
-
-        # create an axis
+        speedData = self.motorControllerWidget.getSpeeds()
+        speeds = [item[0] for item in speedData]
+        times = [dt.utcfromtimestamp(item[1]) for item in speedData]
         axSpeed = self.speedFig.add_subplot(111)
-
-        # discards the old graph
         axSpeed.hold(False)
-
-        # plot data
         axSpeed.plot_date(times, speeds, '*-')
-
-        # refresh canvas
         self.speedCanvas.draw()
+
+        voltageData = self.totalVoltage
+        voltages = [item[0] for item in voltageData]
+        times = [dt.utcfromtimestamp(item[1]) for item in voltageData]
+        axVoltages = self.voltageFig.add_subplot(111)
+        axVoltages.hold(False)
+        axVoltages.plot_date(times, voltages, '*-')
+        self.voltageCanvas.draw()
 
     def updateTime(self):
         self.curTime = time.time()
@@ -790,6 +800,9 @@ class PlottingDataMonitor(QMainWindow):
         # self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
         # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
         # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
+
+        total = averageBatmanValue*20 + averageRobinValue*20
+        self.totalVoltage.append((total, time.time()))
 
 def main():
     app = QApplication(sys.argv)
