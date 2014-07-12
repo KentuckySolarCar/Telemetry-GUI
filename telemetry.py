@@ -468,6 +468,11 @@ class PlottingDataMonitor(QMainWindow):
         self.voltageLayout.addWidget(self.voltageCanvas)
         self.voltageGraph.setLayout(self.voltageLayout)
 
+        #Logo
+        logo = QLabel()
+        logo.setGeometry(0,0,100,100)
+        logo.setPixmap(QPixmap("img/logo1.png")) 
+
         #Main Layout
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
@@ -483,6 +488,7 @@ class PlottingDataMonitor(QMainWindow):
         main_layout2.addWidget(mpptWidget)
         main_layout2.addWidget(batteryStatsWidget)
         main_layout2.addStretch(1)
+        # main_layout2.addWidget(logo)
         self.main_frame2.setLayout(main_layout2)
 
         self.graphs_frame = QWidget()

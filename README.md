@@ -49,9 +49,7 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Tag versioned release and use develop branch rather than master
 * Fix tick spacing on graphs and make them look way better in general
-* Add solar car logo
 * Incorporate additional calculations/data per suggestion of Chris
 * Temperature color gradient rather than just turn red at 30&deg; C
 * Make sure TelSpec.pdf or similar documentation somewhere stays up to date with the car output (already outdated)
