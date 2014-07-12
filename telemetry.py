@@ -69,10 +69,11 @@ class MotorController(QGroupBox):
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
-        self.current.append(inCurrent)
+        self.current.append((inCurrent, time.time()))
+        self.tCurrent.setText('%.2f' %self.current[-1][0])
 
     def setEnergy(self, energy):
-        self.energy.append(energy)
+        self.energy.append((energy, time.time()))
         self.calcEnergy()
 
     def calcAverageSpeed(self):
@@ -86,7 +87,12 @@ class MotorController(QGroupBox):
 
     def calcEnergy(self):
         if self.energy:
-            self.tEnergy.setText(str(self.energy[-1] - self.energy[self.checkFromE]))
+            self.tEnergy.setText(str(self.energy[-1][0] - self.energy[self.checkFromE][0]))
+        if len(self.energy) > 1:
+            ampSeconds = (self.energy[-1][0] - self.energy[-2][0])*3600.0
+            deltaTseconds = self.energy[-1][1] - self.energy[-2][1]
+            amps = ampSeconds / deltaTseconds
+            self.setCurrent(amps)
 
     def resetAvSpeed(self):
         self.checkFromAv = len(self.speed) - 1
@@ -96,7 +102,7 @@ class MotorController(QGroupBox):
         return 0 if not self.speed else self.speed[-1][0]
 
     def getCurrent(self):
-        return 0 if not self.current else self.current[-1]
+        return 0 if not self.current else self.current[-1][0]
 
     def getSpeeds(self):
         return self.speed
@@ -709,25 +715,18 @@ class PlottingDataMonitor(QMainWindow):
 
             # V[1][16] = 33421
             batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
-
             # T[1][15] = 26
             batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
-
             # C = 0
             batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$")
-
             # S = 0
             motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
-
             # E = 0
             motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
-
             # W = 0
             motorControllerBusVoltageRX = re.compile("^\s*W\s=\s(\d+)\s*$")
-
             # M[2] 22 91 140
             MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
-
             # #   BPS TIMEOUT number [1][08]= ??
             BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
 

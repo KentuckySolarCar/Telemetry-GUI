@@ -49,7 +49,6 @@ A large part of the maintenance work will be parsing serial data, storing it, an
 Todo
 ----
 
-* Get/set/log motor controller current (known)
 * Get/set/log array current = MPPT (known)
 * Log battery current
 * Log MPPTs
