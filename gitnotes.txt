@@ -1,0 +1,14 @@
+
+socat can leave serial ports connected. (even after the process is killed)
+When this happes, git "knows" that socat is part of an open file.
+Git will then be unable to push.
+
+lsof +D /path/  is not helpful (list open files) b/c the serial ports
+are open not the socat script.
+
+Soltion: unlink the open serial ports
+       : or restart OS
+
+
+I think
+John Broadbent
