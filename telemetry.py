@@ -257,8 +257,8 @@ class PlottingDataMonitor(QMainWindow):
 
         self.batteries = [[],[]]
         for i in range(20):
-            self.batteries[0].append(Battery())
-            self.batteries[1].append(Battery())
+            self.batteries[0].append(Battery()) # (ET) Batman
+            self.batteries[1].append(Battery()) # (ET) Robin
 
         self.mppts = []
         for i in range(4):
@@ -317,6 +317,8 @@ class PlottingDataMonitor(QMainWindow):
         portname_groupbox = QGroupBox('Controls')
         portname_groupbox.setLayout(portname_layout)
 
+# TODO: (Ethan) Replace Batman display with a real time log and a command line at the bottom to send commands to the car.
+
         batteryLayout1 = QGridLayout()
         for i in range(5):
             batteryLayout1.setColumnMinimumWidth(i,52)
@@ -331,6 +333,8 @@ class PlottingDataMonitor(QMainWindow):
                 tempLabel.setAlignment(Qt.AlignHCenter)
                 batteryLayout1.addWidget(tempLabel,2*i+1,j)
                 counter += 1
+
+# TODO: (Ethan) Replace Robin display with two of the battery displays for each battery box. Or possibly someting else. Suggestions wanted.
 
         batteryLayout2 = QGridLayout()
         for i in range(5):
