@@ -5,7 +5,7 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator
+import random, sys, os, Queue, re, time, operator, json
 from datetime import datetime as dt
 from sys import platform as _platform
 
@@ -255,10 +255,12 @@ class PlottingDataMonitor(QMainWindow):
 
         self.setFont(QFont('Arial Unicode MS', 10))
 
-        self.batteries = [[],[]]
-        for i in range(20):
-            self.batteries[0].append(Battery()) # (ET) Batman
-            self.batteries[1].append(Battery()) # (ET) Robin
+        self.batteries = [ Battery(), Battery() ]; # { Batman, Robin }
+
+        # self.batteries = [[],[]]
+        # for i in range(20):
+        #     self.batteries[0].append(Battery()) # (ET) Batman
+        #     self.batteries[1].append(Battery()) # (ET) Robin
 
         self.mppts = []
         for i in range(4):
@@ -320,42 +322,44 @@ class PlottingDataMonitor(QMainWindow):
 # TODO: (Ethan) Replace Batman display with a real time log and a command line at the bottom to send commands to the car.
 
         batteryLayout1 = QGridLayout()
-        for i in range(5):
-            batteryLayout1.setColumnMinimumWidth(i,52)
-        for i in range(0,8,2):
-            batteryLayout1.setRowMinimumHeight(i,92)
-            batteryLayout1.setRowMinimumHeight(i+1,15)
-        counter = 0
-        for i in range(4):
-            for j in range(5):
-                batteryLayout1.addWidget(self.batteries[0][counter],2*i,j)
-                tempLabel = QLabel(str(counter))
-                tempLabel.setAlignment(Qt.AlignHCenter)
-                batteryLayout1.addWidget(tempLabel,2*i+1,j)
-                counter += 1
+
+        # for i in range(5):
+        #     batteryLayout1.setColumnMinimumWidth(i,52)
+        # for i in range(0,8,2):
+        #     batteryLayout1.setRowMinimumHeight(i,92)
+        #     batteryLayout1.setRowMinimumHeight(i+1,15)
+        # counter = 0
+        # for i in range(4):
+        #     for j in range(5):
+        #         batteryLayout1.addWidget(self.batteries[0][counter],2*i,j)
+        #         tempLabel = QLabel(str(counter))
+        #         tempLabel.setAlignment(Qt.AlignHCenter)
+        #         batteryLayout1.addWidget(tempLabel,2*i+1,j)
+        #         counter += 1
 
 # TODO: (Ethan) Replace Robin display with two of the battery displays for each battery box. Or possibly someting else. Suggestions wanted
 
         batteryLayout2 = QGridLayout()
-        for i in range(5):
-            batteryLayout2.setColumnMinimumWidth(i,52)
-        for i in range(0,8,2):
-            batteryLayout2.setRowMinimumHeight(i,92)
-            batteryLayout2.setRowMinimumHeight(i+1,15)
-        counter = 0
-        for i in range(4):
-            for j in range(5):
-                batteryLayout2.addWidget(self.batteries[1][counter],2*i,j)
-                tempLabel = QLabel(str(counter+20))
-                tempLabel.setAlignment(Qt.AlignHCenter)
-                batteryLayout2.addWidget(tempLabel,2*i+1,j)
-                counter += 1
 
-        batteryWidget1 = QGroupBox('Batman')
+        # for i in range(5):
+        #     batteryLayout2.setColumnMinimumWidth(i,52)
+        # for i in range(0,8,2):
+        #     batteryLayout2.setRowMinimumHeight(i,92)
+        #     batteryLayout2.setRowMinimumHeight(i+1,15)
+        # counter = 0
+        # for i in range(4):
+        #     for j in range(5):
+        #         batteryLayout2.addWidget(self.batteries[1][counter],2*i,j)
+        #         tempLabel = QLabel(str(counter+20))
+        #         tempLabel.setAlignment(Qt.AlignHCenter)
+        #         batteryLayout2.addWidget(tempLabel,2*i+1,j)
+        #         counter += 1
+
+        batteryWidget1 = QGroupBox('Log Display')
         batteryWidget1.setAlignment(Qt.AlignHCenter)
         batteryWidget1.setLayout(batteryLayout1)
 
-        batteryWidget2 = QGroupBox('Robin')
+        batteryWidget2 = QGroupBox()
         batteryWidget2.setAlignment(Qt.AlignHCenter)
         batteryWidget2.setLayout(batteryLayout2)
 
@@ -719,9 +723,9 @@ class PlottingDataMonitor(QMainWindow):
             self.logFile.write(str(self.getBatteryCurrent())+",")
             for mppt in self.mppts:
                 self.logFile.write(str(mppt.getOutCurrent())+",")
-            for pack in self.batteries:
-                for battery in pack:
-                    self.logFile.write(str(battery.getVoltage())+",")
+            for battery in self.batteries:
+                # for battery in pack:
+                self.logFile.write(str(battery.getVoltage())+",")
             self.logFile.write("\n")
 
     def stop_logging(self):
@@ -767,13 +771,36 @@ class PlottingDataMonitor(QMainWindow):
             self.livefeed.add_data(data)
 
     def update_monitor(self):
-        """ Updates the state of the monitor window with new 
+        """ The the network protocal is json objects sent over
+            telemetry with a new line character \r\n as the
+            delemeter between messages
+
+            {
+                "message_id": "(bat_temp|bat_volt|motor)",
+                ...
+            }
+
+            Updates the state of the monitor window with new 
             data. The livefeed is used to find out whether new
             data was received since the last update. If not, 
             nothing is updated.
         """
         if self.livefeed.has_new_data:
-            data = self.livefeed.read_data().strip("\r\n")
+            data = self.livefeed.read_data().split("\r\n")
+
+            for message in data:
+                print(message)
+                json_obj = json.loads(message)
+                if( json_obj["message_id"] == 'bat_temp' ):
+                    pass
+
+                elif( json_obj["message_id"] == "bat_volt" ):
+                    pass
+
+                elif( json_obj["message_id"] == "motor" ):
+                    pass
+
+            # TODO: (Ethan) Update REGEX to apply to new message format
 
             # Regular Expressions
             # with data examples commented above
@@ -795,14 +822,18 @@ class PlottingDataMonitor(QMainWindow):
             # #   BPS TIMEOUT number [1][08]= ??
             BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
 
+            # TODO: (Ethan) Fix parsing of Battery data
+
             if batteryVoltageRX.match(data):
-                info = batteryVoltageRX.search(data).groups()
-                self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
-                self.updateBatteries()
+                pass # TEMP: (Ethan)
+            #     info = batteryVoltageRX.search(data).groups()
+            #     self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
+            #     self.updateBatteries()
 
             elif batteryTemperatureRX.match(data):
-                info = batteryTemperatureRX.search(data).groups()
-                self.batteries[int(info[0])][int(info[1])].setTemperature(int(info[2]))
+                pass # TEMP: (Ethan)
+            #     info = batteryTemperatureRX.search(data).groups()
+            #     self.batteries[int(info[0])][int(info[1])].setTemperature(int(info[2]))
 
             elif batteryCurrentRX.match(data):
                 info = batteryCurrentRX.search(data).groups()
@@ -827,12 +858,14 @@ class PlottingDataMonitor(QMainWindow):
                 self.mppts[int(info[0])].setOutVoltage(int(info[3]))
                 self.updateMPPT()
 
-            elif BPSbadRX.match(data):
-                info = BPSbadRX.search(data).groups()
-                box = int(info[0])
-                cell = int(info[1])
-                print "WARNING BPS TIMEOUT number [%d][%2d]" %(box, cell)
-                self.batteries[box][cell].setBad()
+            # TODO: (Ethan) Update Battery error checking code
+
+            # elif BPSbadRX.match(data):
+            #     info = BPSbadRX.search(data).groups()
+            #     box = int(info[0])
+            #     cell = int(info[1])
+            #     print "WARNING BPS TIMEOUT number [%d][%2d]" %(box, cell)
+            #     self.batteries[box][cell].setBad()
 
             else:
                 info =  "Could not match input '" + data + "'"
@@ -864,27 +897,20 @@ class PlottingDataMonitor(QMainWindow):
         lowestBatteryModule = 0
         averageBatteryValue = 0.0
         batterySum = 0.0
-        for i in range(2):            
-            for j in range(20):
-                voltage = self.batteries[i][j].getVoltage()
-                batterySum = batterySum + voltage
-                if voltage > highestBatteryValue:
-                    highestBatteryValue = voltage
-                    highestBatteryModule = (20*i + j)
-                if voltage < lowestBatteryValue:
-                    lowestBatteryValue = voltage
-                    lowestBatteryModule = (20*i + j)
-        averageBatteryValue = batterySum / 40;
+        for i in range(2):
+            voltage = self.batteries[i].getVoltage()
+            batterySum = batterySum + voltage
+            if voltage > highestBatteryValue:
+                highestBatteryValue = voltage
+                highestBatteryModule = (i)
+            if voltage < lowestBatteryValue:
+                lowestBatteryValue = voltage
+                lowestBatteryModule = (i)
+        averageBatteryValue = batterySum / 2;
 
-        highestBatmanModule, highestBatmanValue = max(enumerate(batman.getVoltage() for batman in self.batteries[0]), key=operator.itemgetter(1))
-        lowestBatmanModule, lowestBatmanValue = min(enumerate(batman.getVoltage() for batman in self.batteries[0]), key=operator.itemgetter(1))
-        averageBatmanValue = sum(batman.getVoltage() for batman in self.batteries[0]) / 20.0
+        averageBatmanValue = self.batteries[0].getVoltage()
 
-        highestRobinModule, highestRobinValue = max(enumerate(robin.getVoltage() for robin in self.batteries[1]), key=operator.itemgetter(1))
-        highestRobinModule += 20
-        lowestRobinModule, lowestRobinValue = min(enumerate(robin.getVoltage() for robin in self.batteries[1]), key=operator.itemgetter(1))
-        lowestRobinModule += 20
-        averageRobinValue = sum(robin.getVoltage() for robin in self.batteries[1]) / 20.0
+        averageRobinValue = self.batteries[1].getVoltage()
 
         self.tBatmanAverage.setText('%.2f V' %averageBatmanValue)
         self.tBatmanHigh.setText('%.2f V (%d)' %(highestBatmanValue, highestBatmanModule))
@@ -899,7 +925,7 @@ class PlottingDataMonitor(QMainWindow):
         # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
         # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
 
-        total = averageBatmanValue*20 + averageRobinValue*20
+        total = averageBatmanValue + averageRobinValue
         self.totalVoltage.append((total, time.time()))
 
 def main():
