@@ -334,7 +334,7 @@ class PlottingDataMonitor(QMainWindow):
                 batteryLayout1.addWidget(tempLabel,2*i+1,j)
                 counter += 1
 
-# TODO: (Ethan) Replace Robin display with two of the battery displays for each battery box. Or possibly someting else. Suggestions wanted.
+# TODO: (Ethan) Replace Robin display with two of the battery displays for each battery box. Or possibly someting else. Suggestions wanted
 
         batteryLayout2 = QGridLayout()
         for i in range(5):
