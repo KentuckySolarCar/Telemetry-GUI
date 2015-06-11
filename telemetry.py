@@ -319,41 +319,118 @@ class PlottingDataMonitor(QMainWindow):
         portname_groupbox = QGroupBox('Controls')
         portname_groupbox.setLayout(portname_layout)
 
-# TODO: (Ethan) Replace Batman display with a real time log and a command line at the bottom to send commands to the car.
-
+        # -----------------------------------------------------------
+        #   Command Promp
+        #   TODO: (Ethan) Add a on key pressed event to command promp input
+        # -----------------------------------------------------------
         batteryLayout1 = QGridLayout()
+        batteryLayout1.setColumnMinimumWidth(0, 300)
 
-        # for i in range(5):
-        #     batteryLayout1.setColumnMinimumWidth(i,52)
-        # for i in range(0,8,2):
-        #     batteryLayout1.setRowMinimumHeight(i,92)
-        #     batteryLayout1.setRowMinimumHeight(i+1,15)
-        # counter = 0
-        # for i in range(4):
-        #     for j in range(5):
-        #         batteryLayout1.addWidget(self.batteries[0][counter],2*i,j)
-        #         tempLabel = QLabel(str(counter))
-        #         tempLabel.setAlignment(Qt.AlignHCenter)
-        #         batteryLayout1.addWidget(tempLabel,2*i+1,j)
-        #         counter += 1
+        self.running_log = QTextEdit();
+        self.running_log.setEnabled(False)
+        batteryLayout1.setRowMinimumHeight(0, 400)
+        batteryLayout1.addWidget(self.running_log, 0, 0)
 
-# TODO: (Ethan) Replace Robin display with two of the battery displays for each battery box. Or possibly someting else. Suggestions wanted
+        self.command_promt = QLineEdit()
+        batteryLayout1.addWidget(self.command_promt, 1, 0)
 
+
+        # -----------------------------------------------------------
+        #   Calculated Values
+        #   [name] [value] [reset button]
+        #   TODO: (Ethan) Actually update contense where "value" appears
+        # -----------------------------------------------------------
         batteryLayout2 = QGridLayout()
 
-        # for i in range(5):
-        #     batteryLayout2.setColumnMinimumWidth(i,52)
-        # for i in range(0,8,2):
-        #     batteryLayout2.setRowMinimumHeight(i,92)
-        #     batteryLayout2.setRowMinimumHeight(i+1,15)
-        # counter = 0
-        # for i in range(4):
-        #     for j in range(5):
-        #         batteryLayout2.addWidget(self.batteries[1][counter],2*i,j)
-        #         tempLabel = QLabel(str(counter+20))
-        #         tempLabel.setAlignment(Qt.AlignHCenter)
-        #         batteryLayout2.addWidget(tempLabel,2*i+1,j)
-        #         counter += 1
+        calculationWidget = QGroupBox('Calculations')
+        calcualtionLayout = QGridLayout()
+
+        # Array Power
+        self.calc_array_power = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Array Power"), 0, 0)
+        calcualtionLayout.addWidget(self.calc_array_power, 0, 1)
+        calcualtionLayout.addWidget(QLabel(""), 0, 2)
+
+        # Gross Watt*Hours
+        self.calc_gross_watt_hours = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Gross Watt*Hours"), 1, 0)
+        calcualtionLayout.addWidget(self.calc_gross_watt_hours, 1, 1)
+        calcualtionLayout.addWidget(QLabel("B"), 1, 2)
+
+        # 
+        self.calc_net_watt_hours = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Net Watt*Hours"), 2, 0)
+        calcualtionLayout.addWidget(self.calc_net_watt_hours, 2, 1)
+        calcualtionLayout.addWidget(QLabel("B"), 2, 2)
+
+        # 
+        self.calc_average_speed = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Average Speed"), 3, 0)
+        calcualtionLayout.addWidget(self.calc_average_speed, 3, 1)
+        calcualtionLayout.addWidget(QLabel("B"), 3, 2)
+
+        # 
+        self.calc_average_gross_power = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Average Gross Power"), 4, 0)
+        calcualtionLayout.addWidget(self.calc_average_gross_power, 4, 1)
+        calcualtionLayout.addWidget(QLabel("B"), 4, 2)
+
+        # 
+        self.calc_average_net_power = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Average Net Power"), 5, 0)
+        calcualtionLayout.addWidget(self.calc_average_net_power, 5, 1)
+        calcualtionLayout.addWidget(QLabel("B"), 5, 2)
+
+        # 
+        self.calc_gross_average_power = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Gross Average Power"), 6, 0)
+        calcualtionLayout.addWidget(self.calc_gross_average_power, 6, 1)
+        calcualtionLayout.addWidget(QLabel(""), 6, 2)
+
+        # 
+        self.calc_gross_average_watt = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Gross Average Watt hour/mile^2"), 7, 0)
+        calcualtionLayout.addWidget(self.calc_gross_average_watt, 7, 1)
+        calcualtionLayout.addWidget(QLabel(""), 7, 2)
+
+        # 
+        self.calc_battery_run_time_remaining = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Battery Only Run-time Remaining"), 8, 0)
+        calcualtionLayout.addWidget(self.calc_battery_run_time_remaining, 8, 1)
+        calcualtionLayout.addWidget(QLabel(""), 8, 2)
+
+        # 
+        self.calc_battery_range = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Battery Only Range"), 9, 0)
+        calcualtionLayout.addWidget(self.calc_battery_range, 9, 1)
+        calcualtionLayout.addWidget(QLabel(""), 9, 2)
+
+        # 
+        self.calc_battery_solar_run_time = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Battery and Solar Run-time"), 10, 0)
+        calcualtionLayout.addWidget(self.calc_battery_solar_run_time, 10, 1)
+        calcualtionLayout.addWidget(QLabel(""), 10, 2)
+
+        # 
+        self.calc_battery_solar_distance = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Battery and Solar Distance"), 11, 0)
+        calcualtionLayout.addWidget(self.calc_battery_solar_distance, 11, 1)
+        calcualtionLayout.addWidget(QLabel(""), 11, 2)
+
+        # 
+        self.calc_battery_charge_remaining = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Battery Charge Remaining"), 12, 0)
+        calcualtionLayout.addWidget(self.calc_battery_charge_remaining, 12, 1)
+        calcualtionLayout.addWidget(QLabel(""), 12, 2)
+
+        # 
+        self.calc_solar_energy_remaining = QLabel("value")
+        calcualtionLayout.addWidget(QLabel("Solar Energy Remaining in Day"), 13, 0)
+        calcualtionLayout.addWidget(self.calc_solar_energy_remaining, 13, 1)
+        calcualtionLayout.addWidget(QLabel(""), 13, 2)
+
+        calculationWidget.setLayout(calcualtionLayout);
+        batteryLayout2.addWidget(calculationWidget)
 
         batteryWidget1 = QGroupBox('Log Display')
         batteryWidget1.setAlignment(Qt.AlignHCenter)
@@ -369,7 +446,9 @@ class PlottingDataMonitor(QMainWindow):
         batteryWidgetLayout.addWidget(batteryWidget2)
         batteryWidget.setLayout(batteryWidgetLayout)
 
-        #Time
+        # -----------------------------------------------------------
+        #   Time
+        # -----------------------------------------------------------
         timeWidget = QGroupBox('Time')
         timeLayout = QGridLayout()
         self.currentTime = QLabel(time.strftime("%H:%M:%S", time.localtime(self.curTime)))
@@ -380,7 +459,9 @@ class PlottingDataMonitor(QMainWindow):
         timeLayout.addWidget(QLabel('Run time:'),1,0)
         timeWidget.setLayout(timeLayout)
 
-        #Batteries
+        # -----------------------------------------------------------
+        #   Batteries
+        # -----------------------------------------------------------
         batteryStatsWidget = QGroupBox('Batteries')
         batteryStatsLayout = QGridLayout()
 
@@ -421,10 +502,14 @@ class PlottingDataMonitor(QMainWindow):
 
         batteryStatsWidget.setLayout(batteryStatsLayout)
 
-        #Motor Controller
+        # -----------------------------------------------------------
+        #   Motor Controller
+        # -----------------------------------------------------------
         self.motorControllerWidget = MotorController('Motor Controller')
 
-        #MPPTs
+        # -----------------------------------------------------------
+        #   MPPTs
+        # -----------------------------------------------------------
         mpptWidget = QGroupBox('MPPTs')
         mpptLayout = QGridLayout()
         mpptLayout.addWidget(QLabel('#'),0,0)
@@ -439,7 +524,9 @@ class PlottingDataMonitor(QMainWindow):
         mpptLayout.addWidget(QLabel('A'),5,2)
         mpptWidget.setLayout(mpptLayout)
 
-        #Graphs
+        # -----------------------------------------------------------
+        #   Graphs
+        # -----------------------------------------------------------
         self.speedGraph = QGroupBox('Speed (mph)')
         self.speedGraph.setFlat(True)
         self.speedGraph.setMinimumWidth(150)
@@ -449,23 +536,23 @@ class PlottingDataMonitor(QMainWindow):
         self.speedLayout.addWidget(self.speedCanvas)
         self.speedGraph.setLayout(self.speedLayout)
 
-        self.mCurrentGraph = QGroupBox('Motor Current (A)')
-        self.mCurrentGraph.setFlat(True)
-        self.mCurrentGraph.setMinimumWidth(150)
-        self.mCurrentFig = plt.figure()
-        self.mCurrentCanvas = FigureCanvas(self.mCurrentFig)
-        self.mCurrentLayout = QVBoxLayout()
-        self.mCurrentLayout.addWidget(self.mCurrentCanvas)
-        self.mCurrentGraph.setLayout(self.mCurrentLayout)
+        self.grossInstant = QGroupBox('Gross Instant Power')
+        self.grossInstant.setFlat(True)
+        self.grossInstant.setMinimumWidth(150)
+        self.grossInstantGraph = plt.figure()
+        self.grossInstantCanvas = FigureCanvas(self.grossInstantGraph)
+        self.grossInstantLayout = QVBoxLayout()
+        self.grossInstantLayout.addWidget(self.grossInstantCanvas)
+        self.grossInstant.setLayout(self.grossInstantLayout)
 
-        self.aCurrentGraph = QGroupBox('Array Current (A)')
-        self.aCurrentGraph.setFlat(True)
-        self.aCurrentGraph.setMinimumWidth(150)
-        self.aCurrentFig = plt.figure()
-        self.aCurrentCanvas = FigureCanvas(self.aCurrentFig)
-        self.aCurrentLayout = QVBoxLayout()
-        self.aCurrentLayout.addWidget(self.aCurrentCanvas)
-        self.aCurrentGraph.setLayout(self.aCurrentLayout)
+        self.arrayPowerGraph = QGroupBox('Array Power')
+        self.arrayPowerGraph.setFlat(True)
+        self.arrayPowerGraph.setMinimumWidth(150)
+        self.arrayPowerFig = plt.figure()
+        self.arrayPowerCanvas = FigureCanvas(self.arrayPowerFig)
+        self.arrayPowerLayout = QVBoxLayout()
+        self.arrayPowerLayout.addWidget(self.arrayPowerCanvas)
+        self.arrayPowerGraph.setLayout(self.arrayPowerLayout)
 
         self.voltageGraph = QGroupBox('Total Battery Voltage (V)')
         self.voltageGraph.setFlat(True)
@@ -476,12 +563,25 @@ class PlottingDataMonitor(QMainWindow):
         self.voltageLayout.addWidget(self.voltageCanvas)
         self.voltageGraph.setLayout(self.voltageLayout)
 
-        #Logo
+        self.batteryChargeGraph = QGroupBox('Total Battery Voltage (V)')
+        self.batteryChargeGraph.setFlat(True)
+        self.batteryChargeGraph.setMinimumWidth(150)
+        self.batteryChargeFig = plt.figure()
+        self.batteryChargeCanvas = FigureCanvas(self.batteryChargeFig)
+        self.batteryChargeLayout = QVBoxLayout()
+        self.batteryChargeLayout.addWidget(self.batteryChargeCanvas)
+        self.batteryChargeGraph.setLayout(self.batteryChargeLayout)
+
+        # -----------------------------------------------------------
+        #   Logo
+        # -----------------------------------------------------------
         logo = QLabel()
         logo.setGeometry(0,0,100,100)
         logo.setPixmap(QPixmap("img/logo1.png")) 
 
-        #Main Layout
+        # -----------------------------------------------------------
+        #   Main Layout
+        # -----------------------------------------------------------
         self.main_frame1 = QWidget()
         main_layout1 = QVBoxLayout()
         main_layout1.addWidget(batteryWidget)
@@ -502,9 +602,12 @@ class PlottingDataMonitor(QMainWindow):
         self.graphs_frame = QWidget()
         graphs_layout = QVBoxLayout()
         graphs_layout.addWidget(self.speedGraph)
-        graphs_layout.addWidget(self.mCurrentGraph)
-        graphs_layout.addWidget(self.aCurrentGraph)
+        graphs_layout.addWidget(self.grossInstant)
+        # graphs_layout.addWidget(self.mCurrentGraph)
+        graphs_layout.addWidget(self.arrayPowerGraph)
+        # graphs_layout.addWidget(self.aCurrentGraph)
         graphs_layout.addWidget(self.voltageGraph)
+        graphs_layout.addWidget(self.batteryChargeGraph)
         self.graphs_frame.setLayout(graphs_layout)
         
         self.main_frame = QWidget()
@@ -532,21 +635,32 @@ class PlottingDataMonitor(QMainWindow):
         axSpeed.plot_date(times, speeds, '')
         self.speedCanvas.draw()
 
-        mCurrentData = self.motorControllerWidget.getCurrents()
-        mCurrents = [item[0] for item in mCurrentData]
-        times = [dt.utcfromtimestamp(item[1]) for item in mCurrentData]
-        axMCurrent = self.mCurrentFig.add_axes([.1,0,1,1])
-        axMCurrent.hold(False)
-        axMCurrent.plot_date(times, mCurrents, '')
-        self.mCurrentCanvas.draw()
+        # TODO: (Ethan) Implement graphing of Gross Instance Data
+        # grossInstantData = self.motorControllerWidget.getCurrents()
+        # grossInstants = [item[0] for item in grossInstantData]
+        # times = [dt.utcfromtimestamp(item[1]) for item in grossInstantData]
+        # axGrossInstant = self.mCurrentFig.add_axes([.1,0,1,1])
+        # axGrossInstant.hold(False)
+        # axGrossInstant.plot_date(times, grossInstants, '')
+        # self.grossInstant.draw()
 
-        aCurrentData = self.getArrayCurrents()
-        aCurrents = [item[0] for item in aCurrentData]
-        times = [dt.utcfromtimestamp(item[1]) for item in aCurrentData]
-        axACurrent = self.aCurrentFig.add_axes([.1,0,1,1])
-        axACurrent.hold(False)
-        axACurrent.plot_date(times, aCurrents, '')
-        self.aCurrentCanvas.draw()
+        # TODO: (Ethan) Implement graphing of Array Power
+        # arrayPowerData = self.motorControllerWidget.getCurrents()
+        # arrayPowers = [item[0] for item in arrayPowerData]
+        # times = [dt.utcfromtimestamp(item[1]) for item in arrayPowerData]
+        # axarrayPower = self.mCurrentFig.add_axes([.1,0,1,1])
+        # axarrayPower.hold(False)
+        # axarrayPower.plot_date(times, arrayPowers, '')
+        # self.arrayPowerGraph.draw()
+
+        # TODO: (Ethan) Implement graphing of Battery Charge Remaining
+        # batteryChargeData = self.motorControllerWidget.getCurrents()
+        # batteryCharges = [item[0] for item in batteryChargeData]
+        # times = [dt.utcfromtimestamp(item[1]) for item in batteryChargeData]
+        # axbatteryCharge = self.mCurrentFig.add_axes([.1,0,1,1])
+        # axbatteryCharge.hold(False)
+        # axbatteryCharge.plot_date(times, batteryCharges, '')
+        # self.batteryChargeGraph.draw()
 
         voltageData = self.totalVoltage
         voltages = [item[0] for item in voltageData]
