@@ -292,6 +292,11 @@ class PlottingDataMonitor(QMainWindow):
         self.setWindowTitle('University of Kentucky Solar Car Telemetry')
 
     def create_main_frame(self):
+
+        # -----------------------------------------------------------
+        #   Buttons
+        #   TODO: (Ethan) Add a on key pressed event to command promp input
+        # -----------------------------------------------------------
         portname_l, self.portname = self.make_data_box('COM Port:')
         
         portname_layout = QHBoxLayout()
@@ -309,6 +314,10 @@ class PlottingDataMonitor(QMainWindow):
         self.loggingToggle = QPushButton('Start Logging')
         self.loggingToggle.clicked.connect(self.toggleLogging)
         portname_layout.addWidget(self.loggingToggle)
+
+        self.resetToggle = QPushButton('Reset Calcualtions')
+        self.resetToggle.clicked.connect(self.resetCalculations)
+        portname_layout.addWidget(self.resetToggle)
 
         exit = QPushButton('Exit')
         exit.clicked.connect(self.close)
@@ -334,6 +343,10 @@ class PlottingDataMonitor(QMainWindow):
         self.command_promt = QLineEdit()
         batteryLayout1.addWidget(self.command_promt, 1, 0)
 
+        batteryWidget1 = QGroupBox('Log Display')
+        batteryWidget1.setAlignment(Qt.AlignHCenter)
+        batteryWidget1.setLayout(batteryLayout1)
+
 
         # -----------------------------------------------------------
         #   Calculated Values
@@ -349,92 +362,88 @@ class PlottingDataMonitor(QMainWindow):
         self.calc_array_power = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Array Power"), 0, 0)
         calcualtionLayout.addWidget(self.calc_array_power, 0, 1)
-        calcualtionLayout.addWidget(QLabel(""), 0, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 0, 2)
 
         # Gross Watt*Hours
         self.calc_gross_watt_hours = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Gross Watt*Hours"), 1, 0)
         calcualtionLayout.addWidget(self.calc_gross_watt_hours, 1, 1)
-        calcualtionLayout.addWidget(QLabel("B"), 1, 2)
+        # calcualtionLayout.addWidget(QLabel("B"), 1, 2)
 
         # 
         self.calc_net_watt_hours = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Net Watt*Hours"), 2, 0)
         calcualtionLayout.addWidget(self.calc_net_watt_hours, 2, 1)
-        calcualtionLayout.addWidget(QLabel("B"), 2, 2)
+        # calcualtionLayout.addWidget(QLabel("B"), 2, 2)
 
         # 
         self.calc_average_speed = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Average Speed"), 3, 0)
         calcualtionLayout.addWidget(self.calc_average_speed, 3, 1)
-        calcualtionLayout.addWidget(QLabel("B"), 3, 2)
+        # calcualtionLayout.addWidget(QLabel("B"), 3, 2)
 
         # 
         self.calc_average_gross_power = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Average Gross Power"), 4, 0)
         calcualtionLayout.addWidget(self.calc_average_gross_power, 4, 1)
-        calcualtionLayout.addWidget(QLabel("B"), 4, 2)
+        # calcualtionLayout.addWidget(QLabel("B"), 4, 2)
 
         # 
         self.calc_average_net_power = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Average Net Power"), 5, 0)
         calcualtionLayout.addWidget(self.calc_average_net_power, 5, 1)
-        calcualtionLayout.addWidget(QLabel("B"), 5, 2)
+        # calcualtionLayout.addWidget(QLabel("B"), 5, 2)
 
         # 
         self.calc_gross_average_power = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Gross Average Power"), 6, 0)
         calcualtionLayout.addWidget(self.calc_gross_average_power, 6, 1)
-        calcualtionLayout.addWidget(QLabel(""), 6, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 6, 2)
 
         # 
         self.calc_gross_average_watt = QLabel("value")
-        calcualtionLayout.addWidget(QLabel("Gross Average Watt hour/mile^2"), 7, 0)
+        calcualtionLayout.addWidget(QLabel("Gross Average Watt Hour/Mile"), 7, 0)
         calcualtionLayout.addWidget(self.calc_gross_average_watt, 7, 1)
-        calcualtionLayout.addWidget(QLabel(""), 7, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 7, 2)
 
         # 
         self.calc_battery_run_time_remaining = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Battery Only Run-time Remaining"), 8, 0)
         calcualtionLayout.addWidget(self.calc_battery_run_time_remaining, 8, 1)
-        calcualtionLayout.addWidget(QLabel(""), 8, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 8, 2)
 
         # 
         self.calc_battery_range = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Battery Only Range"), 9, 0)
         calcualtionLayout.addWidget(self.calc_battery_range, 9, 1)
-        calcualtionLayout.addWidget(QLabel(""), 9, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 9, 2)
 
         # 
         self.calc_battery_solar_run_time = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Battery and Solar Run-time"), 10, 0)
         calcualtionLayout.addWidget(self.calc_battery_solar_run_time, 10, 1)
-        calcualtionLayout.addWidget(QLabel(""), 10, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 10, 2)
 
         # 
         self.calc_battery_solar_distance = QLabel("value")
-        calcualtionLayout.addWidget(QLabel("Battery and Solar Distance"), 11, 0)
+        calcualtionLayout.addWidget(QLabel("Battery and Solar Range"), 11, 0)
         calcualtionLayout.addWidget(self.calc_battery_solar_distance, 11, 1)
-        calcualtionLayout.addWidget(QLabel(""), 11, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 11, 2)
 
         # 
         self.calc_battery_charge_remaining = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Battery Charge Remaining"), 12, 0)
         calcualtionLayout.addWidget(self.calc_battery_charge_remaining, 12, 1)
-        calcualtionLayout.addWidget(QLabel(""), 12, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 12, 2)
 
         # 
         self.calc_solar_energy_remaining = QLabel("value")
         calcualtionLayout.addWidget(QLabel("Solar Energy Remaining in Day"), 13, 0)
         calcualtionLayout.addWidget(self.calc_solar_energy_remaining, 13, 1)
-        calcualtionLayout.addWidget(QLabel(""), 13, 2)
+        # calcualtionLayout.addWidget(QLabel(""), 13, 2)
 
         calculationWidget.setLayout(calcualtionLayout);
         batteryLayout2.addWidget(calculationWidget)
-
-        batteryWidget1 = QGroupBox('Log Display')
-        batteryWidget1.setAlignment(Qt.AlignHCenter)
-        batteryWidget1.setLayout(batteryLayout1)
 
         batteryWidget2 = QGroupBox()
         batteryWidget2.setAlignment(Qt.AlignHCenter)
@@ -676,6 +685,9 @@ class PlottingDataMonitor(QMainWindow):
         self.currentTime.setText(time.strftime("%H:%M:%S", time.localtime(self.curTime)))
         self.timeSince.setText(time.strftime("%H:%M:%S", time.gmtime(self.timeSinceStart)))
         # print time.strftime("%d.%m.%Y.%H:%M:%S")
+
+    def resetCalculations(self):
+        pass;
 
     def toggleLogging(self):
         if self.logging_active:
