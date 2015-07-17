@@ -69,7 +69,7 @@ class MotorController(QGroupBox):
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
-        self.current.append((inCurrent, time.time()))
+        self.current.append([inCurrent, time.time()])
         self.tCurrent.setText('%.2f' %self.current[-1][0])
 
     def setEnergy(self, energy):
@@ -102,7 +102,7 @@ class MotorController(QGroupBox):
         return 0 if not self.speed else self.speed[-1][0]
 
     def getCurrent(self):
-        return 0 if not self.current else self.current[-1][0]
+        return 0 if not self.current else self.current[-1]
 
     def getSpeeds(self):
         return self.speed
@@ -259,9 +259,12 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             self.mppts.append(MPPT(i))
 
-        self.batteryCurrent = []
-        self.arrayCurrent = []
-        self.totalVoltage = []
+        self.BatmanAvgVoltage = 0.0
+        self.RobinAvgVoltage = 0.0
+        self.BatmanAvgCurrent = 0.0
+        self.RobinAvgCurrent = 0.0
+
+        self.array_power_list = []
 
         self.monitor_active = False
         self.logging_active = False
@@ -467,39 +470,51 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsWidget = QGroupBox('Batteries')
         batteryStatsLayout = QGridLayout()
 
-        self.BatmanAverage = QLabel('0.00 V')
-        self.BatmanHigh = QLabel('0.00 V (#)')
-        self.BatmanLow = QLabel('0.00 V (#)')
+        self.BatmanVAvg = QLabel('0.00 V')
+        self.BatmanVMax = QLabel('0.00 V (#)')
+        self.BatmanVMin = QLabel('0.00 V (#)')
         self.BatmanBC = QLabel('0.00 A')
-        self.BatmanTemp = QLabel('0.00')
+        self.BatmanTAvg = QLabel('0.00 C')
+        self.BatmanTMax = QLabel('0.00 C')
+        self.BatmanTMin = QLabel('0.00 C')
         batteryStatsLayout.addWidget(QLabel('Batman'),0,0,1,2, Qt.AlignHCenter)
-        batteryStatsLayout.addWidget(QLabel('Average:'),1,0)
-        batteryStatsLayout.addWidget(self.BatmanAverage,1,1)
-        batteryStatsLayout.addWidget(QLabel('High:'),2,0)
-        batteryStatsLayout.addWidget(self.BatmanHigh,2,1)
-        batteryStatsLayout.addWidget(QLabel('Low:'),3,0)
-        batteryStatsLayout.addWidget(self.BatmanLow,3,1)
+        batteryStatsLayout.addWidget(QLabel('V_Average:'),1,0)
+        batteryStatsLayout.addWidget(self.BatmanVAvg,1,1)
+        batteryStatsLayout.addWidget(QLabel('V_Max:'),2,0)
+        batteryStatsLayout.addWidget(self.BatmanVMax,2,1)
+        batteryStatsLayout.addWidget(QLabel('V_Min:'),3,0)
+        batteryStatsLayout.addWidget(self.BatmanVMin,3,1)
         batteryStatsLayout.addWidget(QLabel('Current:'),4,0)
         batteryStatsLayout.addWidget(self.BatmanBC,4,1)
-        batteryStatsLayout.addWidget(QLabel('Temperature:'),5,0)
-        batteryStatsLayout.addWidget(self.BatmanTemp,5,1)
+        batteryStatsLayout.addWidget(QLabel('T_Average:'),5,0)
+        batteryStatsLayout.addWidget(self.BatmanTAvg,5,1)
+        batteryStatsLayout.addWidget(QLabel('T_Max:'),6,0)
+        batteryStatsLayout.addWidget(self.BatmanTMax,6,1)
+        batteryStatsLayout.addWidget(QLabel('T_Min:'),7,0)
+        batteryStatsLayout.addWidget(self.BatmanTMin,7,1)
 
-        self.RobinAverage = QLabel('0.00 V')
-        self.RobinHigh = QLabel('0.00 V (#)')
-        self.RobinLow = QLabel('0.00 V (#)')
+        self.RobinVAvg = QLabel('0.00 V')
+        self.RobinVMax = QLabel('0.00 V (#)')
+        self.RobinVMin = QLabel('0.00 V (#)')
         self.RobinBC = QLabel('0.00 A')
-        self.RobinTemp = QLabel('0.00')
+        self.RobinTAvg = QLabel('0.00 C')
+        self.RobinTMax = QLabel('0.00 C')
+        self.RobinTMin = QLabel('0.00 C')
         batteryStatsLayout.addWidget(QLabel('Robin'),0,2,1,2, Qt.AlignHCenter)
-        batteryStatsLayout.addWidget(QLabel('Average:'),1,2)
-        batteryStatsLayout.addWidget(self.RobinAverage,1,3)
-        batteryStatsLayout.addWidget(QLabel('High:'),2,2)
-        batteryStatsLayout.addWidget(self.RobinHigh,2,3)
-        batteryStatsLayout.addWidget(QLabel('Low:'),3,2)
-        batteryStatsLayout.addWidget(self.RobinLow,3,3)
+        batteryStatsLayout.addWidget(QLabel('V_Average:'),1,2)
+        batteryStatsLayout.addWidget(self.RobinVAvg,1,3)
+        batteryStatsLayout.addWidget(QLabel('V_Max:'),2,2)
+        batteryStatsLayout.addWidget(self.RobinVMax,2,3)
+        batteryStatsLayout.addWidget(QLabel('V_Min:'),3,2)
+        batteryStatsLayout.addWidget(self.RobinVMin,3,3)
         batteryStatsLayout.addWidget(QLabel('Current:'),4,2)
         batteryStatsLayout.addWidget(self.RobinBC,4,3)
-        batteryStatsLayout.addWidget(QLabel('Temperature:'),5,2)
-        batteryStatsLayout.addWidget(self.RobinTemp,5,3)
+        batteryStatsLayout.addWidget(QLabel('T_Average:'),5,2)
+        batteryStatsLayout.addWidget(self.RobinTAvg,5,3)
+        batteryStatsLayout.addWidget(QLabel('T_Max:'),6,2)
+        batteryStatsLayout.addWidget(self.RobinTMax,6,3)
+        batteryStatsLayout.addWidget(QLabel('T_Min:'),7,2)
+        batteryStatsLayout.addWidget(self.RobinTMin,7,3)
 
 
         batteryStatsWidget.setLayout(batteryStatsLayout)
@@ -979,20 +994,37 @@ class PlottingDataMonitor(QMainWindow):
     
         if j_object["message_id"] == "bat_temp":
             if j_object["name"] == "0":
-                self.BatmanTemp.setText('%.2f' %float(j_object["Tavg"]))
+                self.BatmanTAvg.setText('%.2f' %float(j_object["Tavg"]))
+                self.BatmanTMin.setText('%.2f' %float(j_object["Tmin"]))
+                self.BatmanTMax.setText('%.2f' %float(j_object["Tmax"]))
             else:
-                self.RobinTemp.setText('%.2f' %float(j_object["Tavg"]))
+                self.RobinTAvg.setText('%.2f' %float(j_object["Tavg"]))
+                self.RobinTMin.setText('%.2f' %float(j_object["Tmin"]))
+                self.RobinTMax.setText('%.2f' %float(j_object["Tmax"]))
         elif j_object["message_id"] == "bat_volt":
             if j_object["name"] == "0":
-                self.BatmanAverage.setText('%.2f V' %float(j_object["Vavg"]))
-                self.BatmanHigh.setText('%.2f V' %float(j_object["Vmax"]))
-                self.BatmanLow.setText('%.2f V' %float(j_object["Vmin"]))
-                self.BatmanBC.setText('%.2f A' %float(j_object["BC"]))
+                self.BatmanAvgVoltage = float(j_object["Vavg"])
+                self.BatmanAvgCurrent = float(j_object["BC"])
+                self.BatmanVAvg.setText('%.2f V' %self.BatmanAvgVoltage)
+                self.BatmanVMax.setText('%.2f V' %float(j_object["Vmax"]))
+                self.BatmanVMin.setText('%.2f V' %float(j_object["Vmin"]))
+                self.BatmanBC.setText('%.2f A' %self.BatmanAvgCurrent)
             else:
-                self.RobinAverage.setText('%.2f V' %float(j_object["Vavg"]))
-                self.RobinHigh.setText('%.2f V' %float(j_object["Vmax"]))
-                self.RobinLow.setText('%.2f V' %float(j_object["Vmin"]))
-                self.RobinBC.setText('%.2f A' %float(j_object["BC"]))
+                self.RobinAvgVoltage = float(j_object["Vavg"])
+                self.RobinAvgCurrent = float(j_object["BC"])
+                self.RobinVAvg.setText('%.2f V' %self.RobinAvgVoltage)
+                self.RobinVMax.setText('%.2f V' %float(j_object["Vmax"]))
+                self.RobinVMin.setText('%.2f V' %float(j_object["Vmin"]))
+                self.RobinBC.setText('%.2f A' %self.RobinAvgCurrent)
+
+    def updateArrayPower(self):
+        motor_current = float((self.motorControllerWidget.getCurrent())[0])
+        motor_current_time = (self.motorControllerWidget.getCurrent())[1]
+        array_power = ((motor_current-self.BatmanAvgCurrent)*BatmanAvgVoltage*20)+((motor_current-self.RobinAvgCurrent)*RobinAvgVoltage*20)
+        self.array_power_list.append([motor_current_time, motor_current])
+        self.calc_array_power.setText('%.2f W' %array_power)
+
+    
 
 def main():
     app = QApplication(sys.argv)
