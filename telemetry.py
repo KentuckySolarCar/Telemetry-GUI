@@ -524,13 +524,14 @@ class PlottingDataMonitor(QMainWindow):
         mpptLayout.addWidget(QLabel('#'),0,0)
         mpptLayout.addWidget(QLabel('Out Current'),0,1,1,2)
         for i in range(4):
-            mpptLayout.addWidget(QLabel(str(i)),i+1,0)
-            mpptLayout.addWidget(self.mppts[i],i+1,1)
-            mpptLayout.addWidget(QLabel('A'),i+1,2)
+            pass
+            # mpptLayout.addWidget(QLabel(str(i)),i+1,0)
+            # mpptLayout.addWidget(self.mppts[i],i+1,1)
+            # mpptLayout.addWidget(QLabel('A'),i+1,2)
         self.MPPTTotal = QLabel('0.000')
-        mpptLayout.addWidget(QLabel('Total'),5,0)
-        mpptLayout.addWidget(self.MPPTTotal,5,1)
-        mpptLayout.addWidget(QLabel('A'),5,2)
+        # mpptLayout.addWidget(QLabel('Total'),5,0)
+        # mpptLayout.addWidget(self.MPPTTotal,5,1)
+        # mpptLayout.addWidget(QLabel('A'),5,2)
         mpptWidget.setLayout(mpptLayout)
 
         # -----------------------------------------------------------
@@ -775,7 +776,8 @@ class PlottingDataMonitor(QMainWindow):
         return action
 
     def on_select_port(self):
-        ports = list(enumerate_serial_ports())
+        # ports = list(enumerate_serial_ports())
+        ports = ["/dev/ttyIN7"]
         if len(ports) == 0:
             QMessageBox.critical(self, 'No ports',
                 'No serial ports found')
@@ -915,74 +917,31 @@ class PlottingDataMonitor(QMainWindow):
             data = self.livefeed.read_data().split("\r\n")
 
             for message in data:
-                print(message)
-                json_obj = json.loads(message)
-                if( json_obj["message_id"] == 'bat_temp' ):
-                    pass
+                if( len(message) > 0 ):
+                    print(message)
+                    self.running_log.append(message)
+                    # try:
+                    json_obj = json.loads(message)
+                    if( json_obj["message_id"] == 'bat_temp' ):
+                        self.updateBatteries( json_obj );
 
-                elif( json_obj["message_id"] == "bat_volt" ):
-                    pass
+                    elif( json_obj["message_id"] == "bat_volt" ):
+                        self.updateBatteries( json_obj );
 
-                elif( json_obj["message_id"] == "motor" ):
-                    pass
+                    elif( json_obj["message_id"] == "motor" ):
+                        self.updateMotor( json_obj );
+                    # except:
+                    #     self.running_log.append("Failed to load json message: " + message)
+                    #     print("Failed to load json message: ",message)
 
-            # TODO: (Ethan) Update REGEX to apply to new message format
+            #  TODO: (Ethan) Update mppts
 
-            # Regular Expressions
-            # with data examples commented above
-
-            # V[1][16] = 33421
-            batteryVoltageRX = re.compile("^\s*V\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
-            # T[1][15] = 26
-            batteryTemperatureRX = re.compile("^\s*T\[([0-1])\]\[([0-1][0-9])\]\s\=\s(\d+)\s*$")
-            # C = 0
-            batteryCurrentRX = re.compile("^\s*C\s=\s(\d+)\s*$")
-            # S = 0
-            motorControllerVelocityRX = re.compile("^\s*S\s=\s(\d+)\s*$")
-            # E = 0
-            motorControllerEnergyRX = re.compile("^\s*E\s=\s(\d+)\s*$")
-            # W = 0
-            motorControllerBusVoltageRX = re.compile("^\s*W\s=\s(\d+)\s*$")
-            # M[2] 22 91 140
-            MPPTDataRX = re.compile("^\s*M\[([0-3])\]\s(\d+)\s(\d+)\s(\d+)\s*$")
-            # #   BPS TIMEOUT number [1][08]= ??
-            BPSbadRX = re.compile("^\s*#\s\s\sBPS\sTIMEOUT\snumber\s\[([0-1])\]\[([0-1][0-9])\]= \?\?\s*$")
-
-            # TODO: (Ethan) Fix parsing of Battery data
-
-            if batteryVoltageRX.match(data):
-                pass # TEMP: (Ethan)
-            #     info = batteryVoltageRX.search(data).groups()
-            #     self.batteries[int(info[0])][int(info[1])].setVoltage(int(info[2]))
-            #     self.updateBatteries()
-
-            elif batteryTemperatureRX.match(data):
-                pass # TEMP: (Ethan)
-            #     info = batteryTemperatureRX.search(data).groups()
-            #     self.batteries[int(info[0])][int(info[1])].setTemperature(int(info[2]))
-
-            elif batteryCurrentRX.match(data):
-                info = batteryCurrentRX.search(data).groups()
-                self.batteryCurrent.append((float(info[0]), time.time()))
-
-            elif motorControllerVelocityRX.match(data):
-                info = motorControllerVelocityRX.search(data).groups()
-                self.motorControllerWidget.setSpeed(int(info[0]))
-
-            elif motorControllerEnergyRX.match(data):
-                info = motorControllerEnergyRX.search(data).groups()
-                self.motorControllerWidget.setEnergy(int(info[0]))
-
-            elif motorControllerBusVoltageRX.match(data):
-                info = motorControllerBusVoltageRX.search(data).groups()
-                busVoltage = int(info[0])
-
-            elif MPPTDataRX.match(data):
-                info = MPPTDataRX.search(data).groups()
-                self.mppts[int(info[0])].setInVoltage(int(info[1]))
-                self.mppts[int(info[0])].setInCurrent(int(info[2]))
-                self.mppts[int(info[0])].setOutVoltage(int(info[3]))
-                self.updateMPPT()
+            # elif MPPTDataRX.match(data):
+            #     info = MPPTDataRX.search(data).groups()
+            #     self.mppts[int(info[0])].setInVoltage(int(info[1]))
+            #     self.mppts[int(info[0])].setInCurrent(int(info[2]))
+            #     self.mppts[int(info[0])].setOutVoltage(int(info[3]))
+            #     self.updateMPPT()
 
             # TODO: (Ethan) Update Battery error checking code
 
@@ -993,9 +952,9 @@ class PlottingDataMonitor(QMainWindow):
             #     print "WARNING BPS TIMEOUT number [%d][%2d]" %(box, cell)
             #     self.batteries[box][cell].setBad()
 
-            else:
-                info =  "Could not match input '" + data + "'"
-                print info
+            # else:
+            #     info =  "Could not match input '" + data + "'"
+            #     print info
 
             # print data #debug
 
@@ -1014,6 +973,11 @@ class PlottingDataMonitor(QMainWindow):
 
     def getBatteryCurrent(self):
         return self.batteryCurrent[-1][0] if self.batteryCurrent else 0
+
+    def updateMotor(self, json_obj):
+        self.motorControllerWidget.setSpeed( json_obj["S"] )
+        self.motorControllerWidget.setCurrent( json_obj["C"] )
+        self.motorControllerWidget.setEnergy( json_obj["M"] )
 
     def updateBatteries(self):
         #find highest, lowest, and average values
