@@ -255,13 +255,6 @@ class PlottingDataMonitor(QMainWindow):
 
         self.setFont(QFont('Arial Unicode MS', 10))
 
-        self.batteries = [ Battery(), Battery() ]; # { Batman, Robin }
-
-        # self.batteries = [[],[]]
-        # for i in range(20):
-        #     self.batteries[0].append(Battery()) # (ET) Batman
-        #     self.batteries[1].append(Battery()) # (ET) Robin
-
         self.mppts = []
         for i in range(4):
             self.mppts.append(MPPT(i))
@@ -474,40 +467,40 @@ class PlottingDataMonitor(QMainWindow):
         batteryStatsWidget = QGroupBox('Batteries')
         batteryStatsLayout = QGridLayout()
 
-        self.tBatteryCurrent = QLabel('0.00 A')
-        # self.tBatteryAverage = QLabel('0.00 V')
-        # self.tBatteryHigh = QLabel('0.00 V (#)')
-        # self.tBatteryLow = QLabel('0.00 V (#)')
-        batteryStatsLayout.addWidget(QLabel('Current:'),4,0)
-        batteryStatsLayout.addWidget(self.tBatteryCurrent,4,1)
-        # batteryStatsLayout.addWidget(QLabel('Average:'),1,4)
-        # batteryStatsLayout.addWidget(self.tBatteryAverage,1,5)
-        # batteryStatsLayout.addWidget(QLabel('High:'),2,4)
-        # batteryStatsLayout.addWidget(self.tBatteryHigh,2,5)
-        # batteryStatsLayout.addWidget(QLabel('Low:'),3,4)
-        # batteryStatsLayout.addWidget(self.tBatteryLow,3,5)
-
-        self.tBatmanAverage = QLabel('0.00 V')
-        self.tBatmanHigh = QLabel('0.00 V (#)')
-        self.tBatmanLow = QLabel('0.00 V (#)')
+        self.BatmanAverage = QLabel('0.00 V')
+        self.BatmanHigh = QLabel('0.00 V (#)')
+        self.BatmanLow = QLabel('0.00 V (#)')
+        self.BatmanBC = QLabel('0.00 A')
+        self.BatmanTemp = QLabel('0.00')
         batteryStatsLayout.addWidget(QLabel('Batman'),0,0,1,2, Qt.AlignHCenter)
         batteryStatsLayout.addWidget(QLabel('Average:'),1,0)
-        batteryStatsLayout.addWidget(self.tBatmanAverage,1,1)
+        batteryStatsLayout.addWidget(self.BatmanAverage,1,1)
         batteryStatsLayout.addWidget(QLabel('High:'),2,0)
-        batteryStatsLayout.addWidget(self.tBatmanHigh,2,1)
+        batteryStatsLayout.addWidget(self.BatmanHigh,2,1)
         batteryStatsLayout.addWidget(QLabel('Low:'),3,0)
-        batteryStatsLayout.addWidget(self.tBatmanLow,3,1)
+        batteryStatsLayout.addWidget(self.BatmanLow,3,1)
+        batteryStatsLayout.addWidget(QLabel('Current:'),4,0)
+        batteryStatsLayout.addWidget(self.BatmanBC,4,1)
+        batteryStatsLayout.addWidget(QLabel('Temperature:'),5,0)
+        batteryStatsLayout.addWidget(self.BatmanTemp,5,1)
 
-        self.tRobinAverage = QLabel('0.00 V')
-        self.tRobinHigh = QLabel('0.00 V (#)')
-        self.tRobinLow = QLabel('0.00 V (#)')
+        self.RobinAverage = QLabel('0.00 V')
+        self.RobinHigh = QLabel('0.00 V (#)')
+        self.RobinLow = QLabel('0.00 V (#)')
+        self.RobinBC = QLabel('0.00 A')
+        self.RobinTemp = QLabel('0.00')
         batteryStatsLayout.addWidget(QLabel('Robin'),0,2,1,2, Qt.AlignHCenter)
         batteryStatsLayout.addWidget(QLabel('Average:'),1,2)
-        batteryStatsLayout.addWidget(self.tRobinAverage,1,3)
+        batteryStatsLayout.addWidget(self.RobinAverage,1,3)
         batteryStatsLayout.addWidget(QLabel('High:'),2,2)
-        batteryStatsLayout.addWidget(self.tRobinHigh,2,3)
+        batteryStatsLayout.addWidget(self.RobinHigh,2,3)
         batteryStatsLayout.addWidget(QLabel('Low:'),3,2)
-        batteryStatsLayout.addWidget(self.tRobinLow,3,3)
+        batteryStatsLayout.addWidget(self.RobinLow,3,3)
+        batteryStatsLayout.addWidget(QLabel('Current:'),4,2)
+        batteryStatsLayout.addWidget(self.RobinBC,4,3)
+        batteryStatsLayout.addWidget(QLabel('Temperature:'),5,2)
+        batteryStatsLayout.addWidget(self.RobinTemp,5,3)
+
 
         batteryStatsWidget.setLayout(batteryStatsLayout)
 
@@ -1015,44 +1008,27 @@ class PlottingDataMonitor(QMainWindow):
     def getBatteryCurrent(self):
         return self.batteryCurrent[-1][0] if self.batteryCurrent else 0
 
-    def updateBatteries(self):
-        #find highest, lowest, and average values
-        highestBatteryValue = 0.0
-        highestBatteryModule = 0
-        lowestBatteryValue = 4.0
-        lowestBatteryModule = 0
-        averageBatteryValue = 0.0
-        batterySum = 0.0
-        for i in range(2):
-            voltage = self.batteries[i].getVoltage()
-            batterySum = batterySum + voltage
-            if voltage > highestBatteryValue:
-                highestBatteryValue = voltage
-                highestBatteryModule = (i)
-            if voltage < lowestBatteryValue:
-                lowestBatteryValue = voltage
-                lowestBatteryModule = (i)
-        averageBatteryValue = batterySum / 2;
-
-        averageBatmanValue = self.batteries[0].getVoltage()
-
-        averageRobinValue = self.batteries[1].getVoltage()
-
-        self.tBatmanAverage.setText('%.2f V' %averageBatmanValue)
-        self.tBatmanHigh.setText('%.2f V (%d)' %(highestBatmanValue, highestBatmanModule))
-        self.tBatmanLow.setText('%.2f V (%d)' %(lowestBatmanValue, lowestBatmanModule))
-
-        self.tRobinAverage.setText('%.2f V' %averageRobinValue)
-        self.tRobinHigh.setText('%.2f V (%d)' %(highestRobinValue, highestRobinModule))
-        self.tRobinLow.setText('%.2f V (%d)' %(lowestRobinValue, lowestRobinModule))
-
-        self.tBatteryCurrent.setText('%.2f A' %(self.batteryCurrent[-1][0] if self.batteryCurrent else 0))
-        # self.tBatteryAverage.setText('%.2f V' %averageBatteryValue)
-        # self.tBatteryHigh.setText('%.2f V (#%d)' %(highestBatteryValue, highestBatteryModule))
-        # self.tBatteryLow.setText('%.2f V (#%d)' %(lowestBatteryValue, lowestBatteryModule))
-
-        total = averageBatmanValue + averageRobinValue
-        self.totalVoltage.append((total, time.time()))
+    #Identifies json object as an identifier for temperature
+    #or voltage. From there it identifies it as batman or robin
+    #data and updates the "Batteries" section on the GUI.
+    def updateBatteries(self, j_object):
+    
+        if j_object["message_id"] == "bat_temp":
+            if j_object["name"] == "0":
+                self.BatmanTemp.setText('%.2f' %float(j_object["Tavg"]))
+            else:
+                self.RobinTemp.setText('%.2f' %float(j_object["Tavg"]))
+        elif j_object["message_id"] == "bat_volt":
+            if j_object["name"] == "0":
+                self.BatmanAverage.setText('%.2f V' %float(j_object["Vavg"]))
+                self.BatmanHigh.setText('%.2f V' %float(j_object["Vmax"]))
+                self.BatmanLow.setText('%.2f V' %float(j_object["Vmin"]))
+                self.BatmanBC.setText('%.2f A' %float(j_object["BC"]))
+            else:
+                self.RobinAverage.setText('%.2f V' %float(j_object["Vavg"]))
+                self.RobinHigh.setText('%.2f V' %float(j_object["Vmax"]))
+                self.RobinLow.setText('%.2f V' %float(j_object["Vmin"]))
+                self.RobinBC.setText('%.2f A' %float(j_object["BC"]))
 
 def main():
     app = QApplication(sys.argv)
