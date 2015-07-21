@@ -64,12 +64,12 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append([inSpeed*self.conversion, time.time()])
+        self.speed.append([float (inSpeed), time.time()])
         self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
-        self.current.append([inCurrent, time.time()])
+        self.current.append([float (inCurrent), time.time()])
         self.tCurrent.setText('%.2f' %self.current[-1][0])
 
     def setEnergy(self, energy):
@@ -333,6 +333,7 @@ class PlottingDataMonitor(QMainWindow):
 
         self.running_log = QTextEdit();
         self.running_log.setEnabled(False)
+        self.running_log.setWordWrapMode(3) # 3 - wrap anywhere
         batteryLayout1.setRowMinimumHeight(0, 400)
         batteryLayout1.addWidget(self.running_log, 0, 0)
 
@@ -984,7 +985,7 @@ class PlottingDataMonitor(QMainWindow):
 
     def updateMotor(self, json_obj):
         self.motorControllerWidget.setSpeed( json_obj["S"] )
-        self.motorControllerWidget.setCurrent( json_obj["C"] )
+        self.motorControllerWidget.setCurrent( json_obj["I"] )
         self.motorControllerWidget.setEnergy( json_obj["M"] )
 
     #Identifies json object as an identifier for temperature
