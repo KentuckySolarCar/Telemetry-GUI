@@ -263,8 +263,16 @@ class PlottingDataMonitor(QMainWindow):
         self.RobinAvgVoltage = 0.0
         self.BatmanAvgCurrent = 0.0
         self.RobinAvgCurrent = 0.0
+        self.BatmanAvgTemp = 0.0
+        self.RobinAvgTemp = 0.0
 
-        self.array_power_list = []
+        self.graphTimeInterval = 2 #minutes
+
+        self.array_power_deque = deque( maxlen = 60*self.graphTimeInterval )
+        self.total_voltage_deque = deque( maxlen = 60*self.graphTimeInterval )
+        self.speed_deque = deque( maxlen = 60*self.graphTimeInterval )
+        self.gross_instant_deque = deque( maxlen = 60*self.graphTimeInterval )
+        self.battery_charge_deque = deque( maxlen = 60*self.graphTimeInterval )
 
         self.monitor_active = False
         self.logging_active = False
@@ -994,11 +1002,13 @@ class PlottingDataMonitor(QMainWindow):
     
         if j_object["message_id"] == "bat_temp":
             if j_object["name"] == "0":
-                self.BatmanTAvg.setText('%.2f' %float(j_object["Tavg"]))
+                self.BatmanAvgTemp = float(j_object["Tavg"])
+                self.BatmanTAvg.setText('%.2f' %self.BatmanAvgTemp)
                 self.BatmanTMin.setText('%.2f' %float(j_object["Tmin"]))
                 self.BatmanTMax.setText('%.2f' %float(j_object["Tmax"]))
             else:
-                self.RobinTAvg.setText('%.2f' %float(j_object["Tavg"]))
+                self.RobinAvgTemp = float(j_object["Tavg"])
+                self.RobinTAvg.setText('%.2f' %self.RobinAvgTemp)
                 self.RobinTMin.setText('%.2f' %float(j_object["Tmin"]))
                 self.RobinTMax.setText('%.2f' %float(j_object["Tmax"]))
         elif j_object["message_id"] == "bat_volt":
@@ -1017,12 +1027,33 @@ class PlottingDataMonitor(QMainWindow):
                 self.RobinVMin.setText('%.2f V' %float(j_object["Vmin"]))
                 self.RobinBC.setText('%.2f A' %self.RobinAvgCurrent)
 
-    def updateArrayPower(self):
+    def performCalculations(self):
+
         motor_current = float((self.motorControllerWidget.getCurrent())[0])
         motor_current_time = (self.motorControllerWidget.getCurrent())[1]
-        array_power = ((motor_current-self.BatmanAvgCurrent)*BatmanAvgVoltage*20)+((motor_current-self.RobinAvgCurrent)*RobinAvgVoltage*20)
+        batman_average_voltage = self.BatmanAvgVoltage
+        robin_average_voltage = self.RobinAvgVoltage
+        average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
+        total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
+        average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
+
+        #ARRAY POWER
+        array_power = ((motor_current-batman_average_voltage)*batman_average_voltage*20)+((motor_current-robin_average_voltage)*robin_average_voltage*20)
         self.array_power_list.append([motor_current_time, motor_current])
         self.calc_array_power.setText('%.2f W' %array_power)
+
+        #MOTOR POWER
+        motor_power = motor_current*total_battery_voltage
+
+        #BATTERY ONLY RUNTIME (SECONDS)
+        battery = Battery(0, 0)
+        battery_runtime = battery.Capacity*2*(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
+
+        #BATTERY ONLY RANGE
+        battery_range = battery_runtime*motorControllerWidget.getSpeed()/3600
+
+        #BATTERY AND SOLAR RUNTIME
+        
 
     
 
