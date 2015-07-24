@@ -1034,7 +1034,7 @@ class PlottingDataMonitor(QMainWindow):
         motor_current_time = (self.motorControllerWidget.getCurrent())[1]
         batman_average_voltage = self.BatmanAvgVoltage
         robin_average_voltage = self.RobinAvgVoltage
-        average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
+        average_battery_current = (batman_average_voltage + robin_average_voltage)/2
         total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
         average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
 
