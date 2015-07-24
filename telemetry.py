@@ -5,7 +5,7 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator, json, math
+import random, sys, os, Queue, re, time, operator, json, math, collections
 from datetime import datetime as dt
 from sys import platform as _platform
 
@@ -268,11 +268,11 @@ class PlottingDataMonitor(QMainWindow):
 
         self.graphTimeInterval = 2 #minutes
 
-        self.array_power_deque = deque( maxlen = 60*self.graphTimeInterval )
-        self.total_voltage_deque = deque( maxlen = 60*self.graphTimeInterval )
-        self.speed_deque = deque( maxlen = 60*self.graphTimeInterval )
-        self.gross_instant_deque = deque( maxlen = 60*self.graphTimeInterval )
-        self.battery_charge_deque = deque( maxlen = 60*self.graphTimeInterval )
+        self.array_power_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        self.total_voltage_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        self.speed_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        self.gross_instant_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        self.battery_charge_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
 
         self.monitor_active = False
         self.logging_active = False
