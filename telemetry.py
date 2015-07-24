@@ -5,7 +5,7 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator, json
+import random, sys, os, Queue, re, time, operator, json, math
 from datetime import datetime as dt
 from sys import platform as _platform
 
@@ -64,12 +64,12 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append([float (inSpeed), time.time()])
+        self.speed.append([inSpeed*self.conversion, time.time()])
         self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
-        self.current.append([float (inCurrent), time.time()])
+        self.current.append([inCurrent, time.time()])
         self.tCurrent.setText('%.2f' %self.current[-1][0])
 
     def setEnergy(self, energy):
@@ -341,7 +341,6 @@ class PlottingDataMonitor(QMainWindow):
 
         self.running_log = QTextEdit();
         self.running_log.setEnabled(False)
-        self.running_log.setWordWrapMode(3) # 3 - wrap anywhere
         batteryLayout1.setRowMinimumHeight(0, 400)
         batteryLayout1.addWidget(self.running_log, 0, 0)
 
@@ -993,7 +992,7 @@ class PlottingDataMonitor(QMainWindow):
 
     def updateMotor(self, json_obj):
         self.motorControllerWidget.setSpeed( json_obj["S"] )
-        self.motorControllerWidget.setCurrent( json_obj["I"] )
+        self.motorControllerWidget.setCurrent( json_obj["C"] )
         self.motorControllerWidget.setEnergy( json_obj["M"] )
 
     #Identifies json object as an identifier for temperature
@@ -1034,7 +1033,7 @@ class PlottingDataMonitor(QMainWindow):
         motor_current_time = (self.motorControllerWidget.getCurrent())[1]
         batman_average_voltage = self.BatmanAvgVoltage
         robin_average_voltage = self.RobinAvgVoltage
-        average_battery_current = (batman_average_voltage + robin_average_voltage)/2
+        average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
         total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
         average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
 
@@ -1054,7 +1053,50 @@ class PlottingDataMonitor(QMainWindow):
         battery_range = battery_runtime*motorControllerWidget.getSpeed()/3600
 
         #BATTERY AND SOLAR RUNTIME
-        
+
+    def elevationAngle(self, time):
+        solar_noon_hour = 1.5
+        latitude = 30.136416
+        declination = 21.08
+        out_value = arcsine(cos((time-solar_noon_hour)*15)*
+                   cos(declination)*
+                   cos(latitude)+
+                   sin(declination)*
+                   sin(latitude))
+        return out_value;
+
+    def powerWhileDriving(self, time):
+        direct_max_power = 900
+        indirect_max_Power = 100
+        elev_angle = elevationAngle(datetime.now().time().hour+datetime.now().time().minutes/60)
+        return direct_max_power * (abs(cos(90-elev_angle))^1.3)+indirect_max_power*((180-elev_angle)/180)
+
+    def energyRemainingInDay(self, time, dayTypeCode):
+        dt = .05
+        #Military Time (24 hour time)
+        stop_to_charge_time = 17
+        stop_charging_in_eve = 20
+        start_charge_in_morning = 7
+        start_racing_in_morning = 9
+
+        energy = 0
+
+        i = time
+        while True:
+            if i < stop_charging_in_eve:
+                energy += powerWhileDriving(i) * dt
+            else:
+                break
+
+        if dateTypeCode == 0:
+            return energy
+        else:
+            i = stop_to_charge_time
+            while True:
+                if i < stop_charging_in_eve:
+
+
+
 
     
 
