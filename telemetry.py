@@ -1030,7 +1030,7 @@ class PlottingDataMonitor(QMainWindow):
     def performCalculations(self):
 
         motor_current = float((self.motorControllerWidget.getCurrent())[0])
-        motor_current_time = (self.motorControllerWidget.getCurrent())[1]
+        struct_time = time.strptime((self.motorControllerWidget.getCurrent())[1], %T)
         batman_average_voltage = self.BatmanAvgVoltage
         robin_average_voltage = self.RobinAvgVoltage
         average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
@@ -1039,7 +1039,7 @@ class PlottingDataMonitor(QMainWindow):
 
         #ARRAY POWER
         array_power = ((motor_current-batman_average_voltage)*batman_average_voltage*20)+((motor_current-robin_average_voltage)*robin_average_voltage*20)
-        self.array_power_list.append([motor_current_time, motor_current])
+        self.array_power_list.append([struct_time.hour+struct_time.minute/60+struct_time.second/3600, motor_current])
         self.calc_array_power.setText('%.2f W' %array_power)
 
         #MOTOR POWER
@@ -1068,7 +1068,7 @@ class PlottingDataMonitor(QMainWindow):
     def powerWhileDriving(self, time):
         direct_max_power = 900
         indirect_max_Power = 100
-        elev_angle = elevationAngle(datetime.now().time().hour+datetime.now().time().minutes/60)
+        elev_angle = elevationAngle(datetime.now().time().hour+datetime.now().time().minute/60+datetime.now().time().second/3600)
         return direct_max_power * (abs(cos(90-elev_angle))^1.3)+indirect_max_power*((180-elev_angle)/180)
 
     def energyRemainingInDay(self, time, dayTypeCode):
@@ -1085,15 +1085,35 @@ class PlottingDataMonitor(QMainWindow):
         while True:
             if i < stop_charging_in_eve:
                 energy += powerWhileDriving(i) * dt
+                i += dt
             else:
                 break
 
         if dateTypeCode == 0:
             return energy
-        else:
-            i = stop_to_charge_time
-            while True:
-                if i < stop_charging_in_eve:
+        
+        i = stop_to_charge_time
+        while True:
+            if i < stop_charging_in_eve:
+                energy += powerWhileDriving(i) * dt
+                i += dt
+            else:
+                break
+
+        if dayTypeCode == 1:
+            return energy
+
+        i = start_charge_in_morning
+        while True:
+            if i < start_racing_in_morning:
+                energy += powerWhileDriving(i) * dt
+                i += dt
+
+         return energy   
+
+
+
+
 
 
 
