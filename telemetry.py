@@ -19,6 +19,11 @@ import matplotlib.pyplot as plt
 from lib.com_monitor import ComMonitorThread
 from lib.livedatafeed import LiveDataFeed
 
+from PlottingDataMonitor import PlottingDataMonitor
+from MotorController import MotorController
+from MPPT import MPPT
+
+
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
