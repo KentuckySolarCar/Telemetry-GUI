@@ -9,6 +9,8 @@ import random, sys, os, Queue, re, time, operator, json, math, collections
 from datetime import datetime as dt
 from sys import platform as _platform
 
+from lib.Battery import Battery
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -22,16 +24,24 @@ from lib.livedatafeed import LiveDataFeed
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
+from UkMathLib import UkMathLib
+
+getCurrentTime = lambda: int(round(time.time() * 1000))
+
 class MotorController(QGroupBox):
     def __init__(self, parent=None):
         super(MotorController, self).__init__(parent)
         self.speed = []
         self.current = []
         self.energy = []
+        self.amp_sec = 0.0
+        self.watt_sec = 0.0
         self.averageSpeed = 0
         self.conversion = 0.223693629
         self.checkFromAv = 0
         self.checkFromE = 0
+
+        self.odometer = 0.0
 
         self.tSpeed = QLabel('0.00')
         self.tCurrent = QLabel('0.00')
@@ -64,7 +74,7 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append([inSpeed*self.conversion, time.time()])
+        self.speed.append([inSpeed, time.time()])
         self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
@@ -75,6 +85,15 @@ class MotorController(QGroupBox):
     def setEnergy(self, energy):
         self.energy.append((energy, time.time()))
         self.calcEnergy()
+
+    def setAmpHours(self, amp_hours):
+        self.amp_hours = amp_hours
+
+    def setWattSec(self, watt_sec):
+        self.watt_sec = watt_sec
+
+    def setOdometer(self, odo):
+        self.odometer = odo
 
     def calcAverageSpeed(self):
         self.averageSpeed = sum(item[0] for item in self.speed[self.checkFromAv:])/float(len(self.speed[self.checkFromAv:]))
@@ -108,7 +127,16 @@ class MotorController(QGroupBox):
         return self.speed
 
     def getCurrents(self):
-        return self.current
+        return self.current if len(self.current) else [ "0", "0" ]
+
+    def getAmpHours(self):
+        return self.amp_hours
+
+    def getWattSec(self):
+        return self.watt_sec
+
+    def getOdometer(self):
+        return self.odometer
 
 
 class MPPT(QLabel):
@@ -142,102 +170,6 @@ class MPPT(QLabel):
     def getOutCurrent(self):
         return self.outCurrent[-1] if self.outCurrent else 0
 
-class Battery(QGraphicsView):
-    def __init__(self, parent=None):
-        super(Battery, self).__init__(parent)
-        self.voltage = [0]
-        self.temperature = [0]
-
-        # Default values
-        self.maxBatteryTemp = 30
-        self.maxBatteryVoltage = 3.65
-        self.minBatteryVoltage = 2.65
-        self.bad = False
-
-        self.setMaximumWidth(52)
-        self.setMaximumHeight(92)
-
-        self.scene = QGraphicsScene(0,0,50,90,self)
-        self.setScene(self.scene)
-
-        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-
-    def setVoltage(self, inVoltage):
-        self.bad = False
-        self.voltage.append(inVoltage/10000.0)
-        self.drawBattery()
-
-    def getVoltage(self):
-        return self.voltage[-1] if self.voltage else 0
-
-    def setTemperature(self, inTemperature):
-        self.bad = False
-        self.temperature.append(inTemperature)
-        self.drawBattery()
-
-    def setBad(self):
-        self.bad = True
-        self.drawBattery()
-
-    def getTemperature(self):
-        return self.temperature[-1]
-
-    def drawBattery(self):
-        self.scene.clear()
-
-        red = QColor(255,0,0)
-        white = QColor(255,255,255)
-        blue = QColor(0,0,255)
-
-        pen = QPen()
-        brush = QBrush()
-        brush.setStyle(Qt.SolidPattern)
-
-        if self.temperature[-1] > self.maxBatteryTemp:
-            color = red
-        else:
-            color = blue
-
-        pen.setColor(color)
-        brush.setColor(color)
-
-        if self.voltage[-1] > self.maxBatteryVoltage:
-            self.scene.addRect(0,0,50,75, pen, brush)
-
-        elif self.voltage[-1] > self.minBatteryVoltage:
-            dif = self.voltage[-1] - self.minBatteryVoltage
-            div = (self.maxBatteryVoltage - self.minBatteryVoltage) /75.0
-            dist = int(dif / div)
-            self.scene.addRect(0,75-dist,50,dist,pen,brush)
-
-        vText = QGraphicsTextItem("%0.2f V" %self.voltage[-1])
-        vText.setFont(QFont('Arial Unicode MS', 10))
-        vText.setPos(0,70)
-
-        self.scene.addItem(vText)
-
-        pen.setColor(color)
-        brush.setColor(white)
-        self.scene.addRect(5,55,40,15,pen,brush)
-        tText = QGraphicsTextItem(u"%d \u2103" %(self.temperature[-1]))
-        tText.setFont(QFont('Arial Unicode MS', 10))
-        tText.setPos(3,50)
-        tText.setDefaultTextColor(color)
-        self.scene.addItem(tText)
-
-        if self.bad:
-            pen.setColor(red)
-            brush.setColor(red)
-            self.scene.addRect(5,5,40,40,pen,brush)
-            pen.setColor(white)
-            brush.setColor(white)
-            self.scene.addRect(10,10,30,30,pen,brush)
-            bText = QGraphicsTextItem("  ???")
-            bText.setFont(QFont('Arial Unicode MS', 10))
-            bText.setPos(3,10)
-            bText.setDefaultTextColor(red)
-            self.scene.addItem(bText)
-
 
 class PlottingDataMonitor(QMainWindow):
     def __init__(self, parent=None):
@@ -259,20 +191,38 @@ class PlottingDataMonitor(QMainWindow):
         for i in range(4):
             self.mppts.append(MPPT(i))
 
+        self.total_battery_voltage = 0.0
+
         self.BatmanAvgVoltage = 0.0
-        self.RobinAvgVoltage = 0.0
+        self.BatmanMinVoltage = 1.0e10
         self.BatmanAvgCurrent = 0.0
-        self.RobinAvgCurrent = 0.0
         self.BatmanAvgTemp = 0.0
+        self.BatmanWattSec = 0.0
+        self.RobinAvgVoltage = 0.0
+        self.RobinMinVoltage = 1.0e10
+        self.RobinAvgCurrent = 0.0
         self.RobinAvgTemp = 0.0
+        self.RobinWattSec = 0.0
 
         self.graphTimeInterval = 2 #minutes
 
-        self.array_power_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
-        self.total_voltage_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
-        self.speed_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
-        self.gross_instant_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
-        self.battery_charge_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.arrayCurrent = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.batteryCurrent = collections.deque( maxlen = 60*self.graphTimeInterval )
+
+        # self.array_power_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.total_voltage_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.speed_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.gross_instant_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+        # self.battery_charge_deque = collections.deque( maxlen = 60*self.graphTimeInterval )
+
+        self.arrayCurrent = []
+        self.batteryCurrent = []
+
+        self.array_power_deque = []
+        self.total_voltage_deque = []
+        self.speed_deque = []
+        self.gross_instant_deque = []
+        self.battery_charge_deque = []
 
         self.monitor_active = False
         self.logging_active = False
@@ -565,8 +515,8 @@ class PlottingDataMonitor(QMainWindow):
         self.grossInstant = QGroupBox('Gross Instant Power')
         self.grossInstant.setFlat(True)
         self.grossInstant.setMinimumWidth(150)
-        self.grossInstantGraph = plt.figure()
-        self.grossInstantCanvas = FigureCanvas(self.grossInstantGraph)
+        self.grossInstantFig = plt.figure()
+        self.grossInstantCanvas = FigureCanvas(self.grossInstantFig)
         self.grossInstantLayout = QVBoxLayout()
         self.grossInstantLayout.addWidget(self.grossInstantCanvas)
         self.grossInstant.setLayout(self.grossInstantLayout)
@@ -650,51 +600,60 @@ class PlottingDataMonitor(QMainWindow):
         self.secTimer.timeout.connect(self.writeLog)
         self.secTimer.timeout.connect(self.updateTime)
         self.secTimer.timeout.connect(self.updateGraphs)
+        self.secTimer.timeout.connect(self.performCalculations)
         self.secTimer.start(1000)
 
     def updateGraphs(self):
-        speedData = self.motorControllerWidget.getSpeeds()
-        speeds = [item[0] for item in speedData]
-        times = [dt.utcfromtimestamp(item[1]) for item in speedData]
-        axSpeed = self.speedFig.add_axes([.1,0,1,1])
-        axSpeed.hold(False)
-        axSpeed.plot_date(times, speeds, '')
-        self.speedCanvas.draw()
+        pass
+        # Draw the speed over time
+        # speedData = self.motorControllerWidget.getSpeeds()
+        # times = []
+        # speeds = []
+        # min_time = 1e30
+        # max_time = 0
+        # for item in speedData:
+        #     times.append( item[0] )
+        #     speeds.append( item[1] )
+        #     if item[0] < min_time:
+        #         min_time = item[0]
+        #     if item[0] > max_time:
+        #         max_time = item[0]
+        # axSpeed = self.speedFig.add_axes([.1, 0, 1, 1])
+        # axSpeed.hold(False)
+        # axSpeed.plot_date(times, speeds, '')
+        # self.speedCanvas.draw()
 
-        # TODO: (Ethan) Implement graphing of Gross Instance Data
-        # grossInstantData = self.motorControllerWidget.getCurrents()
-        # grossInstants = [item[0] for item in grossInstantData]
-        # times = [dt.utcfromtimestamp(item[1]) for item in grossInstantData]
-        # axGrossInstant = self.mCurrentFig.add_axes([.1,0,1,1])
+        # # TODO: (Ethan) Implement graphing of Gross Instance Data
+        # gross_instant = [item[1] for item in self.gross_instant_deque]
+        # times = [dt.utcfromtimestamp(item[0]) for item in self.gross_instant_deque]
+        # axGrossInstant = self.grossInstantFig.add_axes([.1,0,1,1])
         # axGrossInstant.hold(False)
-        # axGrossInstant.plot_date(times, grossInstants, '')
-        # self.grossInstant.draw()
+        # axGrossInstant.plot_date(times, gross_instant, '')
+        # self.grossInstantCanvas.draw()
 
-        # TODO: (Ethan) Implement graphing of Array Power
-        # arrayPowerData = self.motorControllerWidget.getCurrents()
-        # arrayPowers = [item[0] for item in arrayPowerData]
-        # times = [dt.utcfromtimestamp(item[1]) for item in arrayPowerData]
-        # axarrayPower = self.mCurrentFig.add_axes([.1,0,1,1])
+        # # TODO: (Ethan) Implement graphing of Array Power
+        # array_power = [item[1] for item in self.array_power_deque]
+        # times = [dt.utcfromtimestamp(item[0]) for item in self.array_power_deque]
+        # axarrayPower = self.arrayPowerFig.add_axes([.1,0,1,1])
         # axarrayPower.hold(False)
-        # axarrayPower.plot_date(times, arrayPowers, '')
-        # self.arrayPowerGraph.draw()
+        # axarrayPower.plot_date(times, array_power, '')
+        # self.arrayPowerCanvas.draw()
 
-        # TODO: (Ethan) Implement graphing of Battery Charge Remaining
-        # batteryChargeData = self.motorControllerWidget.getCurrents()
-        # batteryCharges = [item[0] for item in batteryChargeData]
-        # times = [dt.utcfromtimestamp(item[1]) for item in batteryChargeData]
-        # axbatteryCharge = self.mCurrentFig.add_axes([.1,0,1,1])
+        # # TODO: (Ethan) Implement graphing of Battery Charge Remaining
+        # battery_charges = [item[1] for item in self.battery_charge_deque]
+        # times = [dt.utcfromtimestamp(item[0]) for item in self.battery_charge_deque]
+        # axbatteryCharge = self.batteryChargeFig.add_axes([.1,0,1,1])
         # axbatteryCharge.hold(False)
-        # axbatteryCharge.plot_date(times, batteryCharges, '')
-        # self.batteryChargeGraph.draw()
+        # axbatteryCharge.plot_date(times, battery_charges, '')
+        # self.batteryChargeCanvas.draw()
 
-        voltageData = self.totalVoltage
-        voltages = [item[0] for item in voltageData]
-        times = [dt.utcfromtimestamp(item[1]) for item in voltageData]
-        axVoltages = self.voltageFig.add_axes([.1,0,1,1])
-        axVoltages.hold(False)
-        axVoltages.plot_date(times, voltages, '')
-        self.voltageCanvas.draw()
+        # # Draw total votlage over time
+        # voltages = [item[1] for item in self.total_voltage_deque]
+        # times = [dt.utcfromtimestamp(item[0]) for item in self.total_voltage_deque]
+        # axVoltages = self.voltageFig.add_axes([.1,0,1,1])
+        # axVoltages.hold(False)
+        # axVoltages.plot_date(times, voltages, '')
+        # self.voltageCanvas.draw()
 
     def updateTime(self):
         self.curTime = time.time()
@@ -704,7 +663,11 @@ class PlottingDataMonitor(QMainWindow):
         # print time.strftime("%d.%m.%Y.%H:%M:%S")
 
     def resetCalculations(self):
-        pass;
+        self.array_power_deque = []
+        self.total_voltage_deque = []
+        self.speed_deque = []
+        self.gross_instant_deque = []
+        self.battery_charge_deque = []
 
     def toggleLogging(self):
         if self.logging_active:
@@ -793,7 +756,7 @@ class PlottingDataMonitor(QMainWindow):
 
     def on_select_port(self):
         # ports = list(enumerate_serial_ports())
-        ports = ["/dev/ttyIN7"]
+        ports = ["/dev/ttyIN7","/dev/ttyUSB0","/dev/ttyUSB1"]
         if len(ports) == 0:
             QMessageBox.critical(self, 'No ports',
                 'No serial ports found')
@@ -860,17 +823,19 @@ class PlottingDataMonitor(QMainWindow):
 
     def writeLog(self):
         if self.logging_active:
-            self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
-            self.logFile.write(str(self.motorControllerWidget.getSpeed())+",")
-            self.logFile.write(str(self.motorControllerWidget.getCurrent())+",")
-            self.logFile.write(str(self.getArrayCurrent())+",")
-            self.logFile.write(str(self.getBatteryCurrent())+",")
-            for mppt in self.mppts:
-                self.logFile.write(str(mppt.getOutCurrent())+",")
-            for battery in self.batteries:
-                # for battery in pack:
-                self.logFile.write(str(battery.getVoltage())+",")
-            self.logFile.write("\n")
+            pass
+            # TODO (Ethan): Implement later
+            # self.logFile.write(time.strftime("%d-%m-%Y-%H:%M:%S,"))
+            # self.logFile.write(str(self.motorControllerWidget.getSpeed())+",")
+            # self.logFile.write(str(self.motorControllerWidget.getCurrent())+",")
+            # self.logFile.write(str(self.getArrayCurrent())+",")
+            # self.logFile.write(str(self.getBatteryCurrent())+",")
+            # for mppt in self.mppts:
+            #     self.logFile.write(str(mppt.getOutCurrent())+",")
+            # for battery in self.batteries:
+            #     # for battery in pack:
+            #     self.logFile.write(str(battery.getVoltage())+",")
+            # self.logFile.write("\n")
 
     def stop_logging(self):
         self.logging_active = False
@@ -934,21 +899,21 @@ class PlottingDataMonitor(QMainWindow):
 
             for message in data:
                 if( len(message) > 0 ):
-                    print(message)
+                    # print(message)
                     self.running_log.append(message)
-                    # try:
-                    json_obj = json.loads(message)
-                    if( json_obj["message_id"] == 'bat_temp' ):
-                        self.updateBatteries( json_obj );
+                    try:
+                        json_obj = json.loads(message)
+                        if( json_obj["message_id"] == 'bat_temp' ):
+                            self.updateBatteries( json_obj );
 
-                    elif( json_obj["message_id"] == "bat_volt" ):
-                        self.updateBatteries( json_obj );
+                        elif( json_obj["message_id"] == "bat_volt" ):
+                            self.updateBatteries( json_obj );
 
-                    elif( json_obj["message_id"] == "motor" ):
-                        self.updateMotor( json_obj );
-                    # except:
-                    #     self.running_log.append("Failed to load json message: " + message)
-                    #     print("Failed to load json message: ",message)
+                        elif( json_obj["message_id"] == "motor" ):
+                            self.updateMotor( json_obj );
+                    except:
+                        self.running_log.append("Failed to load json message: " + message)
+                        print("Failed to load json message: ",message)
 
             #  TODO: (Ethan) Update mppts
 
@@ -982,18 +947,21 @@ class PlottingDataMonitor(QMainWindow):
         self.arrayCurrent.append((total, time.time()))
 
     def getArrayCurrent(self):
-        return self.arrayCurrent[-1][0] if self.arrayCurrent else 0
+        return self.arrayCurrent[-1][0] if len(self.arrayCurrent) > 0 else 0
 
     def getArrayCurrents(self):
         return self.arrayCurrent
 
     def getBatteryCurrent(self):
-        return self.batteryCurrent[-1][0] if self.batteryCurrent else 0
+        return self.batteryCurrent[-1][0] if len(self.batteryCurrent) > 0 else 0
 
     def updateMotor(self, json_obj):
-        self.motorControllerWidget.setSpeed( json_obj["S"] )
-        self.motorControllerWidget.setCurrent( json_obj["C"] )
-        self.motorControllerWidget.setEnergy( json_obj["M"] )
+        self.motorControllerWidget.setSpeed( float(json_obj["S"]) )
+        self.motorControllerWidget.setCurrent( float(json_obj["I"]) )
+        self.motorControllerWidget.setEnergy( float(json_obj["M"]) )
+        self.motorControllerWidget.setAmpHours( float(json_obj["amp_hours"]) )
+        self.motorControllerWidget.setWattSec( float(json_obj["watt_sec"]) )
+        self.motorControllerWidget.setOdometer( float(json_obj["odometer"]) )
 
     #Identifies json object as an identifier for temperature
     #or voltage. From there it identifies it as batman or robin
@@ -1014,20 +982,155 @@ class PlottingDataMonitor(QMainWindow):
         elif j_object["message_id"] == "bat_volt":
             if j_object["name"] == "0":
                 self.BatmanAvgVoltage = float(j_object["Vavg"])
+                self.BatmanMinVoltage = float(j_object["Vmin"])
                 self.BatmanAvgCurrent = float(j_object["BC"])
                 self.BatmanVAvg.setText('%.2f V' %self.BatmanAvgVoltage)
                 self.BatmanVMax.setText('%.2f V' %float(j_object["Vmax"]))
                 self.BatmanVMin.setText('%.2f V' %float(j_object["Vmin"]))
                 self.BatmanBC.setText('%.2f A' %self.BatmanAvgCurrent)
+                self.BatmanWattSec = float(j_object["watt_sec"])
             else:
                 self.RobinAvgVoltage = float(j_object["Vavg"])
+                self.RobinMinVoltage = float(j_object["Vmin"])
                 self.RobinAvgCurrent = float(j_object["BC"])
                 self.RobinVAvg.setText('%.2f V' %self.RobinAvgVoltage)
                 self.RobinVMax.setText('%.2f V' %float(j_object["Vmax"]))
                 self.RobinVMin.setText('%.2f V' %float(j_object["Vmin"]))
                 self.RobinBC.setText('%.2f A' %self.RobinAvgCurrent)
+                self.RobinWattSec = float(j_object["watt_sec"])
 
     def performCalculations(self):
+        loook_up = ((0                  ,0),
+        (5.4022988505747378 ,3.1013307984790872),
+        (5.8620689655172526 ,3.1279467680608364),
+        (7.8544061302682167 ,3.1819391634980985),
+        (10.000000000000014 ,3.1963878326996196),
+        (11.839080459770145 ,3.2032319391634978),
+        (13.984674329501942 ,3.2070342205323192),
+        (15.977011494252892 ,3.2176806083650189),
+        (17.969348659003842 ,3.2252851711026613),
+        (19.961685823754806 ,3.23212927756654  ),
+        (21.800766283524922 ,3.238212927756654 ),
+        (23.94636015325672  ,3.2450570342205323),
+        (26.091954022988517 ,3.2503802281368821),
+        (27.931034482758633 ,3.2541825095057035),
+        (29.923371647509597 ,3.2595057034220529),
+        (32.068965517241395 ,3.2655893536121674),
+        (33.908045977011511 ,3.2716730038022814),
+        (36.053639846743309 ,3.2792775665399239),
+        (38.045977011494273 ,3.2868821292775663),
+        (40.038314176245237 ,3.2899239543726235),
+        (42.030651340996172 ,3.2906844106463877),
+        (44.022988505747136 ,3.2906844106463877),
+        (45.862068965517253 ,3.2906844106463877),
+        (47.701149425287369 ,3.2899239543726235),
+        (50.000000000000014 ,3.2906844106463877),
+        (51.992337164750964 ,3.2922053231939161),
+        (53.83141762452108  ,3.2922053231939161),
+        (55.977011494252878 ,3.2922053231939161),
+        (57.969348659003842 ,3.2922053231939161),
+        (59.961685823754792 ,3.2929657794676803),
+        (61.954022988505756 ,3.2929657794676803),
+        (63.946360153256705 ,3.2944866920152092),
+        (65.938697318007669 ,3.2960076045627376),
+        (68.084291187739467 ,3.2967680608365018),
+        (69.923371647509583 ,3.3013307984790874),
+        (71.915708812260533 ,3.3104562737642587),
+        (73.9080459770115   ,3.3256653992395435),
+        (75.900383141762461 ,3.3309885931558934),
+        (77.892720306513411 ,3.3317490494296575),
+        (80.038314176245223 ,3.3317490494296575),
+        (81.877394636015325 ,3.3325095057034222),
+        (83.869731800766289 ,3.3332699619771864),
+        (85.862068965517238 ,3.3340304182509506),
+        (87.8544061302682   ,3.3347908745247148),
+        (90.0                 ,3.3347908745247148),
+        (91.99233716475095  ,3.3347908745247148),
+        (93.83141762452108  ,3.3363117870722432),
+        (95.82375478927203  ,3.3385931558935362),
+        (97.969348659003828 ,3.367490494296578 ),
+        (98.429118773946357 ,3.3986692015209128),
+        (100.0 ,3.5))
+
+        odometer = self.motorControllerWidget.getOdometer() / 320 # 3600 - in 2meters so one unit equals 2 meters
+        print(odometer)
+        if odometer > 0.0000001:
+            motor_current = float((self.motorControllerWidget.getCurrents())[-1][0])
+            motor_current_time = (self.motorControllerWidget.getCurrents())[1]
+            motor_watt_hours = self.motorControllerWidget.getWattSec() / 3600
+            battery_watt_hours = (self.BatmanWattSec + self.RobinWattSec) / 3600
+            batman_average_voltage = self.BatmanAvgVoltage
+            robin_average_voltage = self.RobinAvgVoltage
+            total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
+            average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
+            total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
+            self.total_voltage_deque.append([motor_current_time, total_battery_voltage])
+            average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
+
+            #ARRAY POWER
+            # array_power = ((motor_current-batman_average_voltage)*batman_average_voltage*20)+((motor_current-robin_average_voltage)*robin_average_voltage*20)
+            array_power = ((motor_current - average_battery_current ) * total_battery_voltage)
+            self.array_power_deque.append([motor_current_time, array_power])
+
+            #MOTOR POWER
+            motor_power = motor_current*total_battery_voltage
+
+            #BATTERY ONLY RUNTIME (SECONDS)
+            battery = Battery(0, 0)
+            min_battery_voltage = self.BatmanMinVoltage if (self.BatmanMinVoltage < self.RobinMinVoltage) else self.RobinMinVoltage
+            average_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent) / 2
+            average_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp) / 2
+            state_of_charge = battery.Update( min_battery_voltage, average_current, average_temperature, getCurrentTime() )
+
+            gross_instant_power = total_battery_voltage * motor_current
+
+            self.gross_instant_deque.append( gross_instant_power )
+
+            average_gross_instant = sum( self.gross_instant_deque ) / len( self.gross_instant_deque )
+
+            gross_average_power = sum(self.gross_instant_deque ) / len(self.gross_instant_deque) #this should go to the screen
+            avergageeNetPower = gross_average_power - UkMathLib.average2D( self.array_power_deque, 1)
+            grossInstantPower = self.gross_instant_deque[-1]
+
+            battery_charge_remaining = 0
+            last = 0
+            for arr in loook_up:
+                if( arr[0] > state_of_charge ):
+                    break
+                battery_charge_remaining += (arr[0] - last)*arr[1]
+                last = arr[0]
+
+            #calc_battery_charge_remaining appears to not be defined
+
+            # bad CH  #battery_runtime =  *(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
+            battery_runtime = battery_charge_remaining / average_gross_instant # ? suppose to be gross_power?
+
+            # solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, dateTypeCode)
+            solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, 1)
+
+                    #battery_runtimes is currently stored in hours, convert as approparate
+            #BATTERY ONLY RANGE
+            battery_range = battery_runtime*UkMathLib.average( self.speed_deque, 1 )
+            solar_runtime = (solar_energy_remaining + battery_charge_remaining) / average_gross_instant # ? suppose to be gross_power?
+
+            solar_range = solar_runtime  * UkMathLib.average( self.speed_deque )
+
+            # BATTERY AND SOLAR RUNTIME
+
+            self.calc_array_power.setText('%.2f W' %array_power)
+            self.calc_gross_watt_hours.setText( self.motorControllerWidget.getWattSec() / 3600  );
+            self.calc_net_watt_hours.setText( (self.BatmanWattSec + self.RobinWattSec)  / 3600);
+            self.calc_average_speed.setText( mean(speed_deque) );
+            self.calc_average_gross_power.setText( motor_watt_hours / odometer );
+            self.calc_average_net_power.setText( (battery_watt_hours + motor_watt_hours) / odometer );
+            # self.calc_gross_average_power.setText(  battery watt hour since last reset button / time since last reset button ); # - since last reset button
+            # self.calc_gross_average_watt.setText( ttery watt hour since last reset button  ); #watt hourslast reset button, m
+            self.calc_battery_run_time_remaining.setText( battery_runtime );
+            self.calc_battery_range.setText( battery_range ); 
+            self.calc_battery_solar_run_time.setText( battery_runtime );
+            self.calc_battery_solar_distance.setText( solar_range );
+            self.calc_battery_charge_remaining.setText( solar_runtime );
+            self.calc_solar_energy_remaining.setText( solar_energy_remaining );
 
         motor_current = float((self.motorControllerWidget.getCurrent())[0])
         struct_time = time.strptime((self.motorControllerWidget.getCurrent())[1], %T)
@@ -1109,16 +1212,8 @@ class PlottingDataMonitor(QMainWindow):
                 energy += powerWhileDriving(i) * dt
                 i += dt
 
-         return energy   
+        return energy
 
-
-
-
-
-
-
-
-    
 
 def main():
     app = QApplication(sys.argv)
