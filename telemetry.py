@@ -1100,14 +1100,14 @@ class PlottingDataMonitor(QMainWindow):
             #calc_battery_charge_remaining appears to not be defined
 
             # bad CH  #battery_runtime =  *(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
-            battery_runtime = battery_charge_remaining / average_gross_instant # ? suppose to be gross_power?
+            battery_runtime = battery_charge_remaining / average_gross_instant*3600 # ? suppose to be gross_power?
 
             # solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, dateTypeCode)
             solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, 1)
 
-                    #battery_runtimes is currently stored in hours, convert as approparate
+                    #battery_runtimes is currently stored in hours, convert as approparate (converted in battery_runtime function)
             #BATTERY ONLY RANGE
-            battery_range = battery_runtime*UkMathLib.average( self.speed_deque, 1 )
+            battery_range = battery_runtime*UkMathLib.average( self.speed_deque, 1 ) 
             solar_runtime = (solar_energy_remaining + battery_charge_remaining) / average_gross_instant # ? suppose to be gross_power?
 
             solar_range = solar_runtime  * UkMathLib.average( self.speed_deque )
@@ -1145,26 +1145,11 @@ class PlottingDataMonitor(QMainWindow):
         #MOTOR POWER
         motor_power = motor_current*total_battery_voltage
 
-        #BATTERY ONLY RUNTIME (SECONDS)
-        battery = Battery(0, 0)
-        battery_runtime = battery.Capacity*2*(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
-
-        #BATTERY ONLY RANGE
-        battery_range = battery_runtime*motorControllerWidget.getSpeed()/3600
-
-        #SOLAR ENERGY REMAINING (check)
-        solar_energy_remaining = energyRemainingInDay(self, time, dayTypeCode)
-
-        #NECESSARY VARIABLES FOR FURTHER EQUATIONS (check)
-        AVG_MOTOR_POWER = watts_constant
-
-        AVG_WATTHOUR_PER_MILE = watthour_mile_constant
-        
         #BATTERY AND SOLAR RUNTIME (check)
-        battery_solar_runtime = battery_runtime+(solar_energy_remaining+BATTERY_CHARGE)/AVG_MOTOR_POWER
+        battery_solar_runtime = battery_runtime+solar_runtime
 
         #BATTERY AND SOLAR RANGE (check)
-        battery_solar_sange = battery_range+(solar_energy_remaining+BATTERY_CHARGE)/(AVG_WATTHOUR_PER_MILE)
+        battery_solar_sange = battery_range+solar_range
 
 
     def elevationAngle(self, time):
