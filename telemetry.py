@@ -1,7 +1,6 @@
 """
 UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
-
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
@@ -883,12 +882,10 @@ class PlottingDataMonitor(QMainWindow):
         """ The the network protocal is json objects sent over
             telemetry with a new line character \r\n as the
             delemeter between messages
-
             {
                 "message_id": "(bat_temp|bat_volt|motor)",
                 ...
             }
-
             Updates the state of the monitor window with new 
             data. The livefeed is used to find out whether new
             data was received since the last update. If not, 
@@ -1155,7 +1152,20 @@ class PlottingDataMonitor(QMainWindow):
         #BATTERY ONLY RANGE
         battery_range = battery_runtime*motorControllerWidget.getSpeed()/3600
 
-        #BATTERY AND SOLAR RUNTIME
+        #SOLAR ENERGY REMAINING (check)
+        solar_energy_remaining = energyRemainingInDay(self, time, dayTypeCode)
+
+        #NECESSARY VARIABLES FOR FURTHER EQUATIONS (check)
+        AVG_MOTOR_POWER = watts_constant
+
+        AVG_WATTHOUR_PER_MILE = watthour_mile_constant
+        
+        #BATTERY AND SOLAR RUNTIME (check)
+        battery_solar_runtime = battery_runtime+(solar_energy_remaining+BATTERY_CHARGE)/AVG_MOTOR_POWER
+
+        #BATTERY AND SOLAR RANGE (check)
+        battery_solar_sange = battery_range+(solar_energy_remaining+BATTERY_CHARGE)/(AVG_WATTHOUR_PER_MILE)
+
 
     def elevationAngle(self, time):
         solar_noon_hour = 1.5
