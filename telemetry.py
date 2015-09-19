@@ -4,11 +4,11 @@ Stephen Parsons (stephen.parsons@uky.edu)
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator, json, math, collections
+import random, sys, os, Queue, re, time, operator, json, math, collections, numpy
 from datetime import datetime as dt
 from sys import platform as _platform
 
-from lib.Battery import Battery
+#from lib.Battery import Battery
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -23,7 +23,7 @@ from lib.livedatafeed import LiveDataFeed
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
-from UkMathLib import UkMathLib
+#from UkMathLib import UkMathLib
 
 getCurrentTime = lambda: int(round(time.time() * 1000))
 
@@ -394,6 +394,12 @@ class PlottingDataMonitor(QMainWindow):
         calculationLayout.addWidget(QLabel("Solar Energy Remaining in Day"), 13, 0)
         calculationLayout.addWidget(self.calc_solar_energy_remaining, 13, 1)
         # calculationLayout.addWidget(QLabel(""), 13, 2)
+
+        # 
+        self.calc_motor_power = QLabel("value")
+        calculationLayout.addWidget(QLabel("Motor Power"), 14, 0)
+        calculationLayout.addWidget(self.calc_motor_power, 14, 1)
+        # calculationLayout.addWidget(QLabel(""), 14, 2)
 
         calculationWidget.setLayout(calculationLayout);
         batteryLayout2.addWidget(calculationWidget)
@@ -1069,9 +1075,6 @@ class PlottingDataMonitor(QMainWindow):
             array_power = ((motor_current - average_battery_current ) * total_battery_voltage)
             self.array_power_deque.append([motor_current_time, array_power])
 
-            #MOTOR POWER
-            motor_power = motor_current*total_battery_voltage
-
             #BATTERY ONLY RUNTIME (SECONDS)
             battery = Battery(0, 0)
             min_battery_voltage = self.BatmanMinVoltage if (self.BatmanMinVoltage < self.RobinMinVoltage) else self.RobinMinVoltage
@@ -1086,7 +1089,7 @@ class PlottingDataMonitor(QMainWindow):
             average_gross_instant = sum( self.gross_instant_deque ) / len( self.gross_instant_deque )
 
             gross_average_power = sum(self.gross_instant_deque ) / len(self.gross_instant_deque) #this should go to the screen
-            avergageeNetPower = gross_average_power - UkMathLib.average2D( self.array_power_deque, 1)
+            avergageeNetPower = gross_average_power - numpy.mean( self.array_power_deque, 1)
             grossInstantPower = self.gross_instant_deque[-1]
 
             battery_charge_remaining = 0
@@ -1101,16 +1104,20 @@ class PlottingDataMonitor(QMainWindow):
 
             # bad CH  #battery_runtime =  *(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
             battery_runtime = battery_charge_remaining / average_gross_instant*3600 # ? suppose to be gross_power?
+            self.calc_battery_run_time_remaining.setText('%.2f W' %battery_runtime)
 
             # solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, dateTypeCode)
             solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, 1)
 
                     #battery_runtimes is currently stored in hours, convert as approparate (converted in battery_runtime function)
             #BATTERY ONLY RANGE
-            battery_range = battery_runtime*UkMathLib.average( self.speed_deque, 1 ) 
+            battery_range = battery_runtime*numpy.mean( self.speed_deque, 1 )
+            self.calc_battery_range.setText('%.2f W' %battery_range)
+
+            
             solar_runtime = (solar_energy_remaining + battery_charge_remaining) / average_gross_instant # ? suppose to be gross_power?
 
-            solar_range = solar_runtime  * UkMathLib.average( self.speed_deque )
+            solar_range = solar_runtime  * numpy.mean( self.speed_deque )
 
             # BATTERY AND SOLAR RUNTIME
 
@@ -1130,7 +1137,7 @@ class PlottingDataMonitor(QMainWindow):
             self.calc_solar_energy_remaining.setText( solar_energy_remaining );
 
         motor_current = float((self.motorControllerWidget.getCurrent())[0])
-        struct_time = time.strptime((self.motorControllerWidget.getCurrent())[1], %T)
+        struct_time = time.strptime((self.motorControllerWidget.getCurrent())[1], '%T')
         batman_average_voltage = self.BatmanAvgVoltage
         robin_average_voltage = self.RobinAvgVoltage
         average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
@@ -1144,13 +1151,15 @@ class PlottingDataMonitor(QMainWindow):
 
         #MOTOR POWER
         motor_power = motor_current*total_battery_voltage
+        self.calc_motor_power.setText('%.2f W' %motor_power)
 
         #BATTERY AND SOLAR RUNTIME (check)
         battery_solar_runtime = battery_runtime+solar_runtime
+        self.calc_battery_solar_run_time.setText('%.2f W' %battery_solar_runtime)
 
         #BATTERY AND SOLAR RANGE (check)
-        battery_solar_sange = battery_range+solar_range
-
+        battery_solar_range = battery_range+solar_range
+        self.calc_battery_solar_distance.setText('%.2f W' %battery_solar_range)
 
     def elevationAngle(self, time):
         solar_noon_hour = 1.5
