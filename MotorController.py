@@ -1,13 +1,14 @@
 """
 UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
-
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator
+import random, sys, os, Queue, re, time, operator, json, math, collections, numpy
 from datetime import datetime as dt
 from sys import platform as _platform
+
+#from lib.Battery import Battery
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -22,16 +23,24 @@ from lib.livedatafeed import LiveDataFeed
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
 
+#from UkMathLib import UkMathLib
+
+getCurrentTime = lambda: int(round(time.time() * 1000))
+
 class MotorController(QGroupBox):
     def __init__(self, parent=None):
         super(MotorController, self).__init__(parent)
         self.speed = []
         self.current = []
         self.energy = []
+        self.amp_sec = 0.0
+        self.watt_sec = 0.0
         self.averageSpeed = 0
         self.conversion = 0.223693629
         self.checkFromAv = 0
         self.checkFromE = 0
+
+        self.odometer = 0.0
 
         self.tSpeed = QLabel('0.00')
         self.tCurrent = QLabel('0.00')
@@ -64,17 +73,26 @@ class MotorController(QGroupBox):
 
     def setSpeed(self, inSpeed):
         # convert to miles per hour
-        self.speed.append([inSpeed*self.conversion, time.time()])
+        self.speed.append([inSpeed, time.time()])
         self.tSpeed.setText('%.2f' %self.speed[-1][0])
         self.calcAverageSpeed()
 
     def setCurrent(self, inCurrent):
-        self.current.append((inCurrent, time.time()))
+        self.current.append([inCurrent, time.time()])
         self.tCurrent.setText('%.2f' %self.current[-1][0])
 
     def setEnergy(self, energy):
         self.energy.append((energy, time.time()))
         self.calcEnergy()
+
+    def setAmpHours(self, amp_hours):
+        self.amp_hours = amp_hours
+
+    def setWattSec(self, watt_sec):
+        self.watt_sec = watt_sec
+
+    def setOdometer(self, odo):
+        self.odometer = odo
 
     def calcAverageSpeed(self):
         self.averageSpeed = sum(item[0] for item in self.speed[self.checkFromAv:])/float(len(self.speed[self.checkFromAv:]))
@@ -102,13 +120,22 @@ class MotorController(QGroupBox):
         return 0 if not self.speed else self.speed[-1][0]
 
     def getCurrent(self):
-        return 0 if not self.current else self.current[-1][0]
+        return 0 if not self.current else self.current[-1]
 
     def getSpeeds(self):
         return self.speed
 
     def getCurrents(self):
-        return self.current
+        return self.current if len(self.current) else [ "0", "0" ]
+
+    def getAmpHours(self):
+        return self.amp_hours
+
+    def getWattSec(self):
+        return self.watt_sec
+
+    def getOdometer(self):
+        return self.odometer
 
 
 

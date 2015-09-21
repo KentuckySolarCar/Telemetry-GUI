@@ -1,13 +1,14 @@
 """
 UKY Solar Car Telemetry Program
 Stephen Parsons (stephen.parsons@uky.edu)
-
 https://github.com/KentuckySolarCar/Telemetry-GUI
 """
 
-import random, sys, os, Queue, re, time, operator
+import random, sys, os, Queue, re, time, operator, json, math, collections, numpy
 from datetime import datetime as dt
 from sys import platform as _platform
+
+#from lib.Battery import Battery
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -21,6 +22,10 @@ from lib.livedatafeed import LiveDataFeed
 
 from lib.serialutils import full_port_name, enumerate_serial_ports
 from lib.utils import get_all_from_queue, get_item_from_queue
+
+#from UkMathLib import UkMathLib
+
+getCurrentTime = lambda: int(round(time.time() * 1000))
 
 class MPPT(QLabel):
     def __init__(self, num, parent=None):
