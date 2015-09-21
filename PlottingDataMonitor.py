@@ -1078,15 +1078,5 @@ class PlottingDataMonitor(QMainWindow):
             if i < start_racing_in_morning:
                 energy += powerWhileDriving(i) * dt
                 i += dt
-
+                
         return energy
-
-
-def main():
-    app = QApplication(sys.argv)
-    form = PlottingDataMonitor()
-    form.show()
-    app.exec_()
-
-if __name__ == "__main__":
-    main()
