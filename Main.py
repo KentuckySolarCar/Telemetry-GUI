@@ -17,19 +17,19 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 import matplotlib.pyplot as plt
 
-from lib.com_monitor import ComMonitorThread
-from lib.livedatafeed import LiveDataFeed
+from code.lib.com_monitor import ComMonitorThread
+from code.lib.livedatafeed import LiveDataFeed
 
-from lib.serialutils import full_port_name, enumerate_serial_ports
-from lib.utils import get_all_from_queue, get_item_from_queue
+from code.lib.serialutils import full_port_name, enumerate_serial_ports
+from code.lib.utils import get_all_from_queue, get_item_from_queue
 
 #from UkMathLib import UkMathLib
 
 ##################### Changes made by Weilian Song on 9/20/2015 #####################
-from Battery import *
-from MotorController import *
-from MPPT import *
-from PlottingDataMonitor import *
+from code.Battery import *
+from code.MotorController import *
+from code.MPPT import *
+from code.PlottingDataMonitor import *
 #####################################################################################
 
 getCurrentTime = lambda: int(round(time.time() * 1000))
