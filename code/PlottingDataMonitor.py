@@ -264,6 +264,19 @@ class PlottingDataMonitor(QMainWindow):
         calculationLayout.addWidget(self.calc_motor_power, 14, 1)
         # calculationLayout.addWidget(QLabel(""), 14, 2)
 
+        # 
+        self.calc_total_battery_voltage = QLabel("value")
+        calculationLayout.addWidget(QLabel("Total Battery Voltage"), 15, 0)
+        calculationLayout.addWidget(self.calc_total_battery_voltage, 15, 1)
+        # calculationLayout.addWidget(QLabel(""), 15, 2)
+
+        # 
+        self.calc_battery_power = QLabel("value")
+        calculationLayout.addWidget(QLabel("Total Battery Power"), 16, 0)
+        calculationLayout.addWidget(self.calc_battery_power, 16, 1)
+        # calculationLayout.addWidget(QLabel(""), 16, 2)
+
+
         calculationWidget.setLayout(calculationLayout);
         batteryLayout2.addWidget(calculationWidget)
 
@@ -923,106 +936,73 @@ class PlottingDataMonitor(QMainWindow):
         if odometer > 0.0000001:
             motor_current = float((self.motorControllerWidget.getCurrents())[-1][0])
             motor_current_time = (self.motorControllerWidget.getCurrents())[1]
+            motor_speed = (self.motorControllerWidget.getSpeeds())
             motor_watt_hours = self.motorControllerWidget.getWattSec() / 3600
             battery_watt_hours = (self.BatmanWattSec + self.RobinWattSec) / 3600
             batman_average_voltage = self.BatmanAvgVoltage
             robin_average_voltage = self.RobinAvgVoltage
+            batman_current = self.BatmanAvgCurrent
+            robin_current = self.RobinAvgCurrent
             total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
             average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
             total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
             self.total_voltage_deque.append([motor_current_time, total_battery_voltage])
             average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
 
+            #INFORMATION NEEDED
+            #state_of_charge_percentage
+            #state_of_charge_energy
+            #solar_energy_left_in_day
+            #average_watt_hour_per_mile
+            #average_motor_power
+
+            #TOTAl BATTERY VOLTAGE
+            total_battery_voltage = 20 * (batman_average_voltage + robin_average_voltage)
+
+            self.calc_total_battery_voltage.setText('%.2f W' %total_battery_voltage)
+
             #ARRAY POWER
-            # array_power = ((motor_current-batman_average_voltage)*batman_average_voltage*20)+((motor_current-robin_average_voltage)*robin_average_voltage*20)
-            array_power = ((motor_current - average_battery_current ) * total_battery_voltage)
-            self.array_power_deque.append([motor_current_time, array_power])
-
-            #BATTERY ONLY RUNTIME (SECONDS)
-            battery = Battery(0, 0)
-            min_battery_voltage = self.BatmanMinVoltage if (self.BatmanMinVoltage < self.RobinMinVoltage) else self.RobinMinVoltage
-            average_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent) / 2
-            average_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp) / 2
-            state_of_charge = battery.Update( min_battery_voltage, average_current, average_temperature, getCurrentTime() )
-
-            gross_instant_power = total_battery_voltage * motor_current
-
-            self.gross_instant_deque.append( gross_instant_power )
-
-            average_gross_instant = sum( self.gross_instant_deque ) / len( self.gross_instant_deque )
-
-            gross_average_power = sum(self.gross_instant_deque ) / len(self.gross_instant_deque) #this should go to the screen
-            avergageeNetPower = gross_average_power - numpy.mean( self.array_power_deque, 1)
-            grossInstantPower = self.gross_instant_deque[-1]
-
-            battery_charge_remaining = 0
-            last = 0
-            for arr in loook_up:
-                if( arr[0] > state_of_charge ):
-                    break
-                battery_charge_remaining += (arr[0] - last)*arr[1]
-                last = arr[0]
-
-            #calc_battery_charge_remaining appears to not be defined
-
-            # bad CH  #battery_runtime =  *(battery.updateBatteryRuntime(total_battery_voltage, average_battery_current, average_battery_temperature, motor_current_time)/100)/(average_battery_current)
-            battery_runtime = battery_charge_remaining / average_gross_instant*3600 # ? suppose to be gross_power?
-            self.calc_battery_run_time_remaining.setText('%.2f W' %battery_runtime)
-
-            # solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, dateTypeCode)
-            solar_energy_remaining = energyRemainingInDay( getCurrentTime() / 3600000, 1)
-
-                    #battery_runtimes is currently stored in hours, convert as approparate (converted in battery_runtime function)
-            #BATTERY ONLY RANGE
-            battery_range = battery_runtime*numpy.mean( self.speed_deque, 1 )
-            self.calc_battery_range.setText('%.2f W' %battery_range)
-
-            
-            solar_runtime = (solar_energy_remaining + battery_charge_remaining) / average_gross_instant # ? suppose to be gross_power?
-
-            solar_range = solar_runtime  * numpy.mean( self.speed_deque )
-
-            # BATTERY AND SOLAR RUNTIME
+            array_power = 20 * ((motor_current - batman_current) * batman_average_voltage) + ((motor_current - robin_current) * robin_average_voltage)
 
             self.calc_array_power.setText('%.2f W' %array_power)
-            self.calc_gross_watt_hours.setText( self.motorControllerWidget.getWattSec() / 3600  );
-            self.calc_net_watt_hours.setText( (self.BatmanWattSec + self.RobinWattSec)  / 3600);
-            self.calc_average_speed.setText( mean(speed_deque) );
-            self.calc_average_gross_power.setText( motor_watt_hours / odometer );
-            self.calc_average_net_power.setText( (battery_watt_hours + motor_watt_hours) / odometer );
-            # self.calc_gross_average_power.setText(  battery watt hour since last reset button / time since last reset button ); # - since last reset button
-            # self.calc_gross_average_watt.setText( ttery watt hour since last reset button  ); #watt hourslast reset button, m
-            self.calc_battery_run_time_remaining.setText( battery_runtime );
-            self.calc_battery_range.setText( battery_range ); 
-            self.calc_battery_solar_run_time.setText( battery_runtime );
-            self.calc_battery_solar_distance.setText( solar_range );
-            self.calc_battery_charge_remaining.setText( solar_runtime );
-            self.calc_solar_energy_remaining.setText( solar_energy_remaining );
 
-        motor_current = float((self.motorControllerWidget.getCurrent())[0])
-        struct_time = time.strptime((self.motorControllerWidget.getCurrent())[1], '%T')
-        batman_average_voltage = self.BatmanAvgVoltage
-        robin_average_voltage = self.RobinAvgVoltage
-        average_battery_current = (self.BatmanAvgCurrent + self.RobinAvgCurrent)/2
-        total_battery_voltage = batman_average_voltage*20+robin_average_voltage*20
-        average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
+            #MOTOR POWER
+            motor_power = motor_current * (batman_average_voltage + robin_average_voltage)
 
-        #ARRAY POWER
-        array_power = ((motor_current-batman_average_voltage)*batman_average_voltage*20)+((motor_current-robin_average_voltage)*robin_average_voltage*20)
-        self.array_power_list.append([struct_time.hour+struct_time.minute/60+struct_time.second/3600, motor_current])
-        self.calc_array_power.setText('%.2f W' %array_power)
+            self.calc_motor_power.setText('%.2f W' %motor_power)
 
-        #MOTOR POWER
-        motor_power = motor_current*total_battery_voltage
-        self.calc_motor_power.setText('%.2f W' %motor_power)
+            #BATTERY POWER
+            battery_power = total_battery_voltage * (batman_current + robin_current) / 2
 
-        #BATTERY AND SOLAR RUNTIME (check)
-        battery_solar_runtime = battery_runtime+solar_runtime
-        self.calc_battery_solar_run_time.setText('%.2f W' %battery_solar_runtime)
+            self.calc_battery_power.setText('%.2f W' %battery_power)
 
-        #BATTERY AND SOLAR RANGE (check)
-        battery_solar_range = battery_range+solar_range
-        self.calc_battery_solar_distance.setText('%.2f W' %battery_solar_range)
+            #BATTERY ONLY RUNTIME
+            #NOT COMPLETE
+            battery_only_runtime = 1
+
+            self.calc_battery_run_time_remaining.setText('%.2f W' %battery_only_runtime)
+
+            #BATTERY ONLY RANGE
+            battery_only_range = (battery_only_runtime * motor_speed) / 3600
+
+            self.calc_battery_range.setText('%.2f W' %battery_only_range)
+
+            #BATTERY AND SOLAR RUNTIME
+            battery_and_solar_runtime = battery_only_runtime + ((solar_energy_left_in_day+state_of_charge_energy) / average_motor_power)
+
+            self.calc_calc_battery_solar_run_time.setText('%.2f W' %battery_and_solar_runtime)
+
+            #BATTERY AND SOLAR RANGE
+            battery_and_solar_range = battery_only_range + ((solar_energy_left_in_day + state_of_charge_energy) / average_watt_hour_per_mile)
+
+            self.calc_battery_solar_distance.setText('%.2f W' %battery_and_solar_range)
+
+            #SOLAR ENERGY REMAINING
+            solar_energy_remaining = solar_energy_left_in_day
+
+            self.calc_solar_energy_remaining.setText('%.2f W' %solar_energy_remaining)
+
+
 
     def elevationAngle(self, time):
         solar_noon_hour = 1.5
