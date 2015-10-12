@@ -775,7 +775,7 @@ class PlottingDataMonitor(QMainWindow):
         """
         if self.livefeed.has_new_data:
             data = self.livefeed.read_data().split("\r\n")
-
+            self.performCalculations()
             for message in data:
                 if( len(message) > 0 ):
                     # print(message)
@@ -949,12 +949,17 @@ class PlottingDataMonitor(QMainWindow):
             self.total_voltage_deque.append([motor_current_time, total_battery_voltage])
             average_battery_temperature = (self.BatmanAvgTemp + self.RobinAvgTemp)/2
 
+            average_watt_hour_per_mile = 40 #watt hour/mile
+            average_motor_power = 1200 #watt
+            full_battery_energy = 3840 #watt hours
+
             #INFORMATION NEEDED
             #state_of_charge_percentage
-            #state_of_charge_energy
+            #state_of_charge_energy (soc percentage * full_battery_energy)
+            
             #solar_energy_left_in_day
-            #average_watt_hour_per_mile
-            #average_motor_power
+            #battery runtime (hours, based on usage)
+            #remember lookup table is per single battery cell, based on lowest
 
             #TOTAl BATTERY VOLTAGE
             total_battery_voltage = 20 * (batman_average_voltage + robin_average_voltage)
@@ -1033,7 +1038,7 @@ class PlottingDataMonitor(QMainWindow):
 
         i = time
         while True:
-            if i < stop_charging_in_eve:
+            if i < stop_to_charge_time:
                 energy += powerWhileDriving(i) * dt
                 i += dt
             else:
