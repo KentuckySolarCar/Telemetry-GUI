@@ -1,3 +1,5 @@
 *.pyc
 *.csv
 *.sublime*
+*.class
+bin/*

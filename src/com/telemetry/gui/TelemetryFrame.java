@@ -1,10 +1,12 @@
+package com.telemetry.gui;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class WindowCreator {
+public class TelemetryFrame {
 	
 	// Defining major GUI containers
 	static private Frame main_frame;
@@ -26,16 +28,11 @@ public class WindowCreator {
 	}
 	
 	// Constructor to initialize the GUI
-	public WindowCreator() {
+	public TelemetryFrame() {
 		initUI();
-	}
-	
-	// Creates an instance of WindowCreator and reveal it
-	public static void main(String[] args) throws InterruptedException {
-			WindowCreator window = new WindowCreator();
-			window.showCreatedWindow();
-			Thread graphics_thread = new Thread(new GraphicsEngine(), "Graphics Thread");
-			graphics_thread.start();
+
+		Thread graphics_thread = new Thread(new GraphicsEngine(), "Graphics Thread");
+		graphics_thread.start();
 	}
 	
 	// Initializes the UI and adds all parent containers
@@ -561,7 +558,7 @@ public class WindowCreator {
 		return panel;
 	}
 	
-	private void showCreatedWindow() {
+	public void showCreatedWindow() {
 		createMenuBar();
 		createLogPanel();
 		addTabbedPanels();
@@ -569,8 +566,8 @@ public class WindowCreator {
 }
 
 class GraphicsThread implements Runnable {
-	WindowCreator window;
-	GraphicsThread(WindowCreator window) {
+	TelemetryFrame window;
+	GraphicsThread(TelemetryFrame window) {
 		this.window = window;
 	}
 	
