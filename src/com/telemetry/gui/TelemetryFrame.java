@@ -12,7 +12,6 @@ public class TelemetryFrame extends Frame{
 	 * 
 	 */
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final float FPS = 60;
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 	
@@ -57,9 +56,6 @@ public class TelemetryFrame extends Frame{
 		
 		// Reveals main_frame
 		setVisible(true);
-
-		Thread graphics_thread = new Thread(new GraphicsEngine(), "Graphics Thread");
-		graphics_thread.start();
 	}
 	
 /*  TODO:
@@ -494,20 +490,5 @@ public class TelemetryFrame extends Frame{
 		panel.setSize(tab_panel_x, tab_panel_y);
 		
 		return panel;
-	}
-	
-	private class GraphicsEngine implements Runnable {
-		public void run() {
-			Timer graphics_timer = new Timer();
-			graphics_timer.scheduleAtFixedRate(new TimerTask(){
-
-				@Override
-				public void run() {
-					TelemetryFrame.this.validate();
-					TelemetryFrame.this.repaint();
-				}
-				
-			}, 0, (long) (1000.0/FPS));
-		}
 	}
 }

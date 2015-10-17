@@ -45,12 +45,14 @@ public class TabbedPane extends Panel{
 		button_panel.setLayout( new GridLayout(1, tabs.size()) );
 		
 		for( Tab tab : tabs ){
+			tab.setSelected(false);
 			button_panel.add(tab);
+			tab.repaint();
 		}
 		
 		display_panel.removeAll();
 		display_panel.add( panels.get(tab_select) );
-		
+
 		repaint();
 	}
 	
@@ -71,6 +73,7 @@ public class TabbedPane extends Panel{
 		public static final int HEIGHT = 25;
 		
 		private boolean selected = false;
+		private boolean hovered = false;
 		private final String text;
 		private final int tab_index;
 		
@@ -90,15 +93,21 @@ public class TabbedPane extends Panel{
 						tab_select = tab_index;
 						updateComponents();
 						setSelected(true);
-						repaint();
+						Tab.this.repaint();
 					}
 				}
 
 				@Override
-				public void mouseEntered(MouseEvent arg0) {}
+				public void mouseEntered(MouseEvent arg0) {
+					hovered = true;
+					Tab.this.repaint();
+				}
 
 				@Override
-				public void mouseExited(MouseEvent arg0) {}
+				public void mouseExited(MouseEvent arg0) {
+					hovered = false;
+					Tab.this.repaint();
+				}
 
 				@Override
 				public void mousePressed(MouseEvent arg0) {}
@@ -116,11 +125,13 @@ public class TabbedPane extends Panel{
 		@Override
 		public void paint(Graphics g){
 			g.setColor(Color.white);
+			if(hovered)
+				g.setColor(Color.gray);
 			g.fillRect(0, 0, getWidth(), getHeight());
 			
 			g.setColor(Color.black);
 
-			System.out.println(selected);
+			System.out.println(selected + " " + hovered);
 			
 			if(selected){
 				g.drawRect(0, 0, getWidth()-1, getHeight()+1);
