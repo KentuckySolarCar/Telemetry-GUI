@@ -6,52 +6,45 @@ import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-public class TelemetryFrame {
+public class TelemetryFrame extends Frame{
 	
-	// Defining major GUI containers
-	static private Frame main_frame;
-	private Panel tab_panel;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3028986629905272450L;
+	private static final float FPS = 60;
+	private static final int WIDTH = 800;
+	private static final int HEIGHT = 600;
+	
+	private TabbedPane tab_panel;
 	private Panel log_panel;
 	private int tab_panel_x = 800;
 	private int tab_panel_y = 800;
 	
-	private static class GraphicsEngine implements Runnable {
-		public void run() {
-			main_frame.repaint();
-			
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
-		initUI();
-
-		Thread graphics_thread = new Thread(new GraphicsEngine(), "Graphics Thread");
-		graphics_thread.start();
-	}
-	
-	// Initializes the UI and adds all parent containers
-	private void initUI() {
+		super("University of Kentucky Solar Car Telemetry");
+		
 		// Initializes and edits the main window frame of GUI
-		main_frame = new Frame("University of Kentucky Solar Car Telemetry");
-		main_frame.setSize(1600, 900);
-		main_frame.setLayout(new BorderLayout());
-		main_frame.addWindowListener(new WindowAdapter() {
+		setSize(WIDTH, HEIGHT);
+		setLayout(new BorderLayout());
+		addWindowListener(new WindowAdapter() {
+			
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
 			}
+			
 		});
 		
 		// Initializes and edits layout of tab_panel container
-		tab_panel = new Panel();
-		tab_panel.setSize(tab_panel_x, tab_panel_y);
-		tab_panel.setBackground(Color.WHITE);
-		tab_panel.setLayout(new BorderLayout());
+		tab_panel = new TabbedPane();
+		
+		tab_panel.addTab("Car Status", createDevicePanel());
+		tab_panel.addTab("Calculation", createCalculationPanel());
+		tab_panel.addTab("Graphs", createGraphPanel());
+		tab_panel.addTab("Map", createMapPanel());
+		
+		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
 		// Initializes and edits layout of log_panel container
 		log_panel = new Panel();
@@ -59,69 +52,14 @@ public class TelemetryFrame {
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
-		main_frame.add(tab_panel, BorderLayout.WEST);
-		main_frame.add(log_panel, BorderLayout.EAST);
+		add(tab_panel, BorderLayout.WEST);
+		add(log_panel, BorderLayout.EAST);
 		
 		// Reveals main_frame
-		main_frame.setVisible(true);
-	}
+		setVisible(true);
 
-/*	TODO:
- * 	1. Implement this function
- */
-	private void addTabbedPanels(){
-		final Panel tab_display_panel = new Panel();
-		tab_display_panel.setBackground(Color.WHITE);
-		tab_display_panel.setLayout(new CardLayout(10, 10));
-		
-		Panel tab_button_panel = new Panel();
-		tab_button_panel.setLayout(new GridLayout(1, 4));
-		
-		final Button car_status_button = new Button("Car Status");
-		final Button calculation_button = new Button("Calculation");
-		final Button graphs_button = new Button("Graphs");
-		final Button map_button = new Button("Map");
-		
-		tab_button_panel.add(car_status_button);
-		tab_button_panel.add(calculation_button);
-		tab_button_panel.add(graphs_button);
-		tab_button_panel.add(map_button);
-		
-		car_status_button.addActionListener(new ActionListener() {
-	         public void actionPerformed(ActionEvent e) {
-	        	CardLayout tab_layout = (CardLayout)(tab_display_panel.getLayout());
-				tab_layout.show(tab_display_panel, car_status_button.getLabel());
-	         }
-	      });
-		
-		calculation_button.addActionListener(new ActionListener() {
-	         public void actionPerformed(ActionEvent e) {
-	        	CardLayout tab_layout = (CardLayout)(tab_display_panel.getLayout());
-				tab_layout.show(tab_display_panel, calculation_button.getLabel());
-	         }
-	      });
-		
-		graphs_button.addActionListener(new ActionListener() {
-	         public void actionPerformed(ActionEvent e) {
-	        	CardLayout tab_layout = (CardLayout)(tab_display_panel.getLayout());
-				tab_layout.show(tab_display_panel, graphs_button.getLabel());
-	         }
-	      });
-		
-		map_button.addActionListener(new ActionListener() {
-	         public void actionPerformed(ActionEvent e) {
-	        	CardLayout tab_layout = (CardLayout)(tab_display_panel.getLayout());
-				tab_layout.show(tab_display_panel, map_button.getLabel());
-	         }
-	      }); 
-		
-		tab_display_panel.add("Car Status", createDevicePanel());
-		tab_display_panel.add("Calculation", createCalculationPanel());
-		tab_display_panel.add("Graphs", createGraphPanel());
-		tab_display_panel.add("Map", createMapPanel());
-		
-		tab_panel.add(tab_button_panel, BorderLayout.NORTH);
-		tab_panel.add(tab_display_panel, BorderLayout.SOUTH);
+		Thread graphics_thread = new Thread(new GraphicsEngine(), "Graphics Thread");
+		graphics_thread.start();
 	}
 	
 /*  TODO:
@@ -173,7 +111,7 @@ public class TelemetryFrame {
 		
 		// Add panel as a whole into log_panel
 		log_panel.add(panel);
-		main_frame.setVisible(true);
+		setVisible(true);
 	}
 	
 /*  TODO:
@@ -511,8 +449,8 @@ public class TelemetryFrame {
 		menu_bar.add(about_menu);
 		
 		//add menu bar to the frame
-		main_frame.setMenuBar(menu_bar);
-		main_frame.setVisible(true);
+		setMenuBar(menu_bar);
+		setVisible(true);
 	}
 	
 	private Panel createControlPanel(){
@@ -558,20 +496,18 @@ public class TelemetryFrame {
 		return panel;
 	}
 	
-	public void showCreatedWindow() {
-		createMenuBar();
-		createLogPanel();
-		addTabbedPanels();
-	}
-}
+	private class GraphicsEngine implements Runnable {
+		public void run() {
+			Timer graphics_timer = new Timer();
+			graphics_timer.scheduleAtFixedRate(new TimerTask(){
 
-class GraphicsThread implements Runnable {
-	TelemetryFrame window;
-	GraphicsThread(TelemetryFrame window) {
-		this.window = window;
-	}
-	
-	public void run() {
-		
+				@Override
+				public void run() {
+					TelemetryFrame.this.validate();
+					TelemetryFrame.this.repaint();
+				}
+				
+			}, 0, (long) (1000.0/FPS));
+		}
 	}
 }
