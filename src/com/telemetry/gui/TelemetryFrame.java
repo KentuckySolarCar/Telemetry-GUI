@@ -16,6 +16,7 @@ public class TelemetryFrame extends Frame{
 	private static final int HEIGHT = 600;
 	
 	private TabbedPane tab_panel;
+	CalculationPanel calculation_panel;
 	private Panel log_panel;
 	private int tab_panel_x = 800;
 	private int tab_panel_y = 800;
@@ -37,9 +38,10 @@ public class TelemetryFrame extends Frame{
 		
 		// Initializes and edits layout of tab_panel container
 		tab_panel = new TabbedPane();
+	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 		
 		tab_panel.addTab("Car Status", createDevicePanel());
-		tab_panel.addTab("Calculation", createCalculationPanel());
+		tab_panel.addTab("Calculation", calculation_panel.getPanel());
 		tab_panel.addTab("Graphs", createGraphPanel());
 		tab_panel.addTab("Map", createMapPanel());
 		
