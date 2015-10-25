@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class DevicePanel extends Panel{
 	
-	Panel master_panel = new Panel();
+	private Panel master_panel = new Panel();
 	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
