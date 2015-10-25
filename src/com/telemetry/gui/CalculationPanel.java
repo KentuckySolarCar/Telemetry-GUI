@@ -18,10 +18,10 @@ import java.util.ArrayList;
 
 public class CalculationPanel extends Panel{
 	
-	Panel master_panel = new Panel();
-	Panel label_panel = new Panel();
-	Panel output_panel = new Panel();
-	Panel button_panel = new Panel();
+	private Panel master_panel = new Panel();
+	private Panel label_panel = new Panel();
+	private Panel output_panel = new Panel();
+	private Panel button_panel = new Panel();
 	
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
 		super();
