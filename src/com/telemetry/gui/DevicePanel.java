@@ -20,13 +20,13 @@ import java.util.ArrayList;
 
 public class DevicePanel extends Panel{
 	
-	private Panel master_panel = new Panel();
+	private Panel device_panel = new Panel();
 	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
-		master_panel.setSize(tab_panel_x, tab_panel_y);
-		master_panel.setLayout(new GridBagLayout());
+		device_panel.setSize(tab_panel_x, tab_panel_y);
+		device_panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 	}
