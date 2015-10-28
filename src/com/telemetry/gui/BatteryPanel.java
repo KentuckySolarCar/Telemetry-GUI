@@ -40,7 +40,7 @@ public class BatteryPanel {
 		insertBatmanDataPanel();
 		insertBatmanUnitPanel();
 		insertRobinLabelPanel();
-		insertRobinDataPanel();
+		insertRobinDataPanel();2
 	}
 	
 	private void insertBatmanLabelPanel() {
