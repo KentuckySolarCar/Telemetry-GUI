@@ -80,6 +80,7 @@ public class BatteryPanel {
 	}
 	
 	private void insertBatmanDataPanel() {
+		batman_data_panel.add(new Label(" "));
 		batman_data_panel.add(batman_v_average);
 		batman_data_panel.add(batman_v_max);
 		batman_data_panel.add(batman_v_min);
@@ -115,6 +116,7 @@ public class BatteryPanel {
 	}
 	
 	private void insertRobinDataPanel() {
+		robin_data_panel.add(new Label(" "));
 		robin_data_panel.add(robin_v_average);
 		robin_data_panel.add(robin_v_max);
 		robin_data_panel.add(robin_v_min);
