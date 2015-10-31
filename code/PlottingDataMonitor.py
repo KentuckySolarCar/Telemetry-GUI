@@ -180,6 +180,12 @@ class PlottingDataMonitor(QMainWindow):
         calculationLayout.addWidget(self.calc_array_power, 0, 1)
         # calculationLayout.addWidget(QLabel(""), 0, 2)
 
+        #
+        self.calc_total_dummy_current = QLabel("value")
+        calculationLayout.addWidget(QLabel("Total Dummy Current"), 17, 0)
+        calculationLayout.addWidget(self.calc_total_dummy_current,17,1)
+        #calculationLayout.addWidget(QLabel(""), 17, 2)
+
         # Gross Watt*Hours
         self.calc_gross_watt_hours = QLabel("value")
         calculationLayout.addWidget(QLabel("Gross Watt*Hours"), 1, 0)
@@ -775,7 +781,6 @@ class PlottingDataMonitor(QMainWindow):
         """
         if self.livefeed.has_new_data:
             data = self.livefeed.read_data().split("\r\n")
-            self.performCalculations()
             for message in data:
                 if( len(message) > 0 ):
                     # print(message)
@@ -962,7 +967,6 @@ class PlottingDataMonitor(QMainWindow):
             #remember lookup table is per single battery cell, based on lowest
 
             #TOTAl BATTERY VOLTAGE
-            total_battery_voltage = 20 * (batman_average_voltage + robin_average_voltage)
 
             self.calc_total_battery_voltage.setText('%.2f W' %total_battery_voltage)
 
@@ -970,6 +974,9 @@ class PlottingDataMonitor(QMainWindow):
             array_power = 20 * ((motor_current - batman_current) * batman_average_voltage) + ((motor_current - robin_current) * robin_average_voltage)
 
             self.calc_array_power.setText('%.2f W' %array_power)
+
+            #DUMMY POWER
+            self.calc_total_dummy_current.setText('%.2f W' %array_power)
 
             #MOTOR POWER
             motor_power = motor_current * (batman_average_voltage + robin_average_voltage)
