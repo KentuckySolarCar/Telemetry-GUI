@@ -40,8 +40,8 @@ public class TimePanel extends Panel {
 		time_panel.add(time_data_panel);
 	}
 	
-	@SuppressWarnings("unused")
-	private void updatePanel() {
+	@SuppressWarnings("unused") 
+	public void updatePanel() {
 		Date date = new Date();
 		time_counter.setText("0000");
 		time_current.setText(date_format.format(date));

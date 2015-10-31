@@ -53,8 +53,8 @@ public class MotorPanel extends Panel {
 		motor_panel.add(motor_button_panel);
 	}
 	
-	@SuppressWarnings("unused")
-	private void updatePanel() {
+	@SuppressWarnings("unused") 
+	public void updatePanel() {
 		speed.setText("Needs Implementing!");
 		current.setText("Need Implementing!");
 		energy.setText("Need Implementing!");

@@ -30,7 +30,7 @@ public class MpptPanel {
 	}
 	
 	@SuppressWarnings("unused")
-	private void updatePanel() {
+	public void updatePanel() {
 		out_current.setText("Need Implementing!");
 	}
 	

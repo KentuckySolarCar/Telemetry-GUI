@@ -45,7 +45,7 @@ public class BatteryPanel {
 	}
 	
 	@SuppressWarnings("unused")
-	private void updatePanel() {
+	public void updatePanel() {
 		batman_v_average.setText("Needs Implementing!");
 		batman_v_max.setText("Need Implementing!");
 		batman_v_min.setText("Needs Implementing!");
