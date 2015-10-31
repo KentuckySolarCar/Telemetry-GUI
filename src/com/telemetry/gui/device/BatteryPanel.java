@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.device;
 
 import java.awt.*;
 
@@ -41,6 +41,30 @@ public class BatteryPanel {
 		insertBatmanUnitPanel();
 		insertRobinLabelPanel();
 		insertRobinDataPanel();
+		insertRobinUnitPanel();
+	}
+	
+	@SuppressWarnings("unused")
+	private void updatePanel() {
+		batman_v_average.setText("Needs Implementing!");
+		batman_v_max.setText("Need Implementing!");
+		batman_v_min.setText("Needs Implementing!");
+		batman_current.setText("Needs Implementing!");
+		batman_t_average.setText("Needs Implementing!");
+		batman_t_max.setText("Needs Implementing!");
+		batman_t_min.setText("Needs Implementing!");
+		
+		robin_v_average.setText("Needs Implementing!");
+		robin_v_max.setText("Need Implementing!");
+		robin_v_min.setText("Needs Implementing!");
+		robin_current.setText("Needs Implementing!");
+		robin_t_average.setText("Needs Implementing!");
+		robin_t_max.setText("Needs Implementing!");
+		robin_t_min.setText("Needs Implementing!");
+	}
+	
+	public Panel getPanel() {
+		return battery_panel;
 	}
 	
 	private void insertBatmanLabelPanel() {
@@ -99,5 +123,17 @@ public class BatteryPanel {
 		robin_data_panel.add(robin_t_max);
 		robin_data_panel.add(robin_t_min);
 		battery_panel.add(robin_data_panel);
+	}
+	
+	private void insertRobinUnitPanel() {
+		robin_unit_panel.add(new Label(""));
+		robin_unit_panel.add(new Label("V"));
+		robin_unit_panel.add(new Label("V (#)"));
+		robin_unit_panel.add(new Label("V (#)"));
+		robin_unit_panel.add(new Label("A"));
+		robin_unit_panel.add(new Label("C"));
+		robin_unit_panel.add(new Label("C"));
+		robin_unit_panel.add(new Label("C"));
+		battery_panel.add(robin_unit_panel);
 	}
 }

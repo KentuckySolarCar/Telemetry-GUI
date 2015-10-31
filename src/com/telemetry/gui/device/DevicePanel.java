@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.device;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
@@ -29,5 +29,6 @@ public class DevicePanel extends Panel{
 		device_panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		MotorPanel motor_panel = new MotorPanel();
 	}
 }

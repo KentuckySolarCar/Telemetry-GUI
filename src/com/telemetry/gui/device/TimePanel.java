@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.device;
 
 import java.awt.*;
 import java.text.DateFormat;
