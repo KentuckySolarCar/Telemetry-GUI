@@ -18,10 +18,29 @@ import java.util.ArrayList;
 
 public class CalculationPanel extends Panel{
 	
-	private Panel master_panel = new Panel();
-	private Panel label_panel = new Panel();
-	private Panel output_panel = new Panel();
-	private Panel button_panel = new Panel();
+	private Panel master_panel                    = new Panel();
+	private Panel label_panel                     = new Panel();
+	private Panel output_panel                    = new Panel();
+	private Panel button_panel                    = new Panel();
+	private Button change_port_button             = new Button("Change Port");
+	private Button start_monitor_button           = new Button("Start Monitor");
+	private Button start_logging_button           = new Button("Start Logging");
+	private Button reset_calculation_button       = new Button("Reset Calculation");
+	private Label array_power                     = new Label("VALUE");
+	private Label gross_watt_hours                = new Label("VALUE");
+	private Label net_watt_hours                  = new Label("VALUE");
+	private Label average_speed                   = new Label("VALUE");
+	private Label average_gross_power             = new Label("VALUE");
+	private Label average_net_power               = new Label("VALUE");
+	private Label gross_average_power             = new Label("VALUE");
+	private Label gross_average_watt_hour         = new Label("VALUE");
+	private Label battery_only_run_time_remaining = new Label("VALUE");
+	private Label battery_only_range              = new Label("VALUE");
+	private Label battery_and_solar_run_time      = new Label("VALUE");
+	private Label battery_and_solar_range         = new Label("VALUE");
+	private Label battery_charge_remaining        = new Label("VALUE");
+	private Label solar_energy_remaining          = new Label("VALUE");
+	private Label motor_power                     = new Label("VALUE");
 	
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
 		super();
@@ -32,49 +51,55 @@ public class CalculationPanel extends Panel{
 		output_panel.setLayout(new GridLayout(17, 1, 10, 15));
 		button_panel.setLayout(new GridLayout(3, 3, 10, 10));
 		
-		createLabelPanel();
-		createButtonPanel();
-		updateOutputPanel();
+		insertLabelPanel();
+		insertButtonPanel();
+		insertOutputPanel();
 	}
 	
 	public Panel getPanel() {
-		updateOutput();
 		return master_panel;
 	}
 	
-	private void updateOutput() {
-		master_panel.remove(output_panel);
-		updateOutputPanel();
+	public void updatePanel() {
+		array_power                    .setText("Needs Implementing");
+		gross_watt_hours               .setText("Needs Implementing");
+		net_watt_hours                 .setText("Needs Implementing");
+		average_speed                  .setText("Needs Implementing");
+		average_gross_power            .setText("Needs Implementing");
+		average_net_power              .setText("Needs Implementing");
+		gross_average_power            .setText("Needs Implementing");
+		gross_average_watt_hour        .setText("Needs Implementing");
+		battery_only_run_time_remaining.setText("Needs Implementing");
+		battery_only_range             .setText("Needs Implementing");
+		battery_and_solar_run_time     .setText("Needs Implementing");
+		battery_and_solar_range        .setText("Needs Implementing");
+		battery_charge_remaining       .setText("Needs Implementing");
+		solar_energy_remaining         .setText("Needs Implementing");
+		motor_power                    .setText("Needs Implementing");
 	}
 
-	private void updateOutputPanel() {
-		output_panel.removeAll();
+	private void insertOutputPanel() {
 		output_panel.add(new Label(" "));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
-		output_panel.add(new Label("VALUE"));
+		output_panel.add(array_power);
+		output_panel.add(gross_watt_hours);
+		output_panel.add(net_watt_hours);
+		output_panel.add(average_speed);
+		output_panel.add(average_gross_power);
+		output_panel.add(average_net_power);
+		output_panel.add(gross_average_power);
+		output_panel.add(gross_average_watt_hour);
+		output_panel.add(battery_only_run_time_remaining);
+		output_panel.add(battery_only_range);
+		output_panel.add(battery_and_solar_run_time);
+		output_panel.add(battery_and_solar_range);
+		output_panel.add(battery_charge_remaining);
+		output_panel.add(solar_energy_remaining);
+		output_panel.add(motor_power);
 		
 		master_panel.add(output_panel, BorderLayout.EAST);
 	}
 	
-	private void createButtonPanel() {
-		Button change_port_button = new Button("Change Port");
-		Button start_monitor_button = new Button("Start Monitor");
-		Button start_logging_button = new Button("Start Logging");
-		Button reset_calculation_button = new Button("Reset Calculation");
-		
+	private void insertButtonPanel() {
 		button_panel.add(new Label("Controls"));
 		button_panel.add(new Label(" "));
 		button_panel.add(new Label(" "));
@@ -88,7 +113,7 @@ public class CalculationPanel extends Panel{
 		master_panel.add(button_panel, BorderLayout.SOUTH);
 	}
 	
-	private void createLabelPanel() {
+	private void insertLabelPanel() {
 		label_panel.add(new Label("Calculations:"));
 		label_panel.add(new Label("    Array Power"));
 		label_panel.add(new Label("    Gross Watt*Hours"));
