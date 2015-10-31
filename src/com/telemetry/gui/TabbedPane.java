@@ -68,6 +68,15 @@ public class TabbedPane extends Panel{
 		updateComponents();
 	}
 	
+	public void selectTab( int tab_id ){
+		if( tab_id != tab_select ){
+			tab_select = tab_id;
+			updateComponents();
+			tabs.get(tab_id).setSelected(true);
+			tabs.get(tab_id).repaint();
+		}
+	}
+	
 	public class Tab extends Component{
 		
 		public static final int HEIGHT = 25;
@@ -89,12 +98,7 @@ public class TabbedPane extends Panel{
 
 				@Override
 				public void mouseClicked(MouseEvent arg0) {
-					if( tab_index != tab_select ){
-						tab_select = tab_index;
-						updateComponents();
-						setSelected(true);
-						Tab.this.repaint();
-					}
+					selectTab( tab_index );
 				}
 
 				@Override
@@ -113,7 +117,9 @@ public class TabbedPane extends Panel{
 				public void mousePressed(MouseEvent arg0) {}
 
 				@Override
-				public void mouseReleased(MouseEvent arg0) {}
+				public void mouseReleased(MouseEvent arg0) {
+					selectTab( tab_index );
+				}
 				
 			});
 		}
