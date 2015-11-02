@@ -46,7 +46,7 @@ public class TelemetryFrame extends Frame{
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
 		
 		tab_panel.addTab("Car Status", device_panel.getPanel());
-		tab_panel.addTab("Calculation", calculation_panel.getPanel());
+		tab_panel.addTab("Calculation", createCalculationPanel());
 		tab_panel.addTab("Graphs", createGraphPanel());
 		tab_panel.addTab("Map", createMapPanel());
 		
@@ -55,6 +55,7 @@ public class TelemetryFrame extends Frame{
 		// Initializes and edits layout of log_panel container
 		log_panel = new Panel();
 		log_panel.setLayout(new FlowLayout());
+		createLogPanel();
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
