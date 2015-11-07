@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TimePanel extends Panel {
-	private Panel time_panel = new Panel();
+	private static final long serialVersionUID = -8596634937772865283L;
 	private Panel time_label_panel = new Panel();
 	private Panel time_data_panel = new Panel();
 	private Label time_counter = new Label();
@@ -16,7 +16,7 @@ public class TimePanel extends Panel {
 	DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
 	public TimePanel() {
-		time_panel.setLayout(new GridLayout(1, 2));
+		setLayout(new GridLayout(1, 2));
 		time_label_panel.setLayout(new GridLayout(3, 1, 10, 10));
 		time_data_panel.setLayout(new GridLayout(3, 1, 10, 10));
 		
@@ -25,7 +25,7 @@ public class TimePanel extends Panel {
 		time_label_panel.add(new Label("    Current time: "));
 		time_label_panel.add(new Label("    Run time: "));
 		
-		time_panel.add(time_label_panel);
+		add(time_label_panel);
 		
 		// Initialize time data
 		Date date = new Date();
@@ -37,16 +37,12 @@ public class TimePanel extends Panel {
 		time_data_panel.add(time_current);
 		time_data_panel.add(time_counter);
 		
-		time_panel.add(time_data_panel);
+		add(time_data_panel);
 	}
 	
 	public void updatePanel() {
 		Date date = new Date();
 		time_counter.setText("0000");
 		time_current.setText(date_format.format(date));
-	}
-	
-	public Panel getPanel() {
-		return time_panel;
 	}
 }

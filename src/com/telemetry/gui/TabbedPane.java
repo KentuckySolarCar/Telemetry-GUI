@@ -16,10 +16,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class TabbedPane extends Panel{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2149927542836761326L;
 	private final Panel button_panel;
 	private final Panel display_panel;

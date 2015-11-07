@@ -3,8 +3,7 @@ package com.telemetry.gui.device;
 import java.awt.*;
 
 public class DevicePanel extends Panel{
-	
-	private Panel device_panel = new Panel();
+	private static final long serialVersionUID = -7422627351609719543L;
 	private String separator = "----------------------------------------------------------------------------------------------------------------";
 	
 	MotorPanel motor_panel = new MotorPanel();
@@ -17,41 +16,37 @@ public class DevicePanel extends Panel{
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
-		device_panel.setSize(tab_panel_x, tab_panel_y);
-		device_panel.setLayout(new GridBagLayout());
+		setSize(tab_panel_x, tab_panel_y);
+		setLayout(new GridBagLayout());
 		
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		device_panel.add(time_panel.getPanel(), gbc);
+		add(time_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		device_panel.add(new Label(separator), gbc);
+		add(new Label(separator), gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		device_panel.add(motor_panel.getPanel(), gbc);
+		add(motor_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		device_panel.add(new Label(separator), gbc);
+		add(new Label(separator), gbc);
 	
 		gbc.gridx = 0;
 		gbc.gridy = 4;
-		device_panel.add(mppt_panel.getPanel(), gbc);
+		add(mppt_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		device_panel.add(new Label(separator), gbc);
+		add(new Label(separator), gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 6;
-		device_panel.add(battery_panel.getPanel(), gbc);
-	}
-	
-	public Panel getPanel() {
-		return device_panel;
+		add(battery_panel, gbc);
 	}
 	
 	public void updatePanel() {

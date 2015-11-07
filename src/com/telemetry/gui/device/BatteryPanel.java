@@ -2,8 +2,8 @@ package com.telemetry.gui.device;
 
 import java.awt.*;
 
-public class BatteryPanel {
-	private Panel battery_panel = new Panel();
+public class BatteryPanel extends Panel {
+	private static final long serialVersionUID = 3458289157169322167L;
 	private Panel batman_unit_panel = new Panel();
 	private Panel batman_label_panel = new Panel();
 	private Panel batman_data_panel = new Panel();
@@ -28,7 +28,7 @@ public class BatteryPanel {
 	private Label robin_t_min = new Label("VALUE");
 	
 	public BatteryPanel() {
-		battery_panel.setLayout(new GridLayout(1, 6));
+		setLayout(new GridLayout(1, 6));
 		batman_unit_panel.setLayout(new GridLayout(8, 1));
 		batman_label_panel.setLayout(new GridLayout(8, 1));
 		batman_data_panel.setLayout(new GridLayout(8, 1));
@@ -62,9 +62,9 @@ public class BatteryPanel {
 		robin_t_min.setText("Needs Implementing!");
 	}
 	
-	public Panel getPanel() {
+/*	public Panel getPanel() {
 		return battery_panel;
-	}
+	} */
 	
 	private void insertBatmanLabelPanel() {
 		batman_label_panel.add(new Label("    Batman"));
@@ -75,7 +75,7 @@ public class BatteryPanel {
 		batman_label_panel.add(new Label("T_Average:"));
 		batman_label_panel.add(new Label("T_Max:"));
 		batman_label_panel.add(new Label("T_Min:"));
-		battery_panel.add(batman_label_panel);
+		add(batman_label_panel);
 	}
 	
 	private void insertBatmanDataPanel() {
@@ -87,7 +87,7 @@ public class BatteryPanel {
 		batman_data_panel.add(batman_t_average);
 		batman_data_panel.add(batman_t_max);
 		batman_data_panel.add(batman_t_min);
-		battery_panel.add(batman_data_panel);
+		add(batman_data_panel);
 	}
 	
 	private void insertBatmanUnitPanel() {
@@ -99,7 +99,7 @@ public class BatteryPanel {
 		batman_unit_panel.add(new Label("C"));
 		batman_unit_panel.add(new Label("C"));
 		batman_unit_panel.add(new Label("C"));
-		battery_panel.add(batman_unit_panel);
+		add(batman_unit_panel);
 	}
 	
 	private void insertRobinLabelPanel() {
@@ -111,7 +111,7 @@ public class BatteryPanel {
 		robin_label_panel.add(new Label("T_Average:"));
 		robin_label_panel.add(new Label("T_Max:"));
 		robin_label_panel.add(new Label("T_Min:"));
-		battery_panel.add(robin_label_panel);
+		add(robin_label_panel);
 	}
 	
 	private void insertRobinDataPanel() {
@@ -123,7 +123,7 @@ public class BatteryPanel {
 		robin_data_panel.add(robin_t_average);
 		robin_data_panel.add(robin_t_max);
 		robin_data_panel.add(robin_t_min);
-		battery_panel.add(robin_data_panel);
+		add(robin_data_panel);
 	}
 	
 	private void insertRobinUnitPanel() {
@@ -135,6 +135,6 @@ public class BatteryPanel {
 		robin_unit_panel.add(new Label("C"));
 		robin_unit_panel.add(new Label("C"));
 		robin_unit_panel.add(new Label("C"));
-		battery_panel.add(robin_unit_panel);
+		add(robin_unit_panel);
 	}
 }

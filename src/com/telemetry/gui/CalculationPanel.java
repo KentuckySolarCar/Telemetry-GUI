@@ -17,8 +17,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class CalculationPanel extends Panel{
-	
-	private Panel master_panel                    = new Panel();
+	private static final long serialVersionUID = -2305051374349231050L;
 	private Panel label_panel                     = new Panel();
 	private Panel output_panel                    = new Panel();
 	private Panel button_panel                    = new Panel();
@@ -45,8 +44,8 @@ public class CalculationPanel extends Panel{
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
-		master_panel.setSize(tab_panel_x, tab_panel_y);
-	    master_panel.setLayout(new BorderLayout());
+		setSize(tab_panel_x, tab_panel_y);
+	    setLayout(new BorderLayout());
 		label_panel.setLayout(new GridLayout(17, 1, 10, 15));
 		output_panel.setLayout(new GridLayout(17, 1, 10, 15));
 		button_panel.setLayout(new GridLayout(3, 3, 10, 10));
@@ -54,10 +53,6 @@ public class CalculationPanel extends Panel{
 		insertLabelPanel();
 		insertButtonPanel();
 		insertOutputPanel();
-	}
-	
-	public Panel getPanel() {
-		return master_panel;
 	}
 	
 	public void updatePanel() {
@@ -96,7 +91,7 @@ public class CalculationPanel extends Panel{
 		output_panel.add(solar_energy_remaining);
 		output_panel.add(motor_power);
 		
-		master_panel.add(output_panel, BorderLayout.EAST);
+		add(output_panel, BorderLayout.EAST);
 	}
 	
 	private void insertButtonPanel() {
@@ -110,7 +105,7 @@ public class CalculationPanel extends Panel{
 		button_panel.add(start_logging_button);
 		button_panel.add(reset_calculation_button);
 		
-		master_panel.add(button_panel, BorderLayout.SOUTH);
+		add(button_panel, BorderLayout.SOUTH);
 	}
 	
 	private void insertLabelPanel() {
@@ -131,6 +126,6 @@ public class CalculationPanel extends Panel{
 		label_panel.add(new Label("    Solar Energy Ramaining in Day"));
 		label_panel.add(new Label("    Motor Power"));
 		
-		master_panel.add(label_panel, BorderLayout.WEST);
+		add(label_panel, BorderLayout.WEST);
 	}
 }

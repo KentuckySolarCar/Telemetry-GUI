@@ -3,7 +3,11 @@ package com.telemetry.gui.device;
 import java.awt.*;
 
 public class MotorPanel extends Panel {
-	private Panel motor_panel = new Panel();
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4958513623339300406L;
+	//	private Panel motor_panel = new Panel();
 	private Panel motor_label_panel = new Panel();
 	private Panel motor_data_panel = new Panel();
 	private Panel motor_button_panel = new Panel();
@@ -15,7 +19,7 @@ public class MotorPanel extends Panel {
 	private Button average_speed_reset = new Button("Reset");
 	
 	public MotorPanel() {
-		motor_panel.setLayout(new GridLayout(1, 3));
+		setLayout(new GridLayout(1, 3));
 		motor_label_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_data_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_button_panel.setLayout(new GridLayout(5, 1, 10, 10));
@@ -32,7 +36,7 @@ public class MotorPanel extends Panel {
 		motor_label_panel.add(new Label("    Current: "));
 		motor_label_panel.add(new Label("    Energy: "));
 		motor_label_panel.add(new Label("    Av. Speed: "));
-		motor_panel.add(motor_label_panel);
+		add(motor_label_panel);
 	}
 	
 	private void insertDataPanel() {
@@ -41,7 +45,7 @@ public class MotorPanel extends Panel {
 		motor_data_panel.add(current);
 		motor_data_panel.add(energy);
 		motor_data_panel.add(average_speed);
-		motor_panel.add(motor_data_panel);
+		add(motor_data_panel);
 	}
 	
 	private void insertButtonPanel() {
@@ -50,7 +54,7 @@ public class MotorPanel extends Panel {
 		motor_button_panel.add(new Label(" "));
 		motor_button_panel.add(energy_reset);
 		motor_button_panel.add(average_speed_reset);
-		motor_panel.add(motor_button_panel);
+		add(motor_button_panel);
 	}
 	
 	public void updatePanel() {
@@ -60,7 +64,7 @@ public class MotorPanel extends Panel {
 		average_speed.setText("Need Implementing");
 	}
 	
-	public Panel getPanel() {
+/*	public Panel getPanel() {
 		return motor_panel;
-	}
+	} */
 }
