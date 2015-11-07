@@ -15,13 +15,15 @@ public class TelemetryFrame extends Frame{
 	 * 
 	 */
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 800;
-	private static final int HEIGHT = 600;
+	private static final int WIDTH = 1600;
+	private static final int HEIGHT = 900;
+	private static final ActionListener CustomActionListener = null;
 	
 	private TabbedPane tab_panel;
-	CalculationPanel calculation_panel;
-	DevicePanel device_panel;
+	private CalculationPanel calculation_panel;
+	private DevicePanel device_panel;
 	private Panel log_panel;
+	private Button update_button;
 	private int tab_panel_x = 800;
 	private int tab_panel_y = 800;
 	
@@ -44,9 +46,11 @@ public class TelemetryFrame extends Frame{
 		tab_panel = new TabbedPane();
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
+	    update_button = new Button("UPDATE");
+	    update_button.addActionListener(CustomActionListener);
 		
 		tab_panel.addTab("Car Status", device_panel.getPanel());
-		tab_panel.addTab("Calculation", createCalculationPanel());
+		tab_panel.addTab("Calculation", calculation_panel.getPanel());
 		tab_panel.addTab("Graphs", createGraphPanel());
 		tab_panel.addTab("Map", createMapPanel());
 		
@@ -61,9 +65,17 @@ public class TelemetryFrame extends Frame{
 		// and log_panel EAST 
 		add(tab_panel, BorderLayout.WEST);
 		add(log_panel, BorderLayout.EAST);
+		add(update_button, BorderLayout.CENTER);
 		
 		// Reveals main_frame
 		setVisible(true);
+	}
+	
+	class CustomActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			device_panel.updatePanel();
+			repaint();
+		}
 	}
 	
 /*  TODO:

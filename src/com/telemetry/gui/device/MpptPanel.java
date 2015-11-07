@@ -29,7 +29,6 @@ public class MpptPanel {
 		mppt_panel.add(mppt_data_panel);
 	}
 	
-	@SuppressWarnings("unused")
 	public void updatePanel() {
 		out_current.setText("Need Implementing!");
 	}

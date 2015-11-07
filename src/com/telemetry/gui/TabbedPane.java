@@ -23,6 +23,8 @@ public class TabbedPane extends Panel{
 	private static final long serialVersionUID = 2149927542836761326L;
 	private final Panel button_panel;
 	private final Panel display_panel;
+	private static final int WIDTH = 800;
+	private static final int HEIGHT = 800;
 	private ArrayList<Tab> tabs = new ArrayList<>();
 	private ArrayList<Panel> panels = new ArrayList<>();
 	private int tab_select = 0;
@@ -32,6 +34,7 @@ public class TabbedPane extends Panel{
 		
 		setBackground(Color.WHITE);
 		setLayout(new BorderLayout());
+		setSize(WIDTH, HEIGHT);
 		
 		button_panel = new Panel();
 		display_panel = new Panel();

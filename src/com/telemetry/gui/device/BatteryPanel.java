@@ -44,7 +44,6 @@ public class BatteryPanel {
 		insertRobinUnitPanel();
 	}
 	
-	@SuppressWarnings("unused")
 	public void updatePanel() {
 		batman_v_average.setText("Needs Implementing!");
 		batman_v_max.setText("Need Implementing!");
