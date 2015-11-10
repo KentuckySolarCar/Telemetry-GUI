@@ -51,7 +51,9 @@ public class TabbedPane extends Panel{
 		
 		display_panel.removeAll();
 		display_panel.add( panels.get(tab_select) );
-
+		System.out.println(panels.get(tab_select));
+		panels.get(tab_select).repaint();
+		
 		repaint();
 	}
 	
