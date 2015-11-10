@@ -62,6 +62,8 @@ public class MotorPanel extends Panel {
 		current.setText("Need Implementing!");
 		energy.setText("Need Implementing!");
 		average_speed.setText("Need Implementing");
+		
+		repaint();
 	}
 	
 /*	public Panel getPanel() {
