@@ -71,6 +71,8 @@ public class CalculationPanel extends Panel{
 		battery_charge_remaining       .setText("Needs Implementing");
 		solar_energy_remaining         .setText("Needs Implementing");
 		motor_power                    .setText("Needs Implementing");
+		
+		repaint();
 	}
 
 	private void insertOutputPanel() {

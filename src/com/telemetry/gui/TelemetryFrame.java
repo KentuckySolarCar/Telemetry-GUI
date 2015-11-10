@@ -49,6 +49,9 @@ public class TelemetryFrame extends Frame{
 	    update_button = new Button("UPDATE");
 	    update_button.addActionListener(CustomActionListener);
 		
+	    Panel p = new Panel();
+	    p.add(new Label("Ethan is still sepak"));
+	    
 		tab_panel.addTab("Car Status", device_panel);
 		tab_panel.addTab("Calculation", calculation_panel);
 		tab_panel.addTab("Graphs", createGraphPanel());
@@ -66,6 +69,8 @@ public class TelemetryFrame extends Frame{
 		add(tab_panel, BorderLayout.WEST);
 		add(log_panel, BorderLayout.EAST);
 		add(update_button, BorderLayout.CENTER);
+		
+		createMenuBar();
 		
 		// Reveals main_frame
 		setVisible(true);

@@ -31,5 +31,6 @@ public class MpptPanel extends Panel {
 	
 	public void updatePanel() {
 		out_current.setText("Need Implementing!");
+		repaint();
 	}
 }

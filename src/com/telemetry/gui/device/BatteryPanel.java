@@ -60,6 +60,8 @@ public class BatteryPanel extends Panel {
 		robin_t_average.setText("Needs Implementing!");
 		robin_t_max.setText("Needs Implementing!");
 		robin_t_min.setText("Needs Implementing!");
+		
+		repaint();
 	}
 	
 /*	public Panel getPanel() {

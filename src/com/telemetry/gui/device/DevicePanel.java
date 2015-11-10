@@ -54,5 +54,7 @@ public class DevicePanel extends Panel{
 		motor_panel.updatePanel();
 		mppt_panel.updatePanel();
 		battery_panel.updatePanel();
+		
+		repaint();
 	}
 }

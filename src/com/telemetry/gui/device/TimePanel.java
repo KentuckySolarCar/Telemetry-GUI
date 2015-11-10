@@ -44,5 +44,7 @@ public class TimePanel extends Panel {
 		Date date = new Date();
 		time_counter.setText("0000");
 		time_current.setText(date_format.format(date));
+		
+		repaint();
 	}
 }
