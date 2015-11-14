@@ -6,13 +6,8 @@ import javax.swing.*;
 import org.jfree.chart.*;
 import org.jfree.data.*;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.chart.util.*;
 
 public class GraphPanel extends JPanel {
-	private static JLabel speed_label = new JLabel("Speed (mph)");
-	private static JLabel motor_current_label = new JLabel("Motor Current (A)");
-	private static JLabel array_current_label = new JLabel("Array Current (A)");
-	private static JLabel battery_voltage_label = new JLabel("Total Battery Voltage (V)");
 	private static JFreeChart speed_chart;
 	private static JFreeChart motor_current_chart;
 	private static JFreeChart array_current_chart;
@@ -20,6 +15,14 @@ public class GraphPanel extends JPanel {
 	
 	public GraphPanel() {
 		speed_chart = ChartFactory.createLineChart("Speed (mph)", "Time", "Miles Per Hour", createDataSet());
+		motor_current_chart = ChartFactory.createLineChart("Motor Current (A)", "Time", "Amperage", createDataSet());
+		array_current_chart = ChartFactory.createLineChart("Array Current (A)", "Time", "Amperage", createDataSet());
+		battery_voltage_chart = ChartFactory.createLineChart("Total Battery Voltage (V)", "Time", "Voltage", createDataSet());
+		
+		new ChartPanel(speed_chart);
+		new ChartPanel(motor_current_chart);
+		new ChartPanel(array_current_chart);
+		new ChartPanel(battery_voltage_chart);
 	}
 	
 	private DefaultCategoryDataset createDataSet() {

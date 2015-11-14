@@ -3,7 +3,7 @@ package com.telemetry.gui;
 import java.awt.*;
 import javax.swing.*;
 
-public class LogPanel extends Panel {
+public class LogPanel extends JPanel {
 
 	private static final long serialVersionUID = 4467077703107588725L;
 	private static JLabel log_label = new JLabel("Log Display");
