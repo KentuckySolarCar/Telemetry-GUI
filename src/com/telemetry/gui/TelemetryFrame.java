@@ -19,15 +19,17 @@ public class TelemetryFrame extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1600;
-	private static final int HEIGHT = 900;
+	private static final int WIDTH = 1280;
+	private static final int HEIGHT = 720;
 	
 	private JTabbedPane tab_panel;
 	private CalculationPanel calculation_panel;
 	private DevicePanel device_panel;
 	private LogPanel log_panel;
+	private JScrollPane tab_scroll;
+	private JScrollPane log_scroll;
 	private int tab_panel_x = 800;
-	private int tab_panel_y = 800;
+	private int tab_panel_y = 640;
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
@@ -51,10 +53,13 @@ public class TelemetryFrame extends JFrame{
 		
 		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
+		tab_scroll = new JScrollPane(tab_panel);
+		log_scroll = new JScrollPane(log_panel);
+		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
 		add(tab_panel, BorderLayout.WEST);
-		add(log_panel, BorderLayout.EAST);
+		add(log_scroll, BorderLayout.EAST);
 		
 		createMenuBar();
 		

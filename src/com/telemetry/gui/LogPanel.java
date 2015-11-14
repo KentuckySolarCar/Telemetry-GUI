@@ -14,9 +14,9 @@ public class LogPanel extends Panel {
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-		setLayout(new GridLayout(1, 2));
+		setLayout(new GridLayout(3, 1));
 		
-		log_canvas.setSize(500, 705);
+		//log_canvas.setSize(500, 500);
 		log_canvas.setBackground(Color.GRAY);
 		
 		add(log_label);
