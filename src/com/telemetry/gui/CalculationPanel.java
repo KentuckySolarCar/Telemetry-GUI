@@ -1,45 +1,33 @@
 package com.telemetry.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Label;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import javax.swing.*; 
 
-public class CalculationPanel extends Panel{
+public class CalculationPanel extends JPanel{
 	private static final long serialVersionUID = -2305051374349231050L;
-	private Panel label_panel                     = new Panel();
-	private Panel output_panel                    = new Panel();
-	private Panel button_panel                    = new Panel();
-	private Button change_port_button             = new Button("Change Port");
-	private Button start_monitor_button           = new Button("Start Monitor");
-	private Button start_logging_button           = new Button("Start Logging");
-	private Button reset_calculation_button       = new Button("Reset Calculation");
-	private Label array_power                     = new Label("VALUE");
-	private Label gross_watt_hours                = new Label("VALUE");
-	private Label net_watt_hours                  = new Label("VALUE");
-	private Label average_speed                   = new Label("VALUE");
-	private Label average_gross_power             = new Label("VALUE");
-	private Label average_net_power               = new Label("VALUE");
-	private Label gross_average_power             = new Label("VALUE");
-	private Label gross_average_watt_hour         = new Label("VALUE");
-	private Label battery_only_run_time_remaining = new Label("VALUE");
-	private Label battery_only_range              = new Label("VALUE");
-	private Label battery_and_solar_run_time      = new Label("VALUE");
-	private Label battery_and_solar_range         = new Label("VALUE");
-	private Label battery_charge_remaining        = new Label("VALUE");
-	private Label solar_energy_remaining          = new Label("VALUE");
-	private Label motor_power                     = new Label("VALUE");
+	private JPanel label_panel                     = new JPanel();
+	private JPanel output_panel                    = new JPanel();
+	private JPanel button_panel                    = new JPanel();
+	private JButton change_port_button             = new JButton("Change Port");
+	private JButton start_monitor_button           = new JButton("Start Monitor");
+	private JButton start_logging_button           = new JButton("Start Logging");
+	private JButton reset_calculation_button       = new JButton("Reset Calculation");
+	private JLabel array_power                     = new JLabel("VALUE");
+	private JLabel gross_watt_hours                = new JLabel("VALUE");
+	private JLabel net_watt_hours                  = new JLabel("VALUE");
+	private JLabel average_speed                   = new JLabel("VALUE");
+	private JLabel average_gross_power             = new JLabel("VALUE");
+	private JLabel average_net_power               = new JLabel("VALUE");
+	private JLabel gross_average_power             = new JLabel("VALUE");
+	private JLabel gross_average_watt_hour         = new JLabel("VALUE");
+	private JLabel battery_only_run_time_remaining = new JLabel("VALUE");
+	private JLabel battery_only_range              = new JLabel("VALUE");
+	private JLabel battery_and_solar_run_time      = new JLabel("VALUE");
+	private JLabel battery_and_solar_range         = new JLabel("VALUE");
+	private JLabel battery_charge_remaining        = new JLabel("VALUE");
+	private JLabel solar_energy_remaining          = new JLabel("VALUE");
+	private JLabel motor_power                     = new JLabel("VALUE");
 	
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
 		super();
@@ -76,7 +64,7 @@ public class CalculationPanel extends Panel{
 	}
 
 	private void insertOutputPanel() {
-		output_panel.add(new Label(" "));
+		output_panel.add(new JLabel(" "));
 		output_panel.add(array_power);
 		output_panel.add(gross_watt_hours);
 		output_panel.add(net_watt_hours);
@@ -97,11 +85,11 @@ public class CalculationPanel extends Panel{
 	}
 	
 	private void insertButtonPanel() {
-		button_panel.add(new Label("Controls"));
-		button_panel.add(new Label(" "));
-		button_panel.add(new Label(" "));
-		button_panel.add(new Label("    COM PORT:"));
-		button_panel.add(new Label("/Port"));
+		button_panel.add(new JLabel("Controls"));
+		button_panel.add(new JLabel(" "));
+		button_panel.add(new JLabel(" "));
+		button_panel.add(new JLabel("    COM PORT:"));
+		button_panel.add(new JLabel("/Port"));
 		button_panel.add(change_port_button);
 		button_panel.add(start_monitor_button);
 		button_panel.add(start_logging_button);
@@ -111,22 +99,22 @@ public class CalculationPanel extends Panel{
 	}
 	
 	private void insertLabelPanel() {
-		label_panel.add(new Label("Calculations:"));
-		label_panel.add(new Label("    Array Power"));
-		label_panel.add(new Label("    Gross Watt*Hours"));
-		label_panel.add(new Label("    Net Watt*Hours"));
-		label_panel.add(new Label("    Average Speed"));
-		label_panel.add(new Label("    Average Gross Power"));
-		label_panel.add(new Label("    Average Net Power"));
-		label_panel.add(new Label("    Gross Average Power"));
-		label_panel.add(new Label("    Gross Average Watt Hour/Mile"));
-		label_panel.add(new Label("    Battery Only Run-Time Remaining"));
-		label_panel.add(new Label("    Battery Only Range"));
-		label_panel.add(new Label("    Battery and Solar Run-Time"));
-		label_panel.add(new Label("    Battery and Solar Range"));
-		label_panel.add(new Label("    Battery Charge Remaining"));
-		label_panel.add(new Label("    Solar Energy Ramaining in Day"));
-		label_panel.add(new Label("    Motor Power"));
+		label_panel.add(new JLabel("Calculations:"));
+		label_panel.add(new JLabel("    Array Power"));
+		label_panel.add(new JLabel("    Gross Watt*Hours"));
+		label_panel.add(new JLabel("    Net Watt*Hours"));
+		label_panel.add(new JLabel("    Average Speed"));
+		label_panel.add(new JLabel("    Average Gross Power"));
+		label_panel.add(new JLabel("    Average Net Power"));
+		label_panel.add(new JLabel("    Gross Average Power"));
+		label_panel.add(new JLabel("    Gross Average Watt Hour/Mile"));
+		label_panel.add(new JLabel("    Battery Only Run-Time Remaining"));
+		label_panel.add(new JLabel("    Battery Only Range"));
+		label_panel.add(new JLabel("    Battery and Solar Run-Time"));
+		label_panel.add(new JLabel("    Battery and Solar Range"));
+		label_panel.add(new JLabel("    Battery Charge Remaining"));
+		label_panel.add(new JLabel("    Solar Energy Ramaining in Day"));
+		label_panel.add(new JLabel("    Motor Power"));
 		
 		add(label_panel, BorderLayout.WEST);
 	}

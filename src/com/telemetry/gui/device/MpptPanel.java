@@ -1,12 +1,13 @@
 package com.telemetry.gui.device;
 
-import java.awt.*;
+import java.awt.GridLayout;
+import javax.swing.*;
 
-public class MpptPanel extends Panel {
+public class MpptPanel extends JPanel {
 	private static final long serialVersionUID = 4997694178272359227L;
-	private Panel mppt_label_panel = new Panel();
-	private Panel mppt_data_panel = new Panel();
-	private Label out_current = new Label("Out Current");
+	private JPanel mppt_label_panel = new JPanel();
+	private JPanel mppt_data_panel = new JPanel();
+	private JLabel out_current = new JLabel("Out Current");
 	
 	public MpptPanel() {
 		setLayout(new GridLayout(1, 2));
@@ -18,13 +19,13 @@ public class MpptPanel extends Panel {
 	}
 	
 	private void insertLabelPanel() {
-		mppt_label_panel.add(new Label("MPPTs"));
-		mppt_label_panel.add(new Label("    #"));
+		mppt_label_panel.add(new JLabel("MPPTs"));
+		mppt_label_panel.add(new JLabel("    #"));
 		add(mppt_label_panel);
 	}
 	
 	private void insertDataPanel() {
-		mppt_data_panel.add(new Label(" "));
+		mppt_data_panel.add(new JLabel(" "));
 		mppt_data_panel.add(out_current);
 		add(mppt_data_panel);
 	}

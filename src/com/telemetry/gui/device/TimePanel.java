@@ -1,17 +1,18 @@
 package com.telemetry.gui.device;
 
-import java.awt.*;
+import java.awt.GridLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.*;
 
-public class TimePanel extends Panel {
+public class TimePanel extends JPanel {
 	private static final long serialVersionUID = -8596634937772865283L;
-	private Panel time_label_panel = new Panel();
-	private Panel time_data_panel = new Panel();
-	private Label time_counter = new Label();
-	private Label time_current = new Label();
-	private Label time_blank = new Label();
+	private JPanel time_label_panel = new JPanel();
+	private JPanel time_data_panel = new JPanel();
+	private JLabel time_counter = new JLabel();
+	private JLabel time_current = new JLabel();
+	private JLabel time_blank = new JLabel();
 	
 	DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
@@ -21,9 +22,9 @@ public class TimePanel extends Panel {
 		time_data_panel.setLayout(new GridLayout(3, 1, 10, 10));
 		
 		// Initialize time labels
-		time_label_panel.add(new Label("Time"));
-		time_label_panel.add(new Label("    Current time: "));
-		time_label_panel.add(new Label("    Run time: "));
+		time_label_panel.add(new JLabel("Time"));
+		time_label_panel.add(new JLabel("    Current time: "));
+		time_label_panel.add(new JLabel("    Run time: "));
 		
 		add(time_label_panel);
 		

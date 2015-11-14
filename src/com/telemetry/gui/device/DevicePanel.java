@@ -1,8 +1,10 @@
 package com.telemetry.gui.device;
 
-import java.awt.*;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.*;
 
-public class DevicePanel extends Panel{
+public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
 	private String separator = "----------------------------------------------------------------------------------------------------------------";
 	
@@ -26,7 +28,7 @@ public class DevicePanel extends Panel{
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(new Label(separator), gbc);
+		add(new JLabel(separator), gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -34,7 +36,7 @@ public class DevicePanel extends Panel{
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		add(new Label(separator), gbc);
+		add(new JLabel(separator), gbc);
 	
 		gbc.gridx = 0;
 		gbc.gridy = 4;
@@ -42,7 +44,7 @@ public class DevicePanel extends Panel{
 		
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		add(new Label(separator), gbc);
+		add(new JLabel(separator), gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 6;
