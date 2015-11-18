@@ -64,6 +64,7 @@ public class MotorPanel extends JPanel {
 		energy.setText("Need Implementing!");
 		average_speed.setText("Need Implementing");
 		
+		validate();
 		repaint();
 	}
 	

@@ -62,6 +62,7 @@ public class BatteryPanel extends JPanel {
 		robin_t_max.setText("Needs Implementing!");
 		robin_t_min.setText("Needs Implementing!");
 		
+		validate();
 		repaint();
 	}
 	
@@ -94,14 +95,14 @@ public class BatteryPanel extends JPanel {
 	}
 	
 	private void insertBatmanUnitPanel() {
-		batman_unit_panel.add(new JLabel(""));
-		batman_unit_panel.add(new JLabel("V"));
-		batman_unit_panel.add(new JLabel("V (#)"));
-		batman_unit_panel.add(new JLabel("V (#)"));
-		batman_unit_panel.add(new JLabel("A"));
-		batman_unit_panel.add(new JLabel("C"));
-		batman_unit_panel.add(new JLabel("C"));
-		batman_unit_panel.add(new JLabel("C"));
+		batman_unit_panel.add(new JLabel(" "));
+		batman_unit_panel.add(new JLabel(" V"));
+		batman_unit_panel.add(new JLabel(" V (#)"));
+		batman_unit_panel.add(new JLabel(" V (#)"));
+		batman_unit_panel.add(new JLabel(" A"));
+		batman_unit_panel.add(new JLabel(" C"));
+		batman_unit_panel.add(new JLabel(" C"));
+		batman_unit_panel.add(new JLabel(" C"));
 		add(batman_unit_panel);
 	}
 	
@@ -130,14 +131,14 @@ public class BatteryPanel extends JPanel {
 	}
 	
 	private void insertRobinUnitPanel() {
-		robin_unit_panel.add(new JLabel(""));
-		robin_unit_panel.add(new JLabel("V"));
-		robin_unit_panel.add(new JLabel("V (#)"));
-		robin_unit_panel.add(new JLabel("V (#)"));
-		robin_unit_panel.add(new JLabel("A"));
-		robin_unit_panel.add(new JLabel("C"));
-		robin_unit_panel.add(new JLabel("C"));
-		robin_unit_panel.add(new JLabel("C"));
+		robin_unit_panel.add(new JLabel(" "));
+		robin_unit_panel.add(new JLabel(" V"));
+		robin_unit_panel.add(new JLabel(" V (#)"));
+		robin_unit_panel.add(new JLabel(" V (#)"));
+		robin_unit_panel.add(new JLabel(" A"));
+		robin_unit_panel.add(new JLabel(" C"));
+		robin_unit_panel.add(new JLabel(" C"));
+		robin_unit_panel.add(new JLabel(" C"));
 		add(robin_unit_panel);
 	}
 }

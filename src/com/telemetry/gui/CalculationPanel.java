@@ -60,6 +60,7 @@ public class CalculationPanel extends JPanel{
 		solar_energy_remaining         .setText("Needs Implementing");
 		motor_power                    .setText("Needs Implementing");
 		
+		validate();
 		repaint();
 	}
 

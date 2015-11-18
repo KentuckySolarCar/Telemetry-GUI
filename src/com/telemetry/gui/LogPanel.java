@@ -14,13 +14,13 @@ public class LogPanel extends JPanel {
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-		setLayout(new GridLayout(3, 1));
+		setLayout(new BorderLayout());
 		
 		//log_canvas.setSize(500, 500);
 		log_canvas.setBackground(Color.GRAY);
 		
-		add(log_label);
-		add(log_canvas);
-		add(usr_text);
+		add(log_label, BorderLayout.NORTH);
+		add(log_canvas, BorderLayout.CENTER);
+		add(usr_text, BorderLayout.SOUTH);
 	}
 }

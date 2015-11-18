@@ -10,10 +10,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class TelemetryFrame extends JFrame{
+public class TelemetryFrame extends JFrame implements ActionListener {
 	
 	/**
 	 * 
@@ -26,6 +27,7 @@ public class TelemetryFrame extends JFrame{
 	private CalculationPanel calculation_panel;
 	private DevicePanel device_panel;
 	private LogPanel log_panel;
+	private GraphPanel graph_panel;
 	private JScrollPane tab_scroll;
 	private JScrollPane log_scroll;
 	private int tab_panel_x = 800;
@@ -45,11 +47,12 @@ public class TelemetryFrame extends JFrame{
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
 	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
+	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
 	    
 		tab_panel.add("Car Status", device_panel);
 		tab_panel.add("Calculation", calculation_panel);
-		tab_panel.add("Graphs", calculation_panel);
-		tab_panel.add("Map", calculation_panel);
+		tab_panel.add("Graphs", graph_panel);
+	  //tab_panel.add("Map", calculation_panel);
 		
 		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
@@ -94,6 +97,8 @@ public class TelemetryFrame extends JFrame{
 		JMenuItem start_logging = new JMenuItem("Start Logging");	
 		JMenuItem reset_calculations = new JMenuItem("Start Calculations");
 		
+		start_monitor.addActionListener(this);
+		
 		//add menu items to menus
 		file_menu.add(exit_menu_item);
 		
@@ -111,6 +116,13 @@ public class TelemetryFrame extends JFrame{
 		//add menu bar to the frame
 		setJMenuBar(menu_bar);
 		setVisible(true);
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		device_panel.updatePanel();
+		calculation_panel.updatePanel();
+		validate();
+		repaint();
 	}
 	
 	@SuppressWarnings("unused")

@@ -46,6 +46,7 @@ public class TimePanel extends JPanel {
 		time_counter.setText("0000");
 		time_current.setText(date_format.format(date));
 		
+		validate();
 		repaint();
 	}
 }

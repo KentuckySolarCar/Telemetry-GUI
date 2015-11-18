@@ -57,6 +57,7 @@ public class DevicePanel extends JPanel{
 		mppt_panel.updatePanel();
 		battery_panel.updatePanel();
 		
+		validate();
 		repaint();
 	}
 }
