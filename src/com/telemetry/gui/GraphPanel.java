@@ -1,10 +1,8 @@
 package com.telemetry.gui;
 
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import javax.swing.*; 
 import org.jfree.chart.*;
-import org.jfree.data.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public class GraphPanel extends JPanel {
@@ -20,9 +18,9 @@ public class GraphPanel extends JPanel {
 	public GraphPanel(int tab_panel_x, int tab_panel_y) {
 		setSize(tab_panel_x, tab_panel_y);
 		
-		speed_chart = ChartFactory.createLineChart("Speed (mph)", "Time", "Miles Per Hour", createSpeedDataSet());
-		motor_current_chart = ChartFactory.createLineChart("Motor Current (A)", "Time", "Amperage", createMotorCurrentDataSet());
-		array_current_chart = ChartFactory.createLineChart("Array Current (A)", "Time", "Amperage", createArrayCurrentDataSet());
+		speed_chart           = ChartFactory.createLineChart("Speed (mph)", "Time", "Miles Per Hour", createSpeedDataSet());
+		motor_current_chart   = ChartFactory.createLineChart("Motor Current (A)", "Time", "Amperage", createMotorCurrentDataSet());
+		array_current_chart   = ChartFactory.createLineChart("Array Current (A)", "Time", "Amperage", createArrayCurrentDataSet());
 		battery_voltage_chart = ChartFactory.createLineChart("Total Battery Voltage (V)", "Time", "Voltage", createBatteryVoltageDataSet());
 		
 		speed_panel           = new ChartPanel(speed_chart);

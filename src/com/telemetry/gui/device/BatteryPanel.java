@@ -47,7 +47,7 @@ public class BatteryPanel extends JPanel {
 	
 	public void updatePanel() {
 		batman_v_average.setText("Needs Implementing!");
-		batman_v_max.setText("Need Implementing!");
+		batman_v_max.setText("Needs Implementing!");
 		batman_v_min.setText("Needs Implementing!");
 		batman_current.setText("Needs Implementing!");
 		batman_t_average.setText("Needs Implementing!");
@@ -55,7 +55,7 @@ public class BatteryPanel extends JPanel {
 		batman_t_min.setText("Needs Implementing!");
 		
 		robin_v_average.setText("Needs Implementing!");
-		robin_v_max.setText("Need Implementing!");
+		robin_v_max.setText("Needs Implementing!");
 		robin_v_min.setText("Needs Implementing!");
 		robin_current.setText("Needs Implementing!");
 		robin_t_average.setText("Needs Implementing!");

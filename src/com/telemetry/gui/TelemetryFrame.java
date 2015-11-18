@@ -15,10 +15,6 @@ import java.awt.event.ActionListener;
 
 
 public class TelemetryFrame extends JFrame implements ActionListener {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3028986629905272450L;
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 720;
