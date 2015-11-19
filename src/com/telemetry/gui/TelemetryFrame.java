@@ -9,7 +9,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,12 +19,11 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	private static final int HEIGHT = 720;
 	
 	private JTabbedPane tab_panel;
-	private CalculationPanel calculation_panel;
-	private DevicePanel device_panel;
-	private LogPanel log_panel;
-	private GraphPanel graph_panel;
-	private JScrollPane tab_scroll;
-	private JScrollPane log_scroll;
+	private static CalculationPanel calculation_panel;
+	private static DevicePanel device_panel;
+	private static LogPanel log_panel;
+	private static GraphPanel graph_panel;
+	private static JScrollPane log_scroll;
 	private int tab_panel_x = 800;
 	private int tab_panel_y = 640;
 	
@@ -52,7 +50,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		
 		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
-		tab_scroll = new JScrollPane(tab_panel);
+		new JScrollPane(tab_panel);
 		log_scroll = new JScrollPane(log_panel);
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
@@ -66,17 +64,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-/*  TODO:
- * 	1. Implement this function	
- */
-	private JPanel createGraphPanel() {
-		JPanel master_panel = new JPanel();
-		master_panel.setSize(tab_panel_x, tab_panel_y);
-		master_panel.setLayout(new GridLayout());
-		return master_panel;
-	}
-	
-	private void createMenuBar(){
+private void createMenuBar(){
 		final JMenuBar menu_bar = new JMenuBar();
 		
 		// create menus
@@ -115,6 +103,13 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		device_panel.updatePanel();
+		calculation_panel.updatePanel();
+		validate();
+		repaint();
+	}
+	
+	public void updateTelemetryFrame() {
 		device_panel.updatePanel();
 		calculation_panel.updatePanel();
 		validate();

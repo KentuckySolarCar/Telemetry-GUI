@@ -6,6 +6,7 @@ import org.jfree.chart.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 public class GraphPanel extends JPanel {
+	private static final long serialVersionUID = 6054350621681751868L;
 	private static JFreeChart speed_chart;
 	private static JFreeChart motor_current_chart;
 	private static JFreeChart array_current_chart;

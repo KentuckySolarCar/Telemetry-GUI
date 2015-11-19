@@ -1,7 +1,6 @@
 package com.telemetry.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -9,8 +8,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -79,7 +76,8 @@ public class TabbedPane extends Panel{
 	}
 	
 	public class Tab extends Component{
-		
+		private static final long serialVersionUID = -8657396434891575748L;
+
 		public static final int HEIGHT = 25;
 		
 		private boolean selected = false;
