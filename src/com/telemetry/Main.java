@@ -13,8 +13,8 @@ public class Main implements Runnable {
 	
 	public Main() {
 		Thread thread = new Thread(this, "Graphics_Engine");
-		thread.start();
 		window = new TelemetryFrame();
+		thread.start();
 	}
 
 	// Creates an instance of WindowCreator and reveal it

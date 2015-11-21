@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 
 public class TelemetryFrame extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1280;
+	private static final int WIDTH = 1250;
 	private static final int HEIGHT = 720;
 	
 	private JTabbedPane tab_panel;
@@ -33,6 +33,8 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setResizable(false);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -62,6 +64,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		
 		// Reveals main_frame
 		setVisible(true);
+		setLocationRelativeTo(null);
 	}
 	
 private void createMenuBar(){
