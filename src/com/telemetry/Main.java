@@ -5,29 +5,30 @@ import java.util.TimerTask;
 
 import com.telemetry.gui.TelemetryFrame;
 
-public class Main {
+public class Main implements Runnable {
 	
 	private static final float FPS = 1;
 	
 	private static TelemetryFrame window;
+	
+	public Main() {
+		Thread thread = new Thread(this, "Graphics_Engine");
+		thread.start();
+		window = new TelemetryFrame();
+	}
 
 	// Creates an instance of WindowCreator and reveal it
 	public static void main(String[] args) throws InterruptedException {
-		GraphicsEngine engine = new GraphicsEngine();
-		new Thread(engine).start();
-		window = new TelemetryFrame();
+		new Main();
 	}
-	
-	static class GraphicsEngine implements Runnable {
 
-		@Override
-		public void run() {
-			window.updateTelemetryFrame();
-			try {
-				Thread.sleep(1000);
-			} catch(InterruptedException ex) {
-				System.out.println(ex);
-			}
+	@Override
+	public void run() {
+		window.updateTelemetryFrame();
+		try {
+			Thread.sleep(1000);
+		} catch(InterruptedException ex) {
+			System.out.println(ex);
 		}
 	}
 }
