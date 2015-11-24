@@ -2,8 +2,11 @@ package com.telemetry.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 import javax.swing.*;
+
+import com.telemetry.serial.SerialPortHandler;
 
 public class LogPanel extends JPanel implements ActionListener {
 
@@ -33,8 +36,14 @@ public class LogPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String text = text_field.getText();
-		text_area.append(text + new_line);
+		int command = Integer.valueOf(text_field.getText());
+		
+		try {
+			SerialPortHandler.write_command(command);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		text_field.selectAll();
 	}
 }

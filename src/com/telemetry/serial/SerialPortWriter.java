@@ -3,17 +3,22 @@ package com.telemetry.serial;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class SerialPortWriter implements Runnable {
+public class SerialPortWriter {
 	
 	OutputStream output_stream;
 	
 	public SerialPortWriter (OutputStream output_stream) {
 		this.output_stream = output_stream;
 	}
+	
+	public void write(int command) throws IOException {
+		this.output_stream.write(command);
+	}
 
-	@Override
+/*	@Override
 	public void run() {
 		try {
+			Thread.sleep(1000);
 			int c = 0;
             while ( ( c = System.in.read()) > -1 )
             {
@@ -21,7 +26,9 @@ public class SerialPortWriter implements Runnable {
             }
 		} catch(IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-
+	} */
 }

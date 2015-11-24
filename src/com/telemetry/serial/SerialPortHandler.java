@@ -1,5 +1,6 @@
 package com.telemetry.serial;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -9,6 +10,7 @@ public class SerialPortHandler {
 	private SerialPort serial_port;
 	private OutputStream output_stream;
 	private InputStream input_stream;
+	private static SerialPortWriter writer;
 	
 	public void connect(String port_name) throws Exception {
 	/*	try {
@@ -52,14 +54,17 @@ public class SerialPortHandler {
                 output_stream = serial_port.getOutputStream();
                 
                 (new Thread(new SerialPortReader(input_stream))).start();
-                (new Thread(new SerialPortWriter(output_stream))).start();
-
+                writer = new SerialPortWriter(output_stream);
             }
             else
             {
                 System.out.println("Error: Only serial ports are handled by this example.");
             }
         }
+	}
+	
+	public static void write_command(int command) throws IOException {
+		writer.write(command);
 	}
 		
 /*	private void setSerialPortParameters() throws IOException {

@@ -48,7 +48,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		tab_panel.add("Car Status", device_panel);
 		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
-	  //tab_panel.add("Map", calculation_panel);
+	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
