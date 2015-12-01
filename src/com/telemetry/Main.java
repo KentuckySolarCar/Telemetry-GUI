@@ -24,11 +24,20 @@ public class Main implements Runnable {
 
 	@Override
 	public void run() {
-		window.updateTelemetryFrame();
-		try {
-			Thread.sleep(1000);
-		} catch(InterruptedException ex) {
-			System.out.println(ex);
-		}
+		Timer T = new Timer();
+		T.scheduleAtFixedRate(new TimerTask() {
+
+			@Override
+			public void run() {
+				try {
+					window.updateTelemetryFrame();
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}, 0, 1000/30);
 	}
 }
