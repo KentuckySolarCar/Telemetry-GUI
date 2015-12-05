@@ -3,6 +3,8 @@ package com.telemetry.gui.device;
 import java.awt.GridLayout;
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 public class MotorPanel extends JPanel {
 /**
 	 * 
@@ -58,7 +60,7 @@ public class MotorPanel extends JPanel {
 		add(motor_button_panel);
 	}
 	
-	public void updatePanel() {
+	public void updatePanel(JSONObject data) {
 		speed.setText("Needs Implementing!");
 		current.setText("Need Implementing!");
 		energy.setText("Need Implementing!");

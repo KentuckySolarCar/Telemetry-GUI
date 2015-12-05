@@ -2,6 +2,8 @@ package com.telemetry.gui;
 
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 import com.telemetry.gui.device.DevicePanel;
 
 import java.awt.BorderLayout;
@@ -67,7 +69,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		setLocationRelativeTo(null);
 	}
 	
-private void createMenuBar(){
+	private void createMenuBar(){
 		final JMenuBar menu_bar = new JMenuBar();
 		
 		// create menus
@@ -106,17 +108,14 @@ private void createMenuBar(){
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		device_panel.updatePanel();
 		calculation_panel.updatePanel();
 		validate();
 		repaint();
 	}
 	
-	public void updateTelemetryFrame() {
-		device_panel.updatePanel();
+	public static void updateTelemetryFrame(JSONObject data, String type) {
+		device_panel.updatePanel(data, type);
 		calculation_panel.updatePanel();
-		validate();
-		repaint();
 	}
 	
 	@SuppressWarnings("unused")

@@ -4,6 +4,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
 	private String separator = "----------------------------------------------------------------------------------------------------------------";
@@ -51,11 +53,21 @@ public class DevicePanel extends JPanel{
 		add(battery_panel, gbc);
 	}
 	
-	public void updatePanel() {
+	public void updatePanel(JSONObject data, String type) {
 		time_panel.updatePanel();
-		motor_panel.updatePanel();
-		mppt_panel.updatePanel();
-		battery_panel.updatePanel();
+		switch(type) {
+		case "motor": {
+			motor_panel.updatePanel(data);
+			break;
+		}
+		case "bat_volt": 
+		case "bat_temp": {
+			battery_panel.updatePanel(data);
+			break;
+		}
+		default:
+			break;
+		}
 		
 		validate();
 		repaint();

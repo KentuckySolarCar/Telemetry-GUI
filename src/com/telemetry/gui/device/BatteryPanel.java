@@ -3,6 +3,8 @@ package com.telemetry.gui.device;
 import java.awt.GridLayout;
 import javax.swing.*;
 
+import org.json.simple.JSONObject;
+
 public class BatteryPanel extends JPanel {
 	private static final long serialVersionUID = 3458289157169322167L;
 	private JPanel batman_unit_panel = new JPanel();
@@ -45,7 +47,7 @@ public class BatteryPanel extends JPanel {
 		insertRobinUnitPanel();
 	}
 	
-	public void updatePanel() {
+	public void updatePanel(JSONObject data) {
 		batman_v_average.setText("Needs Implementing!");
 		batman_v_max.setText("Needs Implementing!");
 		batman_v_min.setText("Needs Implementing!");
