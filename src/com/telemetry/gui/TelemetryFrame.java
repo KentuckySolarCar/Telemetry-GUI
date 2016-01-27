@@ -2,6 +2,7 @@ package com.telemetry.gui;
 
 import javax.swing.*;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.telemetry.gui.device.DevicePanel;
@@ -113,8 +114,8 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		repaint();
 	}
 	
-	public static void updateTelemetryFrame(JSONObject data, String type) {
-		device_panel.updatePanel(data, type);
+	public static void updateTelemetryFrame(JSONArray array, String type) {
+		device_panel.updatePanel(array, type);
 		calculation_panel.updatePanel();
 	}
 	

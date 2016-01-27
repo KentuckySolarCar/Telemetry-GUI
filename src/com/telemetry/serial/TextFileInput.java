@@ -29,7 +29,7 @@ public class TextFileInput {
 				JSONArray array = (JSONArray)obj;
 				JSONObject message_id = (JSONObject) array.get(1);
 				String message_type = (String) message_id.get("message_id");
-				TelemetryFrame.updateTelemetryFrame(message_id, message_type);
+				TelemetryFrame.updateTelemetryFrame(array, message_type);
 			}
 			
 		} finally {

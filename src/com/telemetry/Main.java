@@ -30,7 +30,7 @@ public class Main implements Runnable {
 			@Override
 			public void run() {
 				try {
-				//	window.updateTelemetryFrame();
+					window.updateTelemetryFrame(null, null);
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
