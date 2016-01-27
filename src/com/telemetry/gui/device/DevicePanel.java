@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.*;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class DevicePanel extends JPanel{
@@ -53,16 +54,16 @@ public class DevicePanel extends JPanel{
 		add(battery_panel, gbc);
 	}
 	
-	public void updatePanel(JSONObject data, String type) {
+	public void updatePanel(JSONObject obj, String type) {
 		time_panel.updatePanel();
 		switch(type) {
 		case "motor": {
-			motor_panel.updatePanel(data);
+			motor_panel.updatePanel(obj);
 			break;
 		}
 		case "bat_volt": 
 		case "bat_temp": {
-			battery_panel.updatePanel(data);
+			battery_panel.updatePanel(obj);
 			break;
 		}
 		default:

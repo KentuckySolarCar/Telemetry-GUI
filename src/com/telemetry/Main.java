@@ -1,25 +1,27 @@
 package com.telemetry;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.json.simple.parser.ParseException;
+
 import com.telemetry.gui.TelemetryFrame;
+import com.telemetry.serial.TextFileInput;
 
 public class Main implements Runnable {
 	
 	private static final float FPS = 1;
-	
 	private static TelemetryFrame window;
-	
-	public Main() {
-		Thread thread = new Thread(this, "Graphics_Engine");
-		window = new TelemetryFrame();
-		thread.start();
-	}
+	private static TextFileInput input;
 
 	// Creates an instance of WindowCreator and reveal it
-	public static void main(String[] args) throws InterruptedException {
-		new Main();
+	public static void main(String[] args) throws InterruptedException, IOException, ParseException {
+		Thread thread = new Thread(new Main());
+		window = new TelemetryFrame();
+//		input = new TextFileInput();
+//		input.Initiate();
+		thread.start();
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class Main implements Runnable {
 			@Override
 			public void run() {
 				try {
-					window.updateTelemetryFrame(null, null);
+					System.out.println("3");
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

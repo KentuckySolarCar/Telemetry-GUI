@@ -4,8 +4,10 @@ import javax.swing.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.device.DevicePanel;
+import com.telemetry.serial.TextFileInput;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +16,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 
 public class TelemetryFrame extends JFrame implements ActionListener {
@@ -22,6 +25,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	private static final int HEIGHT = 720;
 	
 	private JTabbedPane tab_panel;
+	private static TextFileInput input;
 	private static CalculationPanel calculation_panel;
 	private static DevicePanel device_panel;
 	private static LogPanel log_panel;
@@ -109,13 +113,19 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		calculation_panel.updatePanel();
-		validate();
-		repaint();
+		TextFileInput input = new TextFileInput();
+		try {
+			input.Initiate();
+			validate();
+			repaint();
+		} catch (IOException | ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
-	public static void updateTelemetryFrame(JSONArray array, String type) {
-		device_panel.updatePanel(array, type);
+	public static void updateTelemetryFrame(JSONObject obj, String type) {
+		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel();
 	}
 	

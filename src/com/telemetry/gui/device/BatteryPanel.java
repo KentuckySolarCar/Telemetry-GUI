@@ -3,6 +3,7 @@ package com.telemetry.gui.device;
 import java.awt.GridLayout;
 import javax.swing.*;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class BatteryPanel extends JPanel {
@@ -47,7 +48,7 @@ public class BatteryPanel extends JPanel {
 		insertRobinUnitPanel();
 	}
 	
-	public void updatePanel(JSONObject data) {
+	public void updatePanel(JSONObject obj) {
 		batman_v_average.setText("Needs Implementing!");
 		batman_v_max.setText("Needs Implementing!");
 		batman_v_min.setText("Needs Implementing!");
