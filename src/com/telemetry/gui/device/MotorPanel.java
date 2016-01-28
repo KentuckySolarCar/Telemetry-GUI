@@ -1,10 +1,15 @@
 package com.telemetry.gui.device;
 
 import java.awt.GridLayout;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import com.telemetry.data.MotorData;
 
 public class MotorPanel extends JPanel {
 /**
@@ -61,17 +66,10 @@ public class MotorPanel extends JPanel {
 		add(motor_button_panel);
 	}
 	
-	public void updatePanel(JSONObject obj) {
-		speed.setText((String)obj.get("S"));
-		current.setText("Need Implementing!");
-		energy.setText("Need Implementing!");
-		average_speed.setText("Need Implementing");
+	public void updatePanel() {
+		Map<String, Double> data = MotorData.getData();
 		
 		validate();
 		repaint();
 	}
-	
-/*	public Panel getPanel() {
-		return motor_panel;
-	} */
 }
