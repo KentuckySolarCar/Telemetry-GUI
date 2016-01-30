@@ -63,7 +63,7 @@ public class DevicePanel extends JPanel{
 		}
 		case "bat_volt": 
 		case "bat_temp": {
-			battery_panel.updatePanel(obj);
+			battery_panel.updatePanel(obj, type);
 			break;
 		}
 		default:

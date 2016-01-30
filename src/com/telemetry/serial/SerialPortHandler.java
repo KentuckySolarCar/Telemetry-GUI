@@ -12,6 +12,10 @@ public class SerialPortHandler {
 	private InputStream input_stream;
 	private static SerialPortWriter writer;
 	
+	public SerialPortHandler() {
+		
+	}
+	
 	public void connect(String port_name) throws Exception {
 	/*	try {
 			// Obtain a CommPortIdentifier object for the port you want to open

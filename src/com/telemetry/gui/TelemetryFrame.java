@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.device.DevicePanel;
+import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 
 import java.awt.BorderLayout;
@@ -16,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -113,7 +115,20 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		TextFileInput input = new TextFileInput();
+		TextFileInput input = null;
+		try {
+			input = new TextFileInput();
+		} catch (FileNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		/*SerialPortHandler serial_port = new SerialPortHandler();
+		try {
+			serial_port.connect("ttyTel*");
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} */
 		try {
 			input.Initiate();
 			validate();

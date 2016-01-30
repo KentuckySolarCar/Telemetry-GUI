@@ -1,8 +1,10 @@
 package com.telemetry.gui.device;
 
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.*;
 
@@ -17,13 +19,18 @@ public class MotorPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -4958513623339300406L;
 	//	private Panel motor_panel = new Panel();
-	private JPanel motor_label_panel = new JPanel();
-	private JPanel motor_data_panel = new JPanel();
-	private JPanel motor_button_panel = new JPanel();
-	private JLabel speed                = new JLabel("VALUE");
-	private JLabel current              = new JLabel("VALUE");
-	private JLabel energy               = new JLabel("VALUE");
-	private JLabel average_speed        = new JLabel("VALUE");
+	private JPanel motor_label_panel    = new JPanel();
+	private JPanel motor_data_panel     = new JPanel();
+	private JPanel motor_button_panel   = new JPanel();
+	private JLabel speed_label          = new JLabel("VALUE");
+	private JLabel current_label        = new JLabel("VALUE");
+	private JLabel energy_label         = new JLabel("VALUE");
+	private JLabel average_speed_label  = new JLabel("VALUE");
+	private ArrayList<Double> speed;
+	private ArrayList<Double> current;
+	private double amp_sec;
+	private double watt_sec;
+	private double odometer;
 	private JButton energy_reset        = new JButton("Reset");
 	private JButton average_speed_reset = new JButton("Reset");
 	
@@ -32,6 +39,8 @@ public class MotorPanel extends JPanel {
 		motor_label_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_data_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_button_panel.setLayout(new GridLayout(5, 1, 10, 10));
+		speed = new ArrayList<Double>();
+		current = new ArrayList<Double>();
 		
 		insertLabelPanel();
 		insertDataPanel();
@@ -50,10 +59,10 @@ public class MotorPanel extends JPanel {
 	
 	private void insertDataPanel() {
 		motor_data_panel.add(new JLabel(" "));
-		motor_data_panel.add(speed);
-		motor_data_panel.add(current);
-		motor_data_panel.add(energy);
-		motor_data_panel.add(average_speed);
+		motor_data_panel.add(speed_label);
+		motor_data_panel.add(current_label);
+		motor_data_panel.add(energy_label);
+		motor_data_panel.add(average_speed_label);
 		add(motor_data_panel);
 	}
 	
@@ -66,10 +75,22 @@ public class MotorPanel extends JPanel {
 		add(motor_button_panel);
 	}
 	
-	public void updatePanel() {
-		Map<String, Double> data = MotorData.getData();
+	public void updatePanel(JSONObject obj) {
+		speed_label.setText((String) obj.get("S"));
+		current_label.setText((String) obj.get("I"));
 		
+		speed.add(Double.parseDouble((String) obj.get("S")));
+		current.add(Double.parseDouble((String) obj.get("I")));
+		
+		average_speed_label.setText(calculateAveSpeed());
 		validate();
 		repaint();
+	}
+	
+	private String calculateAveSpeed() {
+		double sum = 0;
+		for(Double d : speed)
+			sum += d;
+		return Double.toString(sum/speed.size());
 	}
 }

@@ -15,21 +15,29 @@ public class BatteryPanel extends JPanel {
 	private JPanel robin_label_panel = new JPanel();
 	private JPanel robin_data_panel = new JPanel();
 	
-	private JLabel batman_v_average = new JLabel("VALUE");
-	private JLabel batman_v_max = new JLabel("VALUE");
-	private JLabel batman_v_min = new JLabel("VALUE");
-	private JLabel batman_current = new JLabel("VALUE");
-	private JLabel batman_t_average = new JLabel("VALUE");
-	private JLabel batman_t_max = new JLabel("VALUE");
-	private JLabel batman_t_min = new JLabel("VALUE");
+	private JLabel batman_v_average_l = new JLabel("VALUE");
+	private JLabel batman_v_max_l = new JLabel("VALUE");
+	private JLabel batman_v_min_l = new JLabel("VALUE");
+	private JLabel batman_current_l = new JLabel("VALUE");
+	private JLabel batman_t_average_l = new JLabel("VALUE");
+	private JLabel batman_t_max_l = new JLabel("VALUE");
+	private JLabel batman_t_min_l = new JLabel("VALUE");
+	private double batman_ave_temp = 0;
+	private double batman_v_average = 0;
+	private double batman_v_min = 0;
+	private double batman_current_average = 0;
 	
-	private JLabel robin_v_average = new JLabel("VALUE");
-	private JLabel robin_v_max = new JLabel("VALUE");
-	private JLabel robin_v_min = new JLabel("VALUE");
-	private JLabel robin_current = new JLabel("VALUE");
-	private JLabel robin_t_average = new JLabel("VALUE");
-	private JLabel robin_t_max = new JLabel("VALUE");
-	private JLabel robin_t_min = new JLabel("VALUE");
+	private JLabel robin_v_average_l = new JLabel("VALUE");
+	private JLabel robin_v_max_l = new JLabel("VALUE");
+	private JLabel robin_v_min_l = new JLabel("VALUE");
+	private JLabel robin_current_l = new JLabel("VALUE");
+	private JLabel robin_t_average_l = new JLabel("VALUE");
+	private JLabel robin_t_max_l = new JLabel("VALUE");
+	private JLabel robin_t_min_l = new JLabel("VALUE");
+	private double robin_ave_temp = 0;
+	private double robin_v_average = 0;
+	private double robin_v_min = 0;
+	private double robin_current_average = 0;
 	
 	public BatteryPanel() {
 		setLayout(new GridLayout(1, 6));
@@ -48,30 +56,45 @@ public class BatteryPanel extends JPanel {
 		insertRobinUnitPanel();
 	}
 	
-	public void updatePanel(JSONObject obj) {
-		batman_v_average.setText("Needs Implementing!");
-		batman_v_max.setText("Needs Implementing!");
-		batman_v_min.setText("Needs Implementing!");
-		batman_current.setText("Needs Implementing!");
-		batman_t_average.setText("Needs Implementing!");
-		batman_t_max.setText("Needs Implementing!");
-		batman_t_min.setText("Needs Implementing!");
-		
-		robin_v_average.setText("Needs Implementing!");
-		robin_v_max.setText("Needs Implementing!");
-		robin_v_min.setText("Needs Implementing!");
-		robin_current.setText("Needs Implementing!");
-		robin_t_average.setText("Needs Implementing!");
-		robin_t_max.setText("Needs Implementing!");
-		robin_t_min.setText("Needs Implementing!");
+	public void updatePanel(JSONObject obj, String type) {
+		if(type.equals("bat_temp")) {
+			if(((String) obj.get("name")).equals("0")) {
+				batman_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
+				batman_t_average_l.setText((String) obj.get("Tavg"));
+				batman_t_max_l.setText((String) obj.get("Tmin"));
+				batman_t_min_l.setText((String) obj.get("Tmax"));
+			}
+			else {
+				robin_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
+				robin_t_average_l.setText((String) obj.get("Tavg"));
+				robin_t_max_l.setText((String) obj.get("Tmin"));
+				robin_t_min_l.setText((String) obj.get("Tmax"));
+			}
+		}
+		else if(type.equals("bat_volt")) {
+			if(((String) obj.get("name")).equals("0")) {
+				batman_v_average       = Double.parseDouble((String) obj.get("Vavg"));
+				batman_v_min           = Double.parseDouble((String) obj.get("Vmin"));
+				batman_current_average = Double.parseDouble((String) obj.get("BC"));
+				batman_v_average_l.setText((String) obj.get("Vavg"));
+				batman_v_max_l.setText((String) obj.get("Vmax"));
+				batman_v_min_l.setText((String) obj.get("Vmin"));
+				batman_current_l.setText((String) obj.get("BC"));
+			}
+			else {
+				robin_v_average       = Double.parseDouble((String) obj.get("Vavg"));
+				robin_v_min           = Double.parseDouble((String) obj.get("Vmin"));
+				robin_current_average = Double.parseDouble((String) obj.get("BC"));
+				robin_v_average_l.setText((String) obj.get("Vavg"));
+				robin_v_max_l.setText((String) obj.get("Vmax"));
+				robin_v_min_l.setText((String) obj.get("Vmin"));
+				robin_current_l.setText((String) obj.get("BC"));
+			}
+		}
 		
 		validate();
 		repaint();
 	}
-	
-/*	public Panel getPanel() {
-		return battery_panel;
-	} */
 	
 	private void insertBatmanLabelPanel() {
 		batman_label_panel.add(new JLabel("    Batman"));
@@ -87,13 +110,13 @@ public class BatteryPanel extends JPanel {
 	
 	private void insertBatmanDataPanel() {
 		batman_data_panel.add(new JLabel(" "));
-		batman_data_panel.add(batman_v_average);
-		batman_data_panel.add(batman_v_max);
-		batman_data_panel.add(batman_v_min);
-		batman_data_panel.add(batman_current);
-		batman_data_panel.add(batman_t_average);
-		batman_data_panel.add(batman_t_max);
-		batman_data_panel.add(batman_t_min);
+		batman_data_panel.add(batman_v_average_l);
+		batman_data_panel.add(batman_v_max_l);
+		batman_data_panel.add(batman_v_min_l);
+		batman_data_panel.add(batman_current_l);
+		batman_data_panel.add(batman_t_average_l);
+		batman_data_panel.add(batman_t_max_l);
+		batman_data_panel.add(batman_t_min_l);
 		add(batman_data_panel);
 	}
 	
@@ -123,13 +146,13 @@ public class BatteryPanel extends JPanel {
 	
 	private void insertRobinDataPanel() {
 		robin_data_panel.add(new JLabel(" "));
-		robin_data_panel.add(robin_v_average);
-		robin_data_panel.add(robin_v_max);
-		robin_data_panel.add(robin_v_min);
-		robin_data_panel.add(robin_current);
-		robin_data_panel.add(robin_t_average);
-		robin_data_panel.add(robin_t_max);
-		robin_data_panel.add(robin_t_min);
+		robin_data_panel.add(robin_v_average_l);
+		robin_data_panel.add(robin_v_max_l);
+		robin_data_panel.add(robin_v_min_l);
+		robin_data_panel.add(robin_current_l);
+		robin_data_panel.add(robin_t_average_l);
+		robin_data_panel.add(robin_t_max_l);
+		robin_data_panel.add(robin_t_min_l);
 		add(robin_data_panel);
 	}
 	
