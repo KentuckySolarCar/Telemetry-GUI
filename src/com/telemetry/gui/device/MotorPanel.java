@@ -11,8 +11,6 @@ import javax.swing.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.telemetry.data.MotorData;
-
 public class MotorPanel extends JPanel {
 /**
 	 * 

@@ -73,4 +73,8 @@ public class DevicePanel extends JPanel{
 		validate();
 		repaint();
 	}
+	
+	public int[] getTime() {
+		return time_panel.getTime();
+	}
 }

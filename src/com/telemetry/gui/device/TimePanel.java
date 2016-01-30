@@ -14,6 +14,9 @@ public class TimePanel extends JPanel {
 	private JLabel time_current = new JLabel();
 	private JLabel time_blank = new JLabel();
 	private long initial_time;
+	private int hour = 0;
+	private int minute = 0;
+	private int second = 0;
 	
 	DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
@@ -33,7 +36,7 @@ public class TimePanel extends JPanel {
 		Date date = new Date();
 		time_blank.setText(" ");
 		initial_time = System.currentTimeMillis()/1000;
-		time_counter.setText(new Date(0).toString());
+		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
 		time_current.setText(date_format.format(date));
 		
 		time_data_panel.add(time_blank);
@@ -46,13 +49,18 @@ public class TimePanel extends JPanel {
 	public void updatePanel() {
 		Date date = new Date();
 		long elapsed_time = System.currentTimeMillis()/1000 - initial_time;
-		int hour = (int) (elapsed_time / 3600);
-		int minute = (int) ((elapsed_time % 3600) / 60);
-		int second = (int) ((elapsed_time) % 60);
+		hour = (int) (elapsed_time / 3600);
+		minute = (int) ((elapsed_time % 3600) / 60);
+		second = (int) ((elapsed_time) % 60);
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
 		time_current.setText(date_format.format(date));
 		
 		validate();
 		repaint();
+	}
+	
+	public int[] getTime() {
+		int time[] = {hour, minute, second};
+		return time;
 	}
 }
