@@ -122,13 +122,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		/*SerialPortHandler serial_port = new SerialPortHandler();
-		try {
-			serial_port.connect("ttyTel*");
-		} catch (Exception e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} */
+
 		try {
 			input.Initiate();
 			validate();
@@ -147,41 +141,9 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 			double mph = Double.parseDouble((String) obj.get("S"));
 			graph_panel.updateSpeedDataSet(mph, time[0], time[1], time[2]);
 		}
-	}
-	
-	@SuppressWarnings("unused")
-	private JPanel createControlPanel(){
-		//panel within panel
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.white);
-		panel.setSize(300, 300);
-		GridBagLayout layout = new GridBagLayout();
-				
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-				
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(new JButton("Change Port"), gbc);
-		
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		panel.add(new JButton("Start Monitor"), gbc);
-				
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		panel.add(new JButton("Start Logging"), gbc);
-				
-		gbc.gridx = 3;
-		gbc.gridy = 0;
-		panel.add(new JButton("Reset Calculations"), gbc);
-				
-		gbc.gridx = 4;
-		gbc.gridy = 0;
-		gbc.gridwidth = 4;
-		panel.add(new JButton("Exit"), gbc);
-		
-		return panel;	
+		else if((type.equals("bat_volt")) && ((String) obj.get("name")).equals("0")) {
+			double v = Double.parseDouble((String) obj.get("Vavg"));
+			graph_panel.updateBatteryVoltageDataSet(v, time[0], time[1], time[2]);
+		}
 	}
 }

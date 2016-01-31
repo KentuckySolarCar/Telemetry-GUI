@@ -12,7 +12,6 @@ public class LogPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 4467077703107588725L;
 	private static JLabel log_label = new JLabel("Log Display");
-//	private static Canvas log_canvas = new Canvas();
 	private static JTextArea text_area;
 	private final JTextField text_field = new JTextField(40);
 	private final static String new_line = "\n";

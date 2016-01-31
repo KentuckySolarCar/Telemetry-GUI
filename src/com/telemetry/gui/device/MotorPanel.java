@@ -12,11 +12,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class MotorPanel extends JPanel {
-/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4958513623339300406L;
-	//	private Panel motor_panel = new Panel();
 	private JPanel motor_label_panel    = new JPanel();
 	private JPanel motor_data_panel     = new JPanel();
 	private JPanel motor_button_panel   = new JPanel();

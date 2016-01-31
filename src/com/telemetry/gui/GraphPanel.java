@@ -38,13 +38,10 @@ public class GraphPanel extends JPanel {
 		battery_voltage_panel = new ChartPanel(battery_voltage_chart);
 		
 		setLayout(new GridLayout(2, 2));
-		//add(new JLabel("Speed (mph)"));
-		//add(new JLabel("Motor Current (A)"));
+		
 		add(speed_panel);
 		add(motor_current_panel);
 		
-		//add(new JLabel("Array Current (A)"));
-		//add(new JLabel("Total Battery Voltage (V)"));
 		add(array_current_panel);
 		add(battery_voltage_panel);
 	}
@@ -68,7 +65,13 @@ public class GraphPanel extends JPanel {
 	}
 
 	public void updateBatteryVoltageDataSet(double v, int h, int m, int s) {
-	
+		battery_voltage_dataset.addValue(v, "Voltage", h + ":" + m + ":" + s);
+		battery_voltage_panel.removeAll();
+		battery_voltage_panel.revalidate();
+		battery_voltage_chart = ChartFactory.createLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
+		battery_voltage_panel = new ChartPanel(battery_voltage_chart);
+		validate();
+		repaint();
 	}
 	
 	private void createSpeedDataSet() {

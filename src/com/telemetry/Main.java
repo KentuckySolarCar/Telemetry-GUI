@@ -11,16 +11,12 @@ import com.telemetry.serial.TextFileInput;
 
 public class Main implements Runnable {
 	
-	private static final float FPS = 1;
 	private static TelemetryFrame window;
-	private static TextFileInput input;
 
 	// Creates an instance of WindowCreator and reveal it
 	public static void main(String[] args) throws InterruptedException, IOException, ParseException {
 		Thread thread = new Thread(new Main());
 		window = new TelemetryFrame();
-//		input = new TextFileInput();
-//		input.Initiate();
 		thread.start();
 	}
 
