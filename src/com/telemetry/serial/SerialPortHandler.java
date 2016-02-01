@@ -17,29 +17,7 @@ public class SerialPortHandler {
 	}
 	
 	public void connect(String port_name) throws Exception {
-	/*	try {
-			// Obtain a CommPortIdentifier object for the port you want to open
-			CommPortIdentifier port_id = CommPortIdentifier.getPortIdentifier(port_name);
-			
-			// Get the port's ownership
-			serial_port = (SerialPort) port_id.open("Telemetry Connection", 5000);
-			
-			 // Set the parameters of the connection.
-            setSerialPortParameters();
- 
-            // Open the input and output streams for the connection. If they won't
-            // open, close the port before throwing an exception.
-            output_stream = serial_port.getOutputStream();
-            
-		} catch(NoSuchPortException e) {
-			throw new IOException(e.getMessage());
-		} catch(PortInUseException e) {
-			throw new IOException(e.getMessage());
-		} catch(IOException e) {
-			serial_port.close();
-			throw e;
-		} */
-		
+
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_name);
         if ( portIdentifier.isCurrentlyOwned() )
         {
@@ -61,9 +39,7 @@ public class SerialPortHandler {
                 writer = new SerialPortWriter(output_stream);
             }
             else
-            {
-                System.out.println("Error: Only serial ports are handled by this example.");
-            }
+            	System.out.println("Error: This is not a serial port!");
         }
 	}
 	
