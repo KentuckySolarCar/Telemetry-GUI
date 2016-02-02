@@ -36,7 +36,7 @@ public class SerialPortHandler {
                 output_stream = serial_port.getOutputStream();
                 
                 (new Thread(new SerialPortReader(input_stream))).start();
-                writer = new SerialPortWriter(output_stream);
+                (new Thread(new SerialPortWriter(output_stream))).start();
             }
             else
             	System.out.println("Error: This is not a serial port!");

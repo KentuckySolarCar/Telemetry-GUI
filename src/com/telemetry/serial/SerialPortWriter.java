@@ -14,10 +14,9 @@ public class SerialPortWriter implements Runnable {
 	@Override
 	public void run() {
 		try {
-			int c = 0;
-            while ( ( c = System.in.read()) > -1 )
+            while (true)
             {
-                this.output_stream.write(c);
+                this.output_stream.write(5);
             }
 		} catch(IOException e) {
 			e.printStackTrace();
