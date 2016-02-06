@@ -116,7 +116,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-/*		TextFileInput input = null;
+		TextFileInput input = null;
 		try {
 			input = new TextFileInput();
 		} catch (FileNotFoundException e2) {
@@ -131,14 +131,14 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		} catch (IOException | ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} */
-		serial_port = new SerialPortHandler();
+		}
+	/*	serial_port = new SerialPortHandler();
 		try {
 			serial_port.connect("COM3");
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		} */
 	}
 	
 	public static void updateTelemetryFrame(JSONObject obj, String type) {
