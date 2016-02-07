@@ -1,6 +1,8 @@
 package com.telemetry.gui.device;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +28,8 @@ public class MotorPanel extends JPanel {
 	private double amp_sec;
 	private double watt_sec;
 	private double odometer;
-	private JButton energy_reset        = new JButton("Reset");
-	private JButton average_speed_reset = new JButton("Reset");
+	private JButton energy_reset        = new JButton("Energy Reset");
+	private JButton average_speed_reset = new JButton("Speed Reset");
 	
 	public MotorPanel() {
 		setLayout(new GridLayout(1, 3));
@@ -65,8 +67,11 @@ public class MotorPanel extends JPanel {
 		motor_button_panel.add(new JLabel(" "));
 		motor_button_panel.add(new JLabel(" "));
 		motor_button_panel.add(new JLabel(" "));
+		
 		motor_button_panel.add(energy_reset);
+		
 		motor_button_panel.add(average_speed_reset);
+
 		add(motor_button_panel);
 	}
 	
@@ -87,5 +92,9 @@ public class MotorPanel extends JPanel {
 		for(Double d : speed)
 			sum += d;
 		return Double.toString(sum/speed.size());
+	}
+	
+	class EnergyReset implements ActionListener {
+		public void 
 	}
 }

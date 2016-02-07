@@ -34,7 +34,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = 800;
+	private int tab_panel_x = WIDTH/2;
 	private int tab_panel_y = 640;
 	
 	// Constructor to initialize the GUI
@@ -142,6 +142,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	}
 	
 	public static void updateTelemetryFrame(JSONObject obj, String type) {
+		log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel();
 		int[] time = device_panel.getTime();
