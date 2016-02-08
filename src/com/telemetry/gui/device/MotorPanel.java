@@ -93,8 +93,4 @@ public class MotorPanel extends JPanel {
 			sum += d;
 		return Double.toString(sum/speed.size());
 	}
-	
-	class EnergyReset implements ActionListener {
-		public void 
-	}
 }
