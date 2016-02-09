@@ -57,11 +57,23 @@ public class GraphPanel extends JPanel {
 	}
 
 	public void updateMotorCurrentDataSet(double amp, int h, int m, int s) {
-		
+		motor_current_dataset.addValue(amp, "Amperage", h + ":" + m + ":" + s);
+		motor_current_panel.removeAll();
+		motor_current_panel.revalidate();
+		motor_current_chart = ChartFactory.createLineChart("Amperage (stuff)", "Time", "Amperage", motor_current_dataset);
+		motor_current_panel = new ChartPanel(motor_current_chart);
+		validate();
+		repaint();
 	}
 	
 	public void updateArrayCurrentDataSet(double amp, int h, int m, int s) {
-		
+		array_current_dataset.addValue(amp, "Amperage", h + ":" + m + ":" + s);
+		array_current_panel.removeAll();
+		array_current_panel.revalidate();
+		array_current_chart = ChartFactory.createLineChart("Amperage (stuff)", "Time", "Amperage", array_current_dataset);
+		array_current_panel = new ChartPanel(array_current_chart);
+		validate();
+		repaint();
 	}
 
 	public void updateBatteryVoltageDataSet(double v, int h, int m, int s) {
