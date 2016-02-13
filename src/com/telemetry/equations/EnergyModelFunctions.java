@@ -1,4 +1,4 @@
-package com.EnergyModelFunctions;
+package com.telemetry.equations;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

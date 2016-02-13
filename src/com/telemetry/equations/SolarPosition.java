@@ -1,4 +1,4 @@
-package com.EnergyModelFunctions;
+package com.telemetry.equations;
 
 public class SolarPosition {
 	public double azimuth;
