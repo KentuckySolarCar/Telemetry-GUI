@@ -2,7 +2,9 @@ package com.telemetry.gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import javax.swing.*; 
+import javax.swing.*;
+
+import org.json.simple.JSONObject; 
 
 public class CalculationPanel extends JPanel{
 	private static final long serialVersionUID = -2305051374349231050L;
@@ -43,7 +45,12 @@ public class CalculationPanel extends JPanel{
 		insertOutputPanel();
 	}
 	
-	public void updatePanel() {
+	public void updatePanel(JSONObject device_data) {
+		JSONObject motor_data   = (JSONObject) device_data.get("motor_data");
+		JSONObject battery_data = (JSONObject) device_data.get("battery_data");
+		
+		
+		
 		array_power                    .setText("Needs Implementing");
 		gross_watt_hours               .setText("Needs Implementing");
 		net_watt_hours                 .setText("Needs Implementing");

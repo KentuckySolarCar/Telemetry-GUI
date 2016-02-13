@@ -77,4 +77,14 @@ public class DevicePanel extends JPanel{
 	public int[] getTime() {
 		return time_panel.getTime();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getDeviceData() {
+		JSONObject device_data = new JSONObject();
+		JSONObject battery_data = battery_panel.getData();
+		JSONObject motor_data = motor_panel.getData();
+		device_data.put("battery_data", battery_data);
+		device_data.put("motor_data", motor_data);
+		return device_data;
+	}
 }
