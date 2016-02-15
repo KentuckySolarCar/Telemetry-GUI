@@ -13,6 +13,10 @@ import javax.swing.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.telemetry.custom.SizedQueue;
+
+import java.util.Queue;
+
 public class MotorPanel extends JPanel {
 
 	private static final long serialVersionUID = -4958513623339300406L;
@@ -23,8 +27,8 @@ public class MotorPanel extends JPanel {
 	private JLabel current_label        = new JLabel("VALUE");
 	private JLabel energy_label         = new JLabel("VALUE");
 	private JLabel average_speed_label  = new JLabel("VALUE");
-	private ArrayList<Double> speed;
-	private ArrayList<Double> current;
+	private Queue<Double> speed;
+	private Queue<Double> current;
 	private double amp_sec;
 	private double watt_sec;
 	private double odometer;
@@ -36,12 +40,23 @@ public class MotorPanel extends JPanel {
 		motor_label_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_data_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_button_panel.setLayout(new GridLayout(5, 1, 10, 10));
-		speed = new ArrayList<Double>();
-		current = new ArrayList<Double>();
+		speed = new SizedQueue<Double>();
+		current = new SizedQueue<Double>();
 		
 		insertLabelPanel();
 		insertDataPanel();
 		insertButtonPanel();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getData() {
+		JSONObject data = new JSONObject();
+		data.put("ave_speed", new Double(calculateAveSpeed()));
+		data.put("ave_current", new Double(calculateAveCurrent()));
+		data.put("amp_sec", new Double(amp_sec));
+		data.put("watt_sec", new Double(watt_sec));
+		data.put("odometer", new Double(odometer));
+		return data;
 	}
 	
 	private void insertLabelPanel() {
@@ -82,15 +97,22 @@ public class MotorPanel extends JPanel {
 		speed.add(Double.parseDouble((String) obj.get("S")));
 		current.add(Double.parseDouble((String) obj.get("I")));
 		
-		average_speed_label.setText(calculateAveSpeed());
+		average_speed_label.setText(Double.toString(calculateAveSpeed()));
 		validate();
 		repaint();
 	}
 	
-	private String calculateAveSpeed() {
+	private double calculateAveSpeed() {
 		double sum = 0;
 		for(Double d : speed)
 			sum += d;
-		return Double.toString(sum/speed.size());
+		return sum/speed.size();
+	}
+	
+	private double calculateAveCurrent() {
+		double sum = 0;
+		for(Double d : current)
+			sum += d;
+		return sum/current.size();
 	}
 }

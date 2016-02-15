@@ -1,4 +1,4 @@
-package com.telemetry.gui.device;
+ package com.telemetry.gui.device;
 
 import java.awt.GridLayout;
 import javax.swing.*;
@@ -94,6 +94,28 @@ public class BatteryPanel extends JPanel {
 		
 		validate();
 		repaint();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getData() {
+		JSONObject batman_data = new JSONObject();
+		JSONObject robin_data = new JSONObject();
+		JSONObject combined_data = new JSONObject();
+		
+		batman_data.put("ave_temp", new Double(batman_ave_temp));
+		batman_data.put("v_average", new Double(batman_v_average));
+		batman_data.put("v_min", new Double(batman_v_min));
+		batman_data.put("current_average", new Double(batman_current_average));
+		
+		robin_data.put("ave_temp", new Double(robin_ave_temp));
+		robin_data.put("v_average", new Double(robin_v_average));
+		robin_data.put("v_min", new Double(robin_v_min));
+		robin_data.put("current_average", new Double(robin_current_average));
+		
+		combined_data.put("batman", batman_data);
+		combined_data.put("robin", robin_data);
+		
+		return combined_data;
 	}
 	
 	private void insertBatmanLabelPanel() {

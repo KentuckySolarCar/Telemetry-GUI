@@ -147,7 +147,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	public static void updateTelemetryFrame(JSONObject obj, String type) {
 		log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
-		calculation_panel.updatePanel();
+		calculation_panel.updatePanel(device_panel.getDeviceData());
 		int[] time = device_panel.getTime();
 		if(type.equals("motor")) {
 			double mph = Double.parseDouble((String) obj.get("S"));
