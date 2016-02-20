@@ -145,24 +145,26 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	
 	// Constantly update GUI
 	public static void updateTelemetryFrame(JSONObject obj, String type) {
-		log_panel.updatePanel(obj);
+		// Log Panel will not be updated for the time being
+		// log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 		int[] time = device_panel.getTime();
-		if(type.equals("motor")) {
-			double mph = Double.parseDouble((String) obj.get("S"));
-			graph_panel.updateSpeedDataSet(mph, time[0], time[1], time[2]);
-			
-			double mCurrent = Double.parseDouble((String) obj.get("S"));
-			graph_panel.updateMotorCurrentDataSet(mCurrent, time[0], time[1], time[2]);
-			
-			double aCurrent = Double.parseDouble((String) obj.get("S"));
-			graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);
-		}
-		else if((type.equals("bat_volt")) && ((String) obj.get("name")).equals("0")) {
-			double v = Double.parseDouble((String) obj.get("Vavg"));
-			graph_panel.updateBatteryVoltageDataSet(v, time[0], time[1], time[2]);
-		}
+		
+//		if(type.equals("motor")) {
+//			double mph = Double.parseDouble((String) obj.get("S"));
+//			graph_panel.updateSpeedDataSet(mph, time[0], time[1], time[2]);
+//			
+//			double mCurrent = Double.parseDouble((String) obj.get("S"));
+//			graph_panel.updateMotorCurrentDataSet(mCurrent, time[0], time[1], time[2]);
+//			
+//			double aCurrent = Double.parseDouble((String) obj.get("S"));
+//			graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);
+//		}
+//		else if((type.equals("bat_volt")) && ((String) obj.get("name")).equals("0")) {
+//			double v = Double.parseDouble((String) obj.get("Vavg"));
+//			graph_panel.updateBatteryVoltageDataSet(v, time[0], time[1], time[2]);
+//		}
 		
 		// TODO: Implement Array and Motor current loops
 		/*double mCurrent = Double.parseDouble((String) obj.get("S"));
