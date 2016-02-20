@@ -32,11 +32,10 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 	private static TextFileInput input;
 	private static CalculationPanel calculation_panel;
 	private static DevicePanel device_panel;
-	private static LogPanel log_panel;
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = WIDTH/2;
+	private int tab_panel_x = 800;
 	private int tab_panel_y = 640;
 	
 	// Constructor to initialize the GUI
@@ -54,7 +53,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		tab_panel = new JTabbedPane();
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
-	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
+	    
 	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
 	    
 		tab_panel.add("Car Status", device_panel);
@@ -62,15 +61,15 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		tab_panel.add("Graphs", graph_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
-		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+	    // Uncomment next line to set tab_panel's size
+		// tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
-		new JScrollPane(tab_panel);
-		log_scroll = new JScrollPane(log_panel);
+	    // Uncomment next line to make tab_panel scalable
+		// new JScrollPane(tab_panel);
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
 		add(tab_panel, BorderLayout.WEST);
-		add(log_scroll, BorderLayout.EAST);
 		
 		createMenuBar();
 		

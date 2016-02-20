@@ -1,5 +1,6 @@
 package com.telemetry.gui;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.*; 
 import org.jfree.chart.*;
@@ -7,51 +8,43 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.telemetry.graphs.EnergyGraph;
+import com.telemetry.graphs.PowerGraph;
+import com.telemetry.graphs.TemperatureGraph;
+import com.telemetry.graphs.VoltageGraph;
+
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = 6054350621681751868L;
-	private JFreeChart speed_chart;
-	private JFreeChart motor_current_chart;
-	private JFreeChart array_current_chart;
-	private JFreeChart battery_voltage_chart;
-	private JFreeChart temperature_chart;
-	private ChartPanel speed_panel;
-	private ChartPanel motor_current_panel;
-	private ChartPanel array_current_panel;
-	private ChartPanel battery_voltage_panel;
-	private ChartPanel temperature_panel;
-	private XYDataset speed_dataset;
-	private XYDataset motor_current_dataset;
-	private XYDataset array_current_dataset;
-	private XYDataset battery_voltage_dataset;
-	private XYDataset temperature_dataset;
-	
-	private XYSeries motor;
-	private XYSeries motor_controller;
-	private XYSeries b_temp_max;
-	private XYSeries b_temp_min;
-	private XYSeries r_temp_max;
-	private XYSeries r_temp_min;
+//	private JFreeChart speed_chart;
+//	private JFreeChart motor_current_chart;
+//	private JFreeChart array_current_chart;
+//	private JFreeChart battery_voltage_chart;
+//	private ChartPanel speed_panel;
+//	private ChartPanel motor_current_panel;
+//	private ChartPanel array_current_panel;
+//	private ChartPanel battery_voltage_panel;
+//	private XYDataset speed_dataset;
+//	private XYDataset motor_current_dataset;
+//	private XYDataset array_current_dataset;
+//	private XYDataset battery_voltage_dataset;
+	private JTabbedPane tab_panel;
+	private TemperatureGraph temperature_graph;
+	private VoltageGraph voltage_graph;
+	private PowerGraph power_graph;
+	private EnergyGraph energy_graph;
 	
 	public GraphPanel(int tab_panel_x, int tab_panel_y) {
 		setSize(tab_panel_x, tab_panel_y);
-		
-		temperature_dataset = createTemperatureDataSet();
 		
 //		speed_chart           = ChartFactory.createXYLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
 //		motor_current_chart   = ChartFactory.createXYLineChart("Motor Current (A)", "Time", "Amperage", motor_current_dataset);
 //		array_current_chart   = ChartFactory.createXYLineChart("Array Current (A)", "Time", "Amperage", array_current_dataset);
 //		battery_voltage_chart = ChartFactory.createXYLineChart("Total Battery Voltage (V)", "Time", "Voltage", battery_voltage_dataset);
 		
-		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time(min)", "Degree(C)", temperature_dataset);
-		
 //		speed_panel           = new ChartPanel(speed_chart);
 //		motor_current_panel   = new ChartPanel(motor_current_chart);
 //		array_current_panel   = new ChartPanel(array_current_chart);
 //		battery_voltage_panel = new ChartPanel(battery_voltage_chart);
-		
-		temperature_panel = new ChartPanel(temperature_chart);
-		
-		setLayout(new GridLayout(1, 1));
 		
 //		add(speed_panel);
 //		add(motor_current_panel);
@@ -59,7 +52,18 @@ public class GraphPanel extends JPanel {
 //		add(array_current_panel);
 //		add(battery_voltage_panel);
 		
-		add(temperature_panel);
+		tab_panel = new JTabbedPane();
+		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+		temperature_graph = new TemperatureGraph();
+		voltage_graph = new VoltageGraph();
+		power_graph = new PowerGraph();
+		
+		tab_panel.add("Temperature", temperature_graph);
+		tab_panel.add("Voltage", voltage_graph);
+		tab_panel.add("Power", power_graph);
+		tab_panel.add("Energy", energy_graph);
+		
+		add(tab_panel);
 	}
 	
 //	public void updateSpeedDataSet(double mph, int h, int m, int s) {
@@ -101,25 +105,6 @@ public class GraphPanel extends JPanel {
 //		validate();
 //		repaint();
 //	}
-	
-	private XYDataset createTemperatureDataSet() {
-		motor = new XYSeries("Motor");
-		motor_controller = new XYSeries("Motor Controller");
-		b_temp_max = new XYSeries("Batman Max");
-		b_temp_min = new XYSeries("Batman Min");
-		r_temp_max = new XYSeries("Robin Max");
-		r_temp_min = new XYSeries("Robin Min");
-		
-		XYSeriesCollection temperature_dataset = new XYSeriesCollection();
-		temperature_dataset.addSeries(motor);
-		temperature_dataset.addSeries(motor_controller);
-		temperature_dataset.addSeries(b_temp_max);
-		temperature_dataset.addSeries(b_temp_min);
-		temperature_dataset.addSeries(r_temp_max);
-		temperature_dataset.addSeries(r_temp_min);
-		
-		return temperature_dataset;
-	}
 	
 //	private XYDataset createSpeedDataSet() {
 //		speed_dataset = new XYDataset();
