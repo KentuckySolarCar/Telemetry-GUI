@@ -36,6 +36,7 @@ public class EnergyGraph extends JPanel {
 	
 	private XYSeriesCollection createEnergyDataSet() {
 		lap_counts++;
+		laps = new ArrayList<XYSeries>();
 		laps.add(new XYSeries("Lap " + lap_counts));
 		
 		XYSeriesCollection energy_dataset = new XYSeriesCollection();

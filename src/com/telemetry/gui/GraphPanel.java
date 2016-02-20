@@ -57,6 +57,7 @@ public class GraphPanel extends JPanel {
 		temperature_graph = new TemperatureGraph();
 		voltage_graph = new VoltageGraph();
 		power_graph = new PowerGraph();
+		energy_graph = new EnergyGraph();
 		
 		tab_panel.add("Temperature", temperature_graph);
 		tab_panel.add("Voltage", voltage_graph);
