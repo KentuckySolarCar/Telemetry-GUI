@@ -98,14 +98,21 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		
 		start_monitor.addActionListener(this);
 		
-		//add menu items to menus
-		file_menu.add(exit_menu_item);
+		JPopupMenu about_page = new JPopupMenu ("About");
+		about_page.addAncestorListener (null);
+		
+		//add menu itemsit_menu_item);
 		
 		//add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
 		control_menu.add(start_logging);
 		control_menu.add(reset_calculations);
+		
+		//add about menu
+		about_menu.add(about_page);
+
+		//pop up menu
 		
 		//add menu to menu bar
 		menu_bar.add(file_menu);
