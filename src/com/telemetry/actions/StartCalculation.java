@@ -5,14 +5,16 @@ import java.awt.event.ActionListener;
 
 public class StartCalculation implements ActionListener {
 
-	@Override
-<<<<<<< Updated upstream
-	public void actionPerformed(ActionEvent e) {
+	
+// <<<<<<< Updated upstream
+	public void actionPerformed1(ActionEvent e) {
 		
-=======
+	}
+		
+//=======
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 		
 	}
 
