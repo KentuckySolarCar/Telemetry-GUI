@@ -1,4 +1,4 @@
-package com.telemetry.graphs;
+ package com.telemetry.graphs;
 
 import java.awt.GridLayout;
 
