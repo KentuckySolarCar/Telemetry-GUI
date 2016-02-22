@@ -3,16 +3,11 @@ package com.telemetry.actions;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StartCalculation implements ActionListener {
+public class AboutPage implements ActionListener {
 
 	@Override
-<<<<<<< Updated upstream
-	public void actionPerformed(ActionEvent e) {
-		
-=======
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
->>>>>>> Stashed changes
 		
 	}
 
