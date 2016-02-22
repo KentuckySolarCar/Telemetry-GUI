@@ -88,7 +88,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		
 		// create menu items
 		JMenuItem exit_menu_item = new JMenuItem("Exit");
-		exit_menu_item.setActionCommand(MenuExit);
+		exit_menu_item.setActionCommand("MenuExit");
 		
 		JMenuItem change_port = new JMenuItem("Change Port");		
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
