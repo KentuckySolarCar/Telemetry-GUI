@@ -55,4 +55,22 @@ public class PowerGraph extends JPanel {
 		
 		return power_dataset;
 	}
+	
+	/* Double array of powers format (indexes):
+	 * 0: time in seconds
+	 * 1: power of motor
+	 * 2: power of array
+	 * 3: power of tracker_1
+	 * 4: power of tracker_2
+	 * 5: power of tracker_3
+	 * 6: power of tracker_4
+	 */
+	private void updateDataSet(double[] powers) {
+		motor.add(powers[0], powers[1]);
+		array.add(powers[0], powers[2]);
+		tracker_1.add(powers[0], powers[3]);
+		tracker_2.add(powers[0], powers[4]);
+		tracker_3.add(powers[0], powers[5]);
+		tracker_4.add(powers[0], powers[6]);
+	}
 }

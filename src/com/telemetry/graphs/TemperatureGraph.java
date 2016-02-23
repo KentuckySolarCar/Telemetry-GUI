@@ -55,4 +55,22 @@ public class TemperatureGraph extends JPanel {
 		
 		return temperature_dataset;
 	}
+	
+	/* Double array of temperatures format (indexes):
+	 * 0: time in seconds
+	 * 1: temp of motor
+	 * 2: temp of motor_controller
+	 * 3: temp of b_temp_max
+	 * 4: temp of b_temp_min
+	 * 5: temp of r_temp_max
+	 * 6: temp of r_temp_min
+	 */
+	private void updateDataSet(double[] temps) {
+		motor.add(temps[0], temps[1]);
+		motor_controller.add(temps[0], temps[2]);
+		b_temp_max.add(temps[0], temps[3]);
+		b_temp_min.add(temps[0], temps[4]);
+		r_temp_max.add(temps[0], temps[5]);
+		r_temp_min.add(temps[0], temps[6]);
+	}
 }

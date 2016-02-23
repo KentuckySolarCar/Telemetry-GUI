@@ -62,4 +62,26 @@ public class VoltageGraph extends JPanel {
 		
 		return voltage_dataset;
 	}
+	
+	/* Double array of voltages format (indexes):
+	 * 0: time in seconds
+	 * 1: b_cell_max
+	 * 2: b_cell_min
+	 * 3: b_cell_mean
+	 * 4: b_std_dev
+	 * 5: r_cell_max
+	 * 6: r_cell_min
+	 * 7: r_cell_mean
+	 * 8: r_std_dev
+	 */
+	private void updateDataSet(double[] volts) {
+		b_cell_max.add(volts[0], volts[1]);
+		b_cell_min.add(volts[0], volts[2]);
+		b_cell_mean.add(volts[0], volts[3]);
+		b_std_dev.add(volts[0], volts[4]);
+		r_cell_max.add(volts[0], volts[5]);
+		r_cell_min.add(volts[0], volts[6]);
+		r_cell_mean.add(volts[0], volts[7]);
+		r_std_dev.add(volts[0], volts[8]);
+	}
 }

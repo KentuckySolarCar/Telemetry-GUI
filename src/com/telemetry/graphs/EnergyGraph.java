@@ -46,4 +46,17 @@ public class EnergyGraph extends JPanel {
 		
 		return energy_dataset;
 	}
+	
+	/* Double array of energy format (indexes):
+	 * 0: time in seconds
+	 * 1: energy of lap_1
+	 * 2: energy of lap_2
+	 * ... (N = lap_counts)
+	 * N: energy of lap_N
+	 */
+	private void updateDataSet(double[] energies) {
+		for (int i = 0; i < lap_counts; i++) {
+			laps.get(i).add(energies[0], energies[i]);
+		}
+	}
 }
