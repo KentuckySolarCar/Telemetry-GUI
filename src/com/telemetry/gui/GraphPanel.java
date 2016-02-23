@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+ package com.telemetry.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
