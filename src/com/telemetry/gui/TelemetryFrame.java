@@ -23,7 +23,7 @@ import java.io.IOException;
 // Just a test
 
 
-public class TelemetryFrame extends JFrame implements ActionListener {
+public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
 	private static final int WIDTH = 1280;
 	private static final int HEIGHT = 720;
@@ -95,7 +95,7 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		JMenuItem start_logging = new JMenuItem("Start Logging");	
 		JMenuItem reset_calculations = new JMenuItem("Start Calculations");
 		
-		start_monitor.addActionListener(this);
+		start_monitor.addActionListener(new StartMonitorListener());
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
@@ -123,30 +123,32 @@ public class TelemetryFrame extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 	
-	public void actionPerformed(ActionEvent e) {
-		TextFileInput input = null;
-		try {
-			input = new TextFileInput();
-		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+	class StartMonitorListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			TextFileInput input = null;
+			try {
+				input = new TextFileInput();
+			} catch (FileNotFoundException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+	
+			try {
+				input.Initiate();
+				validate();
+				repaint();
+			} catch (IOException | ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		/*	serial_port = new SerialPortHandler();
+			try {
+				serial_port.connect("COM3");
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} */
 		}
-
-		try {
-			input.Initiate();
-			validate();
-			repaint();
-		} catch (IOException | ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	/*	serial_port = new SerialPortHandler();
-		try {
-			serial_port.connect("COM3");
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} */
 	}
 	
 	// Constantly update GUI

@@ -8,7 +8,7 @@ public class StartCalculation implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		System.exit(0);
+		
 	}
 
 }
