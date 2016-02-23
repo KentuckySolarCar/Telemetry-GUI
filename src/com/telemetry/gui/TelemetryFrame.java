@@ -122,6 +122,11 @@ public class TelemetryFrame extends JFrame {
 		setJMenuBar(menu_bar);
 		setVisible(true);
 	}
+	class StartCalculationListener implements ActionListener {
+		public void actionPerformed(ActionEvent e){
+			
+		}	
+	}
 	
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
@@ -180,5 +185,11 @@ public class TelemetryFrame extends JFrame {
 		
 		double aCurrent = Double.parseDouble((String) obj.get("S"));
 		graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);*/
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
