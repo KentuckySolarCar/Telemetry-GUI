@@ -35,7 +35,7 @@ public class TelemetryFrame extends JFrame {
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = 800;
+	private int tab_panel_x = 1260;
 	private int tab_panel_y = 640;
 	
 	// Constructor to initialize the GUI
@@ -53,7 +53,6 @@ public class TelemetryFrame extends JFrame {
 		tab_panel = new JTabbedPane();
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
-	    
 	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
 	    
 		tab_panel.add("Car Status", device_panel);
@@ -185,11 +184,5 @@ public class TelemetryFrame extends JFrame {
 		
 		double aCurrent = Double.parseDouble((String) obj.get("S"));
 		graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);*/
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 }
