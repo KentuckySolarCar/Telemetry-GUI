@@ -56,7 +56,7 @@ public class PowerGraph extends JPanel {
 		return power_dataset;
 	}
 	
-	/* Double array of powers format (indexes):
+	/* Double array of power format (indexes):
 	 * 0: time in seconds
 	 * 1: power of motor
 	 * 2: power of array
@@ -65,12 +65,18 @@ public class PowerGraph extends JPanel {
 	 * 5: power of tracker_3
 	 * 6: power of tracker_4
 	 */
-	private void updateDataSet(double[] powers) {
-		motor.add(powers[0], powers[1]);
-		array.add(powers[0], powers[2]);
-		tracker_1.add(powers[0], powers[3]);
-		tracker_2.add(powers[0], powers[4]);
-		tracker_3.add(powers[0], powers[5]);
-		tracker_4.add(powers[0], powers[6]);
+	public void updateDataSet(double[] power) {
+		motor.add(power[0], power[1]);
+		array.add(power[0], power[2]);
+		tracker_1.add(power[0], power[3]);
+		tracker_2.add(power[0], power[4]);
+		tracker_3.add(power[0], power[5]);
+		tracker_4.add(power[0], power[6]);
+		power_panel.removeAll();
+		power_panel.revalidate();
+		power_chart = ChartFactory.createXYLineChart("Power", "Time (min)", "Power (Watts)", power_dataset);
+		power_panel = new ChartPanel(power_chart);
+		validate();
+		repaint();
 	}
 }

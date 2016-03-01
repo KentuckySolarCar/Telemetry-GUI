@@ -54,9 +54,15 @@ public class EnergyGraph extends JPanel {
 	 * ... (N = lap_counts)
 	 * N: energy of lap_N
 	 */
-	private void updateDataSet(double[] energies) {
+	public void updateDataSet(double[] energy) {
 		for (int i = 0; i < lap_counts; i++) {
-			laps.get(i).add(energies[0], energies[i]);
+			laps.get(i).add(energy[0], energy[i]);
 		}
+		energy_panel.removeAll();
+		energy_panel.revalidate();
+		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);
+		energy_panel = new ChartPanel(energy_chart);
+		validate();
+		repaint();
 	}
 }

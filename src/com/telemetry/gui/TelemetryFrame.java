@@ -162,6 +162,11 @@ public class TelemetryFrame extends JFrame {
 		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 		int[] time = device_panel.getTime();
+
+		//graph_panel.updateTemperatureGraph(double[] temps);
+		//graph_panel.updateVoltageGraph(double[] volts);
+		//graph_panel.updatePowerGraph(double[] power);
+		//graph_panel.updateEnergyGraph(double[] energy);
 		
 //		if(type.equals("motor")) {
 //			double mph = Double.parseDouble((String) obj.get("S"));

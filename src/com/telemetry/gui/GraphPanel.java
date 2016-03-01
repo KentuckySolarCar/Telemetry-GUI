@@ -67,6 +67,22 @@ public class GraphPanel extends JPanel {
 		add(tab_panel);
 	}
 	
+	public void updateTemperatureGraph(double[] temps) {
+		temperature_graph.updateDataSet(temps);
+	}
+	
+	public void updateVoltageGraph(double[] volts) {
+		voltage_graph.updateDataSet(volts);
+	}
+	
+	public void updatePowerGraph(double[] power) {
+		power_graph.updateDataSet(power);
+	}
+	
+	public void updateEnergyGraph(double[] energy) {
+		energy_graph.updateDataSet(energy);
+	}
+	
 //	public void updateSpeedDataSet(double mph, int h, int m, int s) {
 //		speed_dataset.addValue(mph, "Miles Per Hour", h + ":" + m + ":" + s);
 //		speed_panel.removeAll();

@@ -74,7 +74,7 @@ public class VoltageGraph extends JPanel {
 	 * 7: r_cell_mean
 	 * 8: r_std_dev
 	 */
-	private void updateDataSet(double[] volts) {
+	public void updateDataSet(double[] volts) {
 		b_cell_max.add(volts[0], volts[1]);
 		b_cell_min.add(volts[0], volts[2]);
 		b_cell_mean.add(volts[0], volts[3]);
@@ -83,5 +83,11 @@ public class VoltageGraph extends JPanel {
 		r_cell_min.add(volts[0], volts[6]);
 		r_cell_mean.add(volts[0], volts[7]);
 		r_std_dev.add(volts[0], volts[8]);
+		voltage_panel.removeAll();
+		voltage_panel.revalidate();
+		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
+		voltage_panel = new ChartPanel(voltage_chart);
+		validate();
+		repaint();
 	}
 }
