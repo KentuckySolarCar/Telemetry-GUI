@@ -11,7 +11,7 @@ public class EnergyModelFunctions {
 	private static final int[] daysInMonth = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	private static double directMaxPower = 900;
 	private static double indirectMaxPower = 100;
-	private static int seconds_in_day = 86400;
+	private static long seconds_in_day = 86400;
 	
 	/*
 	 * EQUATIONS:
@@ -34,8 +34,12 @@ public class EnergyModelFunctions {
 	 * Returns the time left in day from the current time
 	 * @param current_time (seconds)
 	 */
-	public static int getTimeLeftInDay(int current_time) {
-		return seconds_in_day - current_time;
+	public static String getTimeLeftInDay(long current_time) {
+		int seconds_left = (int) (seconds_in_day - current_time/1000);
+		int hour = seconds_left / 3600;
+		int minute = (seconds_left - hour * 3600) / 60;
+		int second = seconds_left - hour * 3600 - minute * 60;
+		return hour + ":" + minute + ":" + second;
 	}
 	
 	/**

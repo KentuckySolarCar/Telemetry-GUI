@@ -40,8 +40,8 @@ public class MotorPanel extends JPanel {
 		motor_label_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_data_panel.setLayout(new GridLayout(5, 1, 10, 10));
 		motor_button_panel.setLayout(new GridLayout(5, 1, 10, 10));
-		speed = new SizedQueue<Double>();
-		current = new SizedQueue<Double>();
+		speed = new SizedQueue<Double>(60);
+		current = new SizedQueue<Double>(60);
 		
 		insertLabelPanel();
 		insertDataPanel();

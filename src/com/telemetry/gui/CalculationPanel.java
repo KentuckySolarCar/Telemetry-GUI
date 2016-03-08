@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
+import com.telemetry.custom.SizedQueue;
 import com.telemetry.equations.EnergyModelFunctions; 
 
 public class CalculationPanel extends JPanel{
@@ -16,16 +17,16 @@ public class CalculationPanel extends JPanel{
 	private JLabel average_speed                   = new JLabel("VALUE"); // Implemented
 	private JLabel solar_energy_remaining          = new JLabel("VALUE"); // Implemented
 	private JLabel motor_power                     = new JLabel("VALUE"); // Implemented
-	private JLabel battery_only_run_time_60_sec    = new JLabel("VALUE");
+	private JLabel time_left_in_day                = new JLabel("VALUE"); // Implemented
+	private JLabel battery_only_run_time_60_sec    = new JLabel("VALUE"); // Pretty much implemented
 	private JLabel battery_only_range_60_sec         = new JLabel("VALUE");
 	private JLabel battery_and_solar_run_time_60_sec = new JLabel("VALUE");
-	private JLabel battery_and_solar_range         = new JLabel("VALUE");
 	private JLabel battery_charge_remaining        = new JLabel("VALUE");
 	private JLabel motor_watt_hours                = new JLabel("VALUE");
 	private JLabel battery_watt_hours              = new JLabel("VALUE");
 	private JLabel motor_power_60_sec              = new JLabel("VALUE");
+	private JLabel battery_and_solar_range         = new JLabel("VALUE");
 	private JLabel distance_left_in_day            = new JLabel("VALUE");
-	private JLabel time_left_in_day                = new JLabel("VALUE");
 	private JLabel speed_60_sec                    = new JLabel("VALUE");
 	private JLabel target_speed                    = new JLabel("VALUE"); // Standby
 	private JLabel target_watt_hour_per_mile       = new JLabel("VALUE"); // Standby
@@ -36,6 +37,10 @@ public class CalculationPanel extends JPanel{
 	private JLabel target_battery_state_of_charge  = new JLabel("VALUE"); // Standby
 	private JLabel predicted_array_power           = new JLabel("VALUE"); // Standby
 	private JLabel time_elapsed                    = new JLabel("VALUE"); // Standby
+	private SizedQueue<Double> battery_run_time_q;
+	private SizedQueue<Double> battery_range_q; 
+	private SizedQueue<Double> battery_solar_run_time_q;
+	private SizedQueue<Double> motor_power_q;
 	
 	
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
@@ -43,6 +48,11 @@ public class CalculationPanel extends JPanel{
 		
 		setSize(tab_panel_x, tab_panel_y);
 	    setLayout(new GridLayout(12, 5, 10, 15));
+	    
+	    battery_run_time_q       = new SizedQueue<Double>(60);
+	    battery_range_q          = new SizedQueue<Double>(60);
+	    battery_solar_run_time_q = new SizedQueue<Double>(60);
+	    motor_power_q            = new SizedQueue<Double>(60);
 		
 		insertFields();
 	}
@@ -75,6 +85,7 @@ public class CalculationPanel extends JPanel{
 		double r_current_average = (Double) robin_data.get("current_average");
 		
 		double total_batt_v = EnergyModelFunctions.getTotalBatteryVoltage(b_v_average, r_v_average);
+		double total_batt_c = b_current_average + r_current_average;
 		
 		LocalDateTime localTime 	= LocalDateTime.now();
 		int GMTOffset           	= -5;
@@ -86,15 +97,21 @@ public class CalculationPanel extends JPanel{
 		double chargeInEveTime 		= 17;
 		double stopChargingInEve 	= 20;
 		
+		battery_run_time_q.add(EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, total_batt_v, total_batt_c));
+		if(battery_run_time_q.size() == 60) {
+			double battery_run_time_average = getAverage(battery_run_time_q);
+			battery_only_run_time_60_sec.setText(Double.toString(battery_run_time_average));
+		}
+		
 		array_power                    .setText(Double.toString(EnergyModelFunctions.getArrayPower(ave_current, b_current_average, r_current_average, b_v_average, r_v_average)));
 		average_speed                  .setText(Double.toString(ave_speed));
-		battery_only_run_time_60_sec      .setText("Needs Implementing");
 		battery_only_range_60_sec         .setText("Needs Implementing");
 		battery_and_solar_run_time_60_sec .setText("Needs Implementing");
 		battery_and_solar_range        .setText("Needs Implementing");
 		battery_charge_remaining       .setText("Needs Implementing");
 		solar_energy_remaining         .setText(Double.toString(EnergyModelFunctions.getEnergyLeftInDay(localTime, GMTOffset, latitude, longitude, dayTypeCode, startChargeInMorning, startRacingInMorning, chargeInEveTime, stopChargingInEve)));
 		motor_power                    .setText(Double.toString(EnergyModelFunctions.getMotorPower(ave_current, total_batt_v)));
+		time_left_in_day               .setText(EnergyModelFunctions.getTimeLeftInDay(System.currentTimeMillis()));
 		
 		validate();
 		repaint();
@@ -125,5 +142,13 @@ public class CalculationPanel extends JPanel{
 		add(new JLabel("Target Battery State of Charge"));     add(target_battery_state_of_charge);    
 		add(new JLabel("Predicted Array Power"));              add(predicted_array_power);             add(new JSeparator(SwingConstants.VERTICAL));
 		add(new JLabel("Time Elapsed"));                       add(time_elapsed);                      
+	}
+	
+	private double getAverage(SizedQueue<Double> queue) {
+		double total = 0;
+		for(Double d : queue) {
+			total += d;
+		}
+		return total / queue.size();
 	}
 }
