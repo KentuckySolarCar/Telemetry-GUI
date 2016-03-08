@@ -87,7 +87,7 @@ public class TelemetryFrame extends JFrame {
 		
 		// create menu items
 		JMenuItem exit_menu_item = new JMenuItem("Exit");
-		exit_menu_item.setActionCommand("MenuExit");
+		exit_menu_item.addActionListener(new ExitMenuListener());
 		
 		JMenuItem change_port = new JMenuItem("Change Port");		
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
@@ -99,8 +99,8 @@ public class TelemetryFrame extends JFrame {
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
 		
-		//add menu itemsit_menu_item);
-		
+		//add menu items file menu);
+		file_menu.add(exit_menu_item);
 		//add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
@@ -121,10 +121,20 @@ public class TelemetryFrame extends JFrame {
 		setJMenuBar(menu_bar);
 		setVisible(true);
 	}
+	class ExitMenuListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			System.exit(0);
+		}
+		
+	}
+	
 	class StartCalculationListener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
 			
-		}	
+		}
 	}
 	
 	class StartMonitorListener implements ActionListener {
