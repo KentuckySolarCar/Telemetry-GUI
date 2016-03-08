@@ -18,7 +18,7 @@ public class TimePanel extends JPanel {
 	private int minute = 0;
 	private int second = 0;
 	
-	DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
 	public TimePanel() {
 		setLayout(new GridLayout(1, 2));

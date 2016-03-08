@@ -30,6 +30,14 @@ public class EnergyModelFunctions {
 	}
 	
 	/**
+	 * Returns the time left in day from the current time
+	 * @param current_time (seconds)
+	 */
+	public static double getTimeLeftInDay(double current_time) {
+		return 0.0;
+	}
+	
+	/**
 	 * Returns the battery range in miles from the current
 	 * motor speed and battery runtime in seconds
 	 * @param batteryRuntime (seconds)
