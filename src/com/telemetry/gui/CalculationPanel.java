@@ -49,12 +49,13 @@ public class CalculationPanel extends JPanel{
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-	    setLayout(new GridLayout(12, 5, 10, 15));
+	    setLayout(new GridLayout(11, 5, 10, 15));
 	    
-	    battery_runtime_q       = new SizedQueue<Double>(60);
+	    battery_runtime_q        = new SizedQueue<Double>(60);
 	    battery_range_q          = new SizedQueue<Double>(60);
-	    battery_solar_runtime_q = new SizedQueue<Double>(60);
+	    battery_solar_runtime_q  = new SizedQueue<Double>(60);
 	    motor_power_q            = new SizedQueue<Double>(60);
+	    speed_q                  = new SizedQueue<Double>(60);
 		
 		insertFields();
 	}
@@ -107,12 +108,12 @@ public class CalculationPanel extends JPanel{
 		double watt_sec    = (Double) motor_data.get("watt_sec");
 		double odometer    = (Double) motor_data.get("odometer");
 		
-		double b_ave_temp        = (Double) batman_data.get("ave");
+		double b_ave_temp        = (Double) batman_data.get("ave_temp");
 		double b_v_average       = (Double) batman_data.get("v_average");
 		double b_v_min           = (Double) batman_data.get("v_min");
 		double b_current_average = (Double) batman_data.get("current_average");
 		
-		double r_ave_temp        = (Double) robin_data.get("ave");
+		double r_ave_temp        = (Double) robin_data.get("ave_temp");
 		double r_v_average       = (Double) robin_data.get("v_average");
 		double r_v_min           = (Double) robin_data.get("v_min");
 		double r_current_average = (Double) robin_data.get("current_average");
@@ -179,8 +180,6 @@ public class CalculationPanel extends JPanel{
 		add(new JLabel("Battery and Solar Range"));            add(battery_and_solar_range);          
 		add(new JLabel("Battery Charge Remaining"));           add(battery_charge_remaining);          add(new JSeparator(SwingConstants.VERTICAL));
 		add(new JLabel("Solar Energy Remaining"));             add(solar_energy_remaining);            
-//		add(new JLabel("Motor Power"));                        add(motor_power);                       add(new JSeparator(SwingConstants.VERTICAL));
-		add(new JLabel("Motor Watt Hours"));                   add(motor_watt_hours);                  
 		add(new JLabel("Battery Watt Hours"));                 add(battery_watt_hours);                add(new JSeparator(SwingConstants.VERTICAL));
 		add(new JLabel("Motor Power (60 secs)"));              add(motor_power_60_sec);                
 		add(new JLabel("Target Speed"));                       add(target_speed);                      add(new JSeparator(SwingConstants.VERTICAL));
@@ -194,7 +193,7 @@ public class CalculationPanel extends JPanel{
 		add(new JLabel("Target Motor Energy"));                add(target_motor_energy);               add(new JSeparator(SwingConstants.VERTICAL));
 		add(new JLabel("Target Battery State of Charge"));     add(target_battery_state_of_charge);    
 		add(new JLabel("Predicted Array Power"));              add(predicted_array_power);             add(new JSeparator(SwingConstants.VERTICAL));
-		add(new JLabel("Time Elapsed"));                       add(time_elapsed);                      
+		add(new JLabel("Motor Watt Hours"));                   add(motor_watt_hours);                  
 	}
 	
 	private double getAverage(SizedQueue<Double> queue) {
