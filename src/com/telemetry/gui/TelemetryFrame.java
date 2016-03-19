@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import com.telemetry.actions.StartCalculation;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
@@ -34,7 +35,8 @@ public class TelemetryFrame extends JFrame {
 	private static DevicePanel device_panel;
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
-	private SerialPortHandler serial_port;
+	private static SerialPortHandler serial_port;
+	private static StartCalculation calculation_handler;
 	private int tab_panel_x = 1260;
 	private int tab_panel_y = 640;
 	
@@ -54,6 +56,7 @@ public class TelemetryFrame extends JFrame {
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
 	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
+	    calculation_handler = new StartCalculation();
 	    
 		tab_panel.add("Car Status", device_panel);
 		tab_panel.add("Calculation", calculation_panel);
@@ -166,7 +169,7 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	// Constantly update GUI
-	public static void updateTelemetryFrame(JSONObject obj, String type) {
+	public static void updateDeviceFrame(JSONObject obj, String type) {
 		// Log Panel will not be updated for the time being
 		// log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
@@ -199,5 +202,9 @@ public class TelemetryFrame extends JFrame {
 		
 		double aCurrent = Double.parseDouble((String) obj.get("S"));
 		graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);*/
+	}
+	
+	public static void updateCalculationFrame() {
+		calculation_panel.updatePanel(device_panel.getDeviceData());
 	}
 }
