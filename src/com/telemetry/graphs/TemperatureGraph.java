@@ -1,7 +1,10 @@
 package com.telemetry.graphs;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -17,6 +20,7 @@ public class TemperatureGraph extends JPanel {
 	private static final long serialVersionUID = 7951816934572096963L;
 	private JFreeChart temperature_chart;
 	private ChartPanel temperature_panel;
+	private JPanel button_panel;
 	private XYSeriesCollection temperature_dataset;
 	private XYSeries motor;
 	private XYSeries motor_controller;
@@ -32,9 +36,34 @@ public class TemperatureGraph extends JPanel {
 	
 		temperature_panel = new ChartPanel(temperature_chart);
 		
-		setLayout(new GridLayout(1, 1));
+		// Testing layouts
+		button_panel = new JPanel();
+		button_panel.setLayout(new GridLayout(5, 2));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
 		
-		add(temperature_panel);
+		// Use GridBagConstraints to be able to change size of grid elements
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		//c.ipadx = 200;
+		c.ipady = 300;
+		this.add(temperature_panel, c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.gridx = 1;
+		c.gridy = 0;
+		this.add(button_panel, c);
 	}
 	
 	private XYSeriesCollection createTemperatureDataSet() {

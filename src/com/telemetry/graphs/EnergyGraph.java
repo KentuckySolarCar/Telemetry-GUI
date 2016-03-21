@@ -1,8 +1,12 @@
 package com.telemetry.graphs;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -18,20 +22,46 @@ public class EnergyGraph extends JPanel {
 	private static final long serialVersionUID = 8698643579672784275L;
 	private JFreeChart energy_chart;
 	private ChartPanel energy_panel;
+	private JPanel button_panel;
 	private XYSeriesCollection energy_dataset;
 	private ArrayList<XYSeries> laps;
 	private int lap_counts = 0;
 	
 	public EnergyGraph() {
 		energy_dataset = createEnergyDataSet();
-		
+
 		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);
-	
+		
 		energy_panel = new ChartPanel(energy_chart);
 		
-		setLayout(new GridLayout(1, 1));
+		// Testing layouts
+		button_panel = new JPanel();
+		button_panel.setLayout(new GridLayout(5, 2));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));
 		
-		add(energy_panel);
+		// Use GridBagConstraints to be able to change size of grid elements
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		//c.ipadx = 200;
+		c.ipady = 300;
+		this.add(energy_panel, c);
+		
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0;
+		c.weighty = 0;
+		c.gridx = 1;
+		c.gridy = 0;
+		this.add(button_panel, c);
 	}
 	
 	private XYSeriesCollection createEnergyDataSet() {

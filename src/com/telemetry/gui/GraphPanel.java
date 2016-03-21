@@ -1,12 +1,14 @@
  package com.telemetry.gui;
 
 import java.awt.Dimension;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.*; 
 import org.jfree.chart.*;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.json.simple.JSONObject;
 
 import com.telemetry.graphs.EnergyGraph;
 import com.telemetry.graphs.PowerGraph;
@@ -27,14 +29,15 @@ public class GraphPanel extends JPanel {
 //	private XYDataset motor_current_dataset;
 //	private XYDataset array_current_dataset;
 //	private XYDataset battery_voltage_dataset;
-	private JTabbedPane tab_panel;
+//	private JTabbedPane tab_panel;
 	private TemperatureGraph temperature_graph;
 	private VoltageGraph voltage_graph;
 	private PowerGraph power_graph;
 	private EnergyGraph energy_graph;
 	
-	public GraphPanel(int tab_panel_x, int tab_panel_y) {
-		setSize(tab_panel_x, tab_panel_y);
+	public GraphPanel(int grid_panel_x, int grid_panel_y) {
+		this.setLayout(new GridLayout(3, 2));
+		this.setSize(grid_panel_x, grid_panel_y);
 		
 //		speed_chart           = ChartFactory.createXYLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
 //		motor_current_chart   = ChartFactory.createXYLineChart("Motor Current (A)", "Time", "Amperage", motor_current_dataset);
@@ -52,34 +55,60 @@ public class GraphPanel extends JPanel {
 //		add(array_current_panel);
 //		add(battery_voltage_panel);
 		
-		tab_panel = new JTabbedPane();
-		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+//		tab_panel = new JTabbedPane();
+//		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		temperature_graph = new TemperatureGraph();
 		voltage_graph = new VoltageGraph();
 		power_graph = new PowerGraph();
 		energy_graph = new EnergyGraph();
 		
-		tab_panel.add("Temperature", temperature_graph);
-		tab_panel.add("Voltage", voltage_graph);
-		tab_panel.add("Power", power_graph);
-		tab_panel.add("Energy", energy_graph);
+//		tab_panel.add("Temperature", temperature_graph);
+//		tab_panel.add("Voltage", voltage_graph);
+//		tab_panel.add("Power", power_graph);
+//		tab_panel.add("Energy", energy_graph);
+		this.add(temperature_graph);
+		this.add(energy_graph);
+		this.add(voltage_graph);
+		this.add(new JLabel(""));
+		this.add(power_graph);
 		
-		add(tab_panel);
+//		add(tab_panel);
 	}
 	
-	public void updateTemperatureGraph(double[] temps) {
+	public void updateGraphs(JSONObject data) {
+		double[] energy = new double[10]; // needs to be expandable, number of laps
+		double[] power = new double[7];
+		double[] temps = new double[7];
+		double[] volts = new double[9];
+		
+/*		dataset.put("array_power",                      array_power.getText());
+		dataset.put("average_speed",                    average_speed.getText());
+		dataset.put("battery_and_solar_range",          battery_and_solar_range.getText());
+		dataset.put("battery_and_solar_runtime_60_sec", battery_and_solar_runtime_60_sec.getText());
+		dataset.put("battery_charge_remaining",         battery_charge_remaining.getText());
+		dataset.put("battery_only_range_60_sec",        battery_only_range_60_sec.getText());
+		dataset.put("battery_only_runtime_60_sec",      battery_only_runtime_60_sec.getText());
+		dataset.put("battery_watt_hours",               battery_watt_hours.getText());
+		dataset.put("distance_left_in_day",             distance_left_in_day.getText());
+		dataset.put("motor_power_60_sec",               motor_power_60_sec.getText());
+		dataset.put("motor_watt_hours",                 motor_watt_hours.getText());
+		dataset.put("predicted_array_power",            predicted_array_power.getText());
+		dataset.put("solar_energy_remaining",           solar_energy_remaining.getText());
+		dataset.put("speed_60_sec",                     speed_60_sec.getText());
+		dataset.put("target_average_motor_power",       target_average_motor_power.getText());
+		dataset.put("target_battery_state_of_charge",   target_battery_state_of_charge.getText());
+		dataset.put("target_motor_energy",              target_motor_energy.getText());
+		dataset.put("target_speed",                     target_speed.getText());
+		dataset.put("target_watt_hour_per_mile",        target_watt_hour_per_mile.getText());
+		dataset.put("target_watt_hour_per_mile_60_sec", target_watt_hour_per_mile_60_sec.getText());
+		dataset.put("target_watt_hour_per_mile_day",    target_watt_hour_per_mile_day.getText());
+		dataset.put("time_elapsed",                     time_elapsed.getText());
+		dataset.put("time_left_in_day",                 time_left_in_day.getText());
+*/
+
 		temperature_graph.updateDataSet(temps);
-	}
-	
-	public void updateVoltageGraph(double[] volts) {
 		voltage_graph.updateDataSet(volts);
-	}
-	
-	public void updatePowerGraph(double[] power) {
 		power_graph.updateDataSet(power);
-	}
-	
-	public void updateEnergyGraph(double[] energy) {
 		energy_graph.updateDataSet(energy);
 	}
 	

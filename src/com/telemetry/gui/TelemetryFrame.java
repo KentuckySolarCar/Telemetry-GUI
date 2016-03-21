@@ -25,8 +25,8 @@ import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
+	private static final int WIDTH = 1900; //1280
+	private static final int HEIGHT = 1000; //720
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput input;
@@ -35,8 +35,8 @@ public class TelemetryFrame extends JFrame {
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = 1260;
-	private int tab_panel_y = 640;
+	private int tab_panel_x = 1880;	//1260
+	private int tab_panel_y = 920;	//640
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
@@ -61,14 +61,14 @@ public class TelemetryFrame extends JFrame {
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 	    // Uncomment next line to set tab_panel's size
-		// tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
 		
 	    // Uncomment next line to make tab_panel scalable
 		// new JScrollPane(tab_panel);
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
-		add(tab_panel, BorderLayout.WEST);
+		add(tab_panel, BorderLayout.CENTER);
 		
 		createMenuBar();
 		
@@ -173,10 +173,7 @@ public class TelemetryFrame extends JFrame {
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 		int[] time = device_panel.getTime();
 
-		//graph_panel.updateTemperatureGraph(double[] temps);
-		//graph_panel.updateVoltageGraph(double[] volts);
-		//graph_panel.updatePowerGraph(double[] power);
-		//graph_panel.updateEnergyGraph(double[] energy);
+		graph_panel.updateGraphs(calculation_panel.getData());
 		
 //		if(type.equals("motor")) {
 //			double mph = Double.parseDouble((String) obj.get("S"));
