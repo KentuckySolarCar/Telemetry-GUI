@@ -22,8 +22,8 @@ public class StartCalculation extends Thread {
 	public void run() {
 		while(status) {
 			try {
-				TelemetryFrame.updateCalculationFrame();
-				Thread.sleep(1000);
+				TelemetryFrame.updateCalculationPanel();
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
