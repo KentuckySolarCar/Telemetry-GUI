@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.swing.JOptionPane;
+
 import gnu.io.*;
 
 public class SerialPortHandler {
@@ -11,14 +13,22 @@ public class SerialPortHandler {
 	private OutputStream output_stream;
 	private InputStream input_stream;
 	private static SerialPortWriter writer;
+	private String port_num;
 	
 	public SerialPortHandler() {
-		
+		port_num = "";
 	}
 	
-	public void connect(String port_name) throws Exception {
-
-		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_name);
+	public void changePortNum(String port_num) {
+		this.port_num = port_num;
+	}
+	
+	public String getPortNum() {
+		return port_num;
+	}
+	
+	public void connect() throws Exception {
+		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
         if ( portIdentifier.isCurrentlyOwned() )
         {
             System.out.println("Error: Port is currently in use");

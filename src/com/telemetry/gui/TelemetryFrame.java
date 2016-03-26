@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
+import com.telemetry.actions.*;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,9 +20,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-// Just a test
-
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
@@ -35,6 +33,7 @@ public class TelemetryFrame extends JFrame {
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
+	private StartCalculation calculation_handler;
 	private int tab_panel_x = 1880;	//1260
 	private int tab_panel_y = 920;	//640
 	
@@ -45,7 +44,7 @@ public class TelemetryFrame extends JFrame {
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		setResizable(false);
+//		setResizable(false);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
@@ -92,9 +91,11 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem change_port = new JMenuItem("Change Port");		
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
 		JMenuItem start_logging = new JMenuItem("Start Logging");	
-		JMenuItem reset_calculations = new JMenuItem("Start Calculations");
+		JMenuItem start_calculations = new JMenuItem("Start Calculations");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
+		start_calculations.addActionListener(new StartCalculationListener());
+		change_port.addActionListener(new ChangePortListener());
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
@@ -105,7 +106,7 @@ public class TelemetryFrame extends JFrame {
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
 		control_menu.add(start_logging);
-		control_menu.add(reset_calculations);
+		control_menu.add(start_calculations);
 		
 		//add about menu
 		about_menu.add(about_page);
@@ -121,6 +122,15 @@ public class TelemetryFrame extends JFrame {
 		setJMenuBar(menu_bar);
 		setVisible(true);
 	}
+	
+	class ChangePortListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
+			serial_port.changePortNum(s);
+		}
+	}
+
 	class ExitMenuListener implements ActionListener {
 
 		@Override
@@ -133,44 +143,57 @@ public class TelemetryFrame extends JFrame {
 	
 	class StartCalculationListener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
-			
+			calculation_handler = new StartCalculation();
+			calculation_handler.start();
 		}
 	}
 	
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			TextFileInput input = null;
+//			TextFileInput input = null;
+//			try {
+//				input = new TextFileInput();
+//			} catch (FileNotFoundException e2) {
+//				// TODO Auto-generated catch block
+//				e2.printStackTrace();
+//			}
+//	
+//			try {
+//				input.Initiate();
+//				validate();
+//				repaint();
+//			} catch (IOException | ParseException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+			serial_port = new SerialPortHandler();
 			try {
-				input = new TextFileInput();
-			} catch (FileNotFoundException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-	
-			try {
-				input.Initiate();
-				validate();
-				repaint();
-			} catch (IOException | ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		/*	serial_port = new SerialPortHandler();
-			try {
-				serial_port.connect("COM3");
+				if(serial_port.getPortNum() == "") {
+					DisplayPortErrorDialog("Port is Empty!");
+				}
+				else { 
+					serial_port.connect();
+				}
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} */
+			}
 		}
 	}
 	
+	public void DisplayPortErrorDialog(String err_msg) {
+		JOptionPane.showMessageDialog(this, err_msg, "Port Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public static void updateCalculationPanel() {
+		calculation_panel.updatePanel(device_panel.getDeviceData());
+	}
+	
 	// Constantly update GUI
-	public static void updateTelemetryFrame(JSONObject obj, String type) {
+	public static void updateDevicePanel(JSONObject obj, String type) {
 		// Log Panel will not be updated for the time being
 		// log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
-		calculation_panel.updatePanel(device_panel.getDeviceData());
 		int[] time = device_panel.getTime();
 
 		graph_panel.updateGraphs(calculation_panel.getData());

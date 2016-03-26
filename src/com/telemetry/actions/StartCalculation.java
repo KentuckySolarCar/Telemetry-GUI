@@ -22,7 +22,7 @@ public class StartCalculation extends Thread {
 	public void run() {
 		while(status) {
 			try {
-				TelemetryFrame.updateCalculationFrame();
+				TelemetryFrame.updateCalculationPanel();
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

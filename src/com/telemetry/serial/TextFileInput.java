@@ -38,7 +38,7 @@ public class TextFileInput implements Runnable {
 			while((line = buffer_reader.readLine()) != null) {
 				JSONObject obj = (JSONObject) parser.parse(line);
 				String message_type = (String) obj.get("message_id");
-				TelemetryFrame.updateDeviceFrame(obj, message_type);
+				TelemetryFrame.updateDevicePanel(obj, message_type);
 				Thread.sleep(50);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {
