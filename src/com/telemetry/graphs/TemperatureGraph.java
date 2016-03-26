@@ -10,8 +10,10 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleEdge;
 
 public class TemperatureGraph extends JPanel {
 	/**
@@ -20,7 +22,7 @@ public class TemperatureGraph extends JPanel {
 	private static final long serialVersionUID = 7951816934572096963L;
 	private JFreeChart temperature_chart;
 	private ChartPanel temperature_panel;
-	private JPanel button_panel;
+//	private JPanel button_panel;
 	private XYSeriesCollection temperature_dataset;
 	private XYSeries motor;
 	private XYSeries motor_controller;
@@ -33,17 +35,19 @@ public class TemperatureGraph extends JPanel {
 		temperature_dataset = createTemperatureDataSet();
 		
 		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (min)", "Degree (C)", temperature_dataset);
-	
+		LegendTitle legend = temperature_chart.getLegend();
+		legend.setPosition(RectangleEdge.RIGHT);
+		
 		temperature_panel = new ChartPanel(temperature_chart);
 		
 		// Testing layouts
-		button_panel = new JPanel();
+		/*button_panel = new JPanel();
 		button_panel.setLayout(new GridLayout(5, 2));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));*/
 		
 		// Use GridBagConstraints to be able to change size of grid elements
 		this.setLayout(new GridBagLayout());
@@ -58,12 +62,12 @@ public class TemperatureGraph extends JPanel {
 		c.ipady = 300;
 		this.add(temperature_panel, c);
 		
-		c.fill = GridBagConstraints.HORIZONTAL;
+		/*c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0;
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridy = 0;
-		this.add(button_panel, c);
+		this.add(button_panel, c);*/
 	}
 	
 	private XYSeriesCollection createTemperatureDataSet() {

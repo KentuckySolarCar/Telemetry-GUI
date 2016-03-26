@@ -1,5 +1,7 @@
  package com.telemetry.graphs;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
@@ -7,9 +9,11 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleEdge;
 
 public class VoltageGraph extends JPanel {
 	/**
@@ -32,12 +36,22 @@ public class VoltageGraph extends JPanel {
 		voltage_dataset = createVoltageDataSet();
 		
 		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
-	
+		LegendTitle legend = voltage_chart.getLegend();
+		legend.setPosition(RectangleEdge.RIGHT);
+		
 		voltage_panel = new ChartPanel(voltage_chart);
 		
-		setLayout(new GridLayout(1, 1));
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
 		
-		add(voltage_panel);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.weighty = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		//c.ipadx = 200;
+		c.ipady = 300;
+		this.add(voltage_panel, c);
 	}
 	
 	private XYDataset createVoltageDataSet() {

@@ -12,8 +12,10 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RectangleEdge;
 
 public class EnergyGraph extends JPanel {
 	/**
@@ -22,7 +24,7 @@ public class EnergyGraph extends JPanel {
 	private static final long serialVersionUID = 8698643579672784275L;
 	private JFreeChart energy_chart;
 	private ChartPanel energy_panel;
-	private JPanel button_panel;
+//	private JPanel button_panel;
 	private XYSeriesCollection energy_dataset;
 	private ArrayList<XYSeries> laps;
 	private int lap_counts = 0;
@@ -31,17 +33,19 @@ public class EnergyGraph extends JPanel {
 		energy_dataset = createEnergyDataSet();
 
 		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);
+		LegendTitle legend = energy_chart.getLegend();
+		legend.setPosition(RectangleEdge.RIGHT);
 		
 		energy_panel = new ChartPanel(energy_chart);
 		
 		// Testing layouts
-		button_panel = new JPanel();
+		/*button_panel = new JPanel();
 		button_panel.setLayout(new GridLayout(5, 2));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
 		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));
+		button_panel.add(new JButton("Bla"));*/
 		
 		// Use GridBagConstraints to be able to change size of grid elements
 		this.setLayout(new GridBagLayout());
@@ -56,12 +60,12 @@ public class EnergyGraph extends JPanel {
 		c.ipady = 300;
 		this.add(energy_panel, c);
 		
-		c.fill = GridBagConstraints.HORIZONTAL;
+		/*c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0;
 		c.weighty = 0;
 		c.gridx = 1;
 		c.gridy = 0;
-		this.add(button_panel, c);
+		this.add(button_panel, c);*/
 	}
 	
 	private XYSeriesCollection createEnergyDataSet() {
