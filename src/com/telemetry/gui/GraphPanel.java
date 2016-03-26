@@ -1,7 +1,6 @@
  package com.telemetry.gui;
 
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.*; 
@@ -35,122 +34,10 @@ public class GraphPanel extends JPanel {
 	private VoltageGraph voltage_graph;
 	private PowerGraph power_graph;
 	private EnergyGraph energy_graph;
-	private JPanel button_panel_enrg;
-	private JPanel button_panel_powr;
-	private JPanel button_panel_temp;
-	private JPanel button_panel_volt;
 	
 	public GraphPanel(int grid_panel_x, int grid_panel_y) {
-		//this.setLayout(new GridLayout(3, 2));
-		//this.setSize(grid_panel_x, grid_panel_y);
-		this.setLayout(new GridBagLayout());;
-		GridBagConstraints gbc = new GridBagConstraints();
-		
-		temperature_graph = new TemperatureGraph();
-		voltage_graph = new VoltageGraph();
-		power_graph = new PowerGraph();
-		energy_graph = new EnergyGraph();
-		
-		button_panel_enrg = new JPanel();
-		button_panel_enrg.setLayout(new GridLayout(5, 2));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		
-		button_panel_powr = new JPanel();
-		button_panel_powr.setLayout(new GridLayout(5, 2));
-		button_panel_powr.add(new JButton("Bla"));
-		button_panel_powr.add(new JButton("Bla"));
-		button_panel_powr.add(new JButton("Bla"));
-		button_panel_powr.add(new JButton("Bla"));
-		button_panel_powr.add(new JButton("Bla"));
-		
-		button_panel_temp = new JPanel();
-		button_panel_temp.setLayout(new GridLayout(5, 10));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		
-		button_panel_volt = new JPanel();
-		button_panel_volt.setLayout(new GridLayout(5, 2));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.ipady = 0;
-		this.add(temperature_graph, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.ipady = 200;
-		this.add(button_panel_temp, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0;
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbc.ipady = 0;
-		this.add(energy_graph, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 3;
-		gbc.gridy = 0;
-		gbc.ipady = 200;
-		this.add(button_panel_enrg, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.ipady = 0;
-		this.add(voltage_graph, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.ipady = 200;
-		this.add(button_panel_volt, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.ipady = 0;
-		this.add(power_graph, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.ipady = 200;
-		this.add(button_panel_powr, gbc);
+		this.setLayout(new GridLayout(3, 2));
+		this.setSize(grid_panel_x, grid_panel_y);
 		
 //		speed_chart           = ChartFactory.createXYLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
 //		motor_current_chart   = ChartFactory.createXYLineChart("Motor Current (A)", "Time", "Amperage", motor_current_dataset);
@@ -170,18 +57,20 @@ public class GraphPanel extends JPanel {
 		
 //		tab_panel = new JTabbedPane();
 //		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+		temperature_graph = new TemperatureGraph();
+		voltage_graph = new VoltageGraph();
+		power_graph = new PowerGraph();
+		energy_graph = new EnergyGraph();
 		
 //		tab_panel.add("Temperature", temperature_graph);
 //		tab_panel.add("Voltage", voltage_graph);
 //		tab_panel.add("Power", power_graph);
 //		tab_panel.add("Energy", energy_graph);
-		
-		// Old layout with GridLayout and buttons inside each graph
-		/*this.add(temperature_graph);
+		this.add(temperature_graph);
 		this.add(energy_graph);
 		this.add(voltage_graph);
 		this.add(new JLabel(""));
-		this.add(power_graph);*/
+		this.add(power_graph);
 		
 //		add(tab_panel);
 	}

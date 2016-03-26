@@ -25,8 +25,8 @@ import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1280; //1280 or 1900
-	private static final int HEIGHT = 720; //720 or 1000
+	private static final int WIDTH = 1900; //1280
+	private static final int HEIGHT = 1000; //720
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput input;
@@ -35,8 +35,8 @@ public class TelemetryFrame extends JFrame {
 	private static GraphPanel graph_panel;
 	private static JScrollPane log_scroll;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = 1260;	//1260 or 1880
-	private int tab_panel_y = 640;	//640 or 920
+	private int tab_panel_x = 1880;	//1260
+	private int tab_panel_y = 920;	//640
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
@@ -45,7 +45,7 @@ public class TelemetryFrame extends JFrame {
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		setResizable(true);
+		setResizable(false);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		
