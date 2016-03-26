@@ -71,6 +71,8 @@ public class TelemetryFrame extends JFrame {
 		
 		createMenuBar();
 		
+		serial_port = new SerialPortHandler();
+		
 		// Reveals main_frame
 		setVisible(true);
 		setLocationRelativeTo(null);
@@ -166,14 +168,11 @@ public class TelemetryFrame extends JFrame {
 //				// TODO Auto-generated catch block
 //				e1.printStackTrace();
 //			}
-			serial_port = new SerialPortHandler();
 			try {
-				if(serial_port.getPortNum() == "") {
+				if(serial_port.getPortNum() == "")
 					DisplayPortErrorDialog("Port is Empty!");
-				}
-				else { 
+				else   
 					serial_port.connect();
-				}
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
