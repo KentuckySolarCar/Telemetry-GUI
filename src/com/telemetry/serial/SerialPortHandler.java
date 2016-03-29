@@ -3,6 +3,7 @@ package com.telemetry.serial;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.JOptionPane;
 
@@ -14,6 +15,7 @@ public class SerialPortHandler {
 	private InputStream input_stream;
 	private static SerialPortWriter writer;
 	private String port_num;
+	private SerialPortReader read_thread;
 	
 	public SerialPortHandler() {
 		port_num = "";
@@ -27,7 +29,11 @@ public class SerialPortHandler {
 		return port_num;
 	}
 	
-	public void connect() throws Exception {
+	public boolean getPortReadStatus() {
+		return read_thread.getThreadStatus();
+	}
+	
+	public void connect(String port_num) throws Exception {
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
         if ( portIdentifier.isCurrentlyOwned() )
         {
@@ -46,11 +52,24 @@ public class SerialPortHandler {
                 output_stream = serial_port.getOutputStream();
                 
                 (new Thread(new SerialPortReader(input_stream))).start();
-                (new Thread(new SerialPortWriter(output_stream))).start();
             }
             else
             	System.out.println("Error: This is not a serial port!");
         }
+	}
+	
+	public void stopReadThread() {
+		read_thread.stopThread();
+	}
+	
+	public void startReadThread() {
+		try {
+			read_thread = new SerialPortReader(input_stream);
+			read_thread.start();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void write_command(int command) throws IOException {

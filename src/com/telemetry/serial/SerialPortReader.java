@@ -10,35 +10,39 @@ import java.io.UnsupportedEncodingException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SerialPortReader implements Runnable {
+public class SerialPortReader extends Thread {
 	
-	BufferedReader input_stream;
-	InputStream is;
+	private BufferedReader input_stream;
+	private InputStream is;
+	private boolean status;
 	
 	public SerialPortReader (InputStream input_stream) throws UnsupportedEncodingException {
+		status = false;
 		this.input_stream = new BufferedReader(new InputStreamReader(input_stream));
+	}
+	
+	public void stopThread() {
+		status = false;
+	}
+	
+	public boolean getThreadStatus() {
+		return status;
 	}
 
 	@Override
 	public void run() {
-		Timer T = new Timer();
-		T.scheduleAtFixedRate(new TimerTask() {
+		status = true;
+		try {
+			String line = "";
 			
-			@Override
-			public void run() {
-				try {
-					String line = "";
-					
-				while((line = input_stream.readLine()) != null) {
-					System.out.println(line);
-					Thread.sleep(1000);
-				}
-					
-				} catch (IOException | InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			while(((line = input_stream.readLine()) != null) && (status)) {
+				System.out.println(line);
+				Thread.sleep(1000);
 			}
-		}, 0, 1000/30);
+			
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

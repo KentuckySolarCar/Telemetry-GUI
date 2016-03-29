@@ -92,7 +92,6 @@ public class TelemetryFrame extends JFrame {
 		
 		JMenuItem change_port = new JMenuItem("Change Port");		
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
-		JMenuItem start_logging = new JMenuItem("Start Logging");	
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
@@ -107,7 +106,6 @@ public class TelemetryFrame extends JFrame {
 		//add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
-		control_menu.add(start_logging);
 		control_menu.add(start_calculations);
 		
 		//add about menu
@@ -129,7 +127,12 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
-			serial_port.changePortNum(s);
+			try {
+				serial_port.connect(s);
+				DisplayCurrentPortDialog(s);
+			} catch (Exception e) {
+				DisplayPortErrorDialog("Cannot Connect to " + s);
+			}
 		}
 	}
 
@@ -145,8 +148,13 @@ public class TelemetryFrame extends JFrame {
 	
 	class StartCalculationListener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
-			calculation_handler = new StartCalculation();
-			calculation_handler.start();
+			if(serial_port.getPortReadStatus() != true) {
+				DisplayPortErrorDialog("Not listening to any ports yet");
+			}
+			else {
+				calculation_handler = new StartCalculation();
+				calculation_handler.start();
+			}
 		}
 	}
 	
@@ -172,7 +180,7 @@ public class TelemetryFrame extends JFrame {
 				if(serial_port.getPortNum() == "")
 					DisplayPortErrorDialog("Port is Empty!");
 				else   
-					serial_port.connect();
+					serial_port.startReadThread();
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -182,6 +190,11 @@ public class TelemetryFrame extends JFrame {
 	
 	public void DisplayPortErrorDialog(String err_msg) {
 		JOptionPane.showMessageDialog(this, err_msg, "Port Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	public void DisplayCurrentPortDialog(String port_num) {
+		String msg = "Now listening to " + port_num;
+		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	public static void updateCalculationPanel() {
