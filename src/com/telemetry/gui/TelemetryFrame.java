@@ -84,6 +84,7 @@ public class TelemetryFrame extends JFrame {
 		// create menus
 		JMenu file_menu = new JMenu("File");
 		JMenu control_menu = new JMenu("Control");
+		JMenu tool_menu = new JMenu("Tool");
 		final JMenu about_menu = new JMenu("About");
 		
 		// create menu items
@@ -94,12 +95,18 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
 		
+		JMenuItem change_resolution = new JMenuItem("Change Resolution");
+		
 		start_monitor.addActionListener(new StartMonitorListener());
 		start_calculations.addActionListener(new StartCalculationListener());
 		change_port.addActionListener(new ChangePortListener());
+		change_resolution.addActionListener(new ChangeResolutionListener());
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
+		
+		// Tool Menu Items
+		tool_menu.add(change_resolution);
 		
 		//add menu items file menu);
 		file_menu.add(exit_menu_item);
@@ -116,6 +123,7 @@ public class TelemetryFrame extends JFrame {
 		//add menu to menu bar
 		menu_bar.add(file_menu);
 		menu_bar.add(control_menu);
+		menu_bar.add(tool_menu);
 		menu_bar.add(about_menu);
 		
 		//add menu bar to the frame
@@ -186,6 +194,30 @@ public class TelemetryFrame extends JFrame {
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	class ChangeResolutionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			changeResolution();
+		}
+		
+	}
+	
+	public void changeResolution() {
+		Object[] resolution_options = {"1920 x 1080", "1280 x 720"};
+		String s = (String) JOptionPane.showInputDialog(
+				this,
+				"Please select your preferred resolution:",
+				"Resolution Changer",
+				JOptionPane.PLAIN_MESSAGE,
+				null, resolution_options, resolution_options[0]);
+		if(s == "1920 x 1080")
+			setSize(1920, 1080);
+		else if(s == "1280 x 720")
+			setSize(1280, 720);
+
 	}
 	
 	public void DisplayPortErrorDialog(String err_msg) {
