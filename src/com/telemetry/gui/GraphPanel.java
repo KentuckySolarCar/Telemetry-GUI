@@ -38,9 +38,9 @@ public class GraphPanel extends JPanel {
 	private EnergyGraph energy_graph;
 	private TextFields text_field;
 //	private JPanel button_panel_enrg;
-	private JPanel button_panel_powr;
-	private JPanel button_panel_temp;
-	private JPanel button_panel_volt;
+//	private JPanel button_panel_powr;
+//	private JPanel button_panel_temp;
+//	private JPanel button_panel_volt;
 	
 	public GraphPanel(int grid_panel_x, int grid_panel_y) {
 		//this.setLayout(new GridLayout(3, 2));
@@ -61,7 +61,7 @@ public class GraphPanel extends JPanel {
 		button_panel_enrg.add(new JButton("Bla"));
 		button_panel_enrg.add(new JButton("Bla"));
 		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));*/
+		button_panel_enrg.add(new JButton("Bla"));
 		
 		button_panel_powr = new JPanel();
 		button_panel_powr.setLayout(new GridLayout(7, 14));
@@ -108,33 +108,36 @@ public class GraphPanel extends JPanel {
 		button_panel_volt.add(new JButton("Bla"));
 		button_panel_volt.add(new JButton("Bla"));
 		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
+		button_panel_volt.add(new JButton("Bla"));*/
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 2;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.ipadx = 0;
 		gbc.ipady = 0;
 		this.add(power_graph, gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		/*gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0;
 		gbc.weighty = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 0;
+		gbc.ipadx = 0;
 		gbc.ipady = 90;
-		this.add(button_panel_powr, gbc);
+		this.add(button_panel_powr, gbc);*/
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.1;
+		gbc.weighty = 0;
 		gbc.gridx = 2;
 		gbc.gridy = 0;
+		gbc.ipadx = 0;
 		gbc.ipady = 0;
 		this.add(energy_graph, gbc);
 		
-		/*gbc.fill = GridBagConstraints.HORIZONTAL;
+		/*gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0;
 		gbc.weighty = 0.5;
 		gbc.gridx = 3;
@@ -142,44 +145,45 @@ public class GraphPanel extends JPanel {
 		gbc.ipady = 200;
 		this.add(button_panel_enrg, gbc);*/
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 2;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.ipady = 0;
 		this.add(voltage_graph, gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		/*gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0;
 		gbc.weighty = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.ipady = 90;
-		this.add(button_panel_volt, gbc);
+		this.add(button_panel_volt, gbc);*/
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 0.1;
+		gbc.weighty = 0;
 		gbc.gridx = 2;
 		gbc.gridy = 1;
+		gbc.ipady = 0;
 		this.add(text_field, gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.weightx = 0.5;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 2;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.ipady = 0;
 		this.add(temperature_graph, gbc);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		/*gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0;
 		gbc.weighty = 0.5;
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		gbc.ipady = 90;
-		this.add(button_panel_temp, gbc);
+		this.add(button_panel_temp, gbc);*/
 		
 //		speed_chart           = ChartFactory.createXYLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
 //		motor_current_chart   = ChartFactory.createXYLineChart("Motor Current (A)", "Time", "Amperage", motor_current_dataset);
@@ -219,37 +223,14 @@ public class GraphPanel extends JPanel {
 		double[] energy = new double[10]; // needs to be expandable, number of laps
 		double[] power = new double[7];
 		double[] temps = new double[7];
+		double[] text = new double[18];
 		double[] volts = new double[9];
 		
-/*		dataset.put("array_power",                      array_power.getText());
-		dataset.put("average_speed",                    average_speed.getText());
-		dataset.put("battery_and_solar_range",          battery_and_solar_range.getText());
-		dataset.put("battery_and_solar_runtime_60_sec", battery_and_solar_runtime_60_sec.getText());
-		dataset.put("battery_charge_remaining",         battery_charge_remaining.getText());
-		dataset.put("battery_only_range_60_sec",        battery_only_range_60_sec.getText());
-		dataset.put("battery_only_runtime_60_sec",      battery_only_runtime_60_sec.getText());
-		dataset.put("battery_watt_hours",               battery_watt_hours.getText());
-		dataset.put("distance_left_in_day",             distance_left_in_day.getText());
-		dataset.put("motor_power_60_sec",               motor_power_60_sec.getText());
-		dataset.put("motor_watt_hours",                 motor_watt_hours.getText());
-		dataset.put("predicted_array_power",            predicted_array_power.getText());
-		dataset.put("solar_energy_remaining",           solar_energy_remaining.getText());
-		dataset.put("speed_60_sec",                     speed_60_sec.getText());
-		dataset.put("target_average_motor_power",       target_average_motor_power.getText());
-		dataset.put("target_battery_state_of_charge",   target_battery_state_of_charge.getText());
-		dataset.put("target_motor_energy",              target_motor_energy.getText());
-		dataset.put("target_speed",                     target_speed.getText());
-		dataset.put("target_watt_hour_per_mile",        target_watt_hour_per_mile.getText());
-		dataset.put("target_watt_hour_per_mile_60_sec", target_watt_hour_per_mile_60_sec.getText());
-		dataset.put("target_watt_hour_per_mile_day",    target_watt_hour_per_mile_day.getText());
-		dataset.put("time_elapsed",                     time_elapsed.getText());
-		dataset.put("time_left_in_day",                 time_left_in_day.getText());
-*/
-
-		temperature_graph.updateDataSet(temps);
-		voltage_graph.updateDataSet(volts);
-		power_graph.updateDataSet(power);
-		energy_graph.updateDataSet(energy);
+		energy_graph		.updateDataSet(energy);
+		power_graph			.updateDataSet(power);
+		temperature_graph	.updateDataSet(temps);
+		text_field			.updateDataSet(text);
+		voltage_graph		.updateDataSet(volts);
 	}
 	
 //	public void updateSpeedDataSet(double mph, int h, int m, int s) {
