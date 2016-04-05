@@ -23,8 +23,12 @@ public class SerialPortWriter implements Runnable {
 		}
 	}
 
-	public void write(int command) {
-		// TODO Auto-generated method stub
-		
+	public void write(byte[] bs) {
+		try {
+			output_stream.write(bs);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

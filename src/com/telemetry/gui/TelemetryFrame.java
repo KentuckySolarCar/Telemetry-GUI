@@ -1,6 +1,7 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,11 +28,11 @@ public class TelemetryFrame extends JFrame {
 	private static final int HEIGHT = 1000; //720
 	
 	private JTabbedPane tab_panel;
-	private static TextFileInput input;
+	private static TextFileInput text_input;
 	private static CalculationPanel calculation_panel;
 	private static DevicePanel device_panel;
 	private static GraphPanel graph_panel;
-	private static JScrollPane log_scroll;
+	private static LogPanel log_panel;
 	private SerialPortHandler serial_port;
 	private StartCalculation calculation_handler;
 	private int tab_panel_x = 1880;	//1260
@@ -53,10 +54,12 @@ public class TelemetryFrame extends JFrame {
 	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
 	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
 	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
+	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
 	    
 		tab_panel.add("Car Status", device_panel);
 		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
+	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 	    // Uncomment next line to set tab_panel's size
@@ -92,6 +95,7 @@ public class TelemetryFrame extends JFrame {
 		exit_menu_item.addActionListener(new ExitMenuListener());
 		
 		JMenuItem change_port = new JMenuItem("Change Port");		
+		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
 		
@@ -101,12 +105,14 @@ public class TelemetryFrame extends JFrame {
 		start_calculations.addActionListener(new StartCalculationListener());
 		change_port.addActionListener(new ChangePortListener());
 		change_resolution.addActionListener(new ChangeResolutionListener());
+		test_monitor.addActionListener(new TestMonitorListener());
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
 		
 		// Tool Menu Items
 		tool_menu.add(change_resolution);
+		tool_menu.add(test_monitor);
 		
 		//add menu items file menu);
 		file_menu.add(exit_menu_item);
@@ -140,6 +146,18 @@ public class TelemetryFrame extends JFrame {
 				DisplayCurrentPortDialog(s);
 			} catch (Exception e) {
 				DisplayPortErrorDialog("Cannot Connect to " + s);
+			}
+		}
+	}
+	
+	class TestMonitorListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				testMonitor();
+			} catch (IOException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
@@ -205,6 +223,17 @@ public class TelemetryFrame extends JFrame {
 		
 	}
 	
+	public void testMonitor() throws IOException, ParseException {
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			text_input = new TextFileInput(chooser.getSelectedFile().toString());
+			text_input.start();
+		}
+	}
+	
 	public void changeResolution() {
 		Object[] resolution_options = {"1920 x 1080", "1280 x 720"};
 		String s = (String) JOptionPane.showInputDialog(
@@ -233,14 +262,16 @@ public class TelemetryFrame extends JFrame {
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 	}
 	
+	public static void updateGraphPanel() {
+		graph_panel.updateGraphs(calculation_panel.getData());
+	}
+	
 	// Constantly update GUI
 	public static void updateDevicePanel(JSONObject obj, String type) {
 		// Log Panel will not be updated for the time being
 		// log_panel.updatePanel(obj);
 		device_panel.updatePanel(obj, type);
-		int[] time = device_panel.getTime();
 
-		graph_panel.updateGraphs(calculation_panel.getData());
 		
 //		if(type.equals("motor")) {
 //			double mph = Double.parseDouble((String) obj.get("S"));

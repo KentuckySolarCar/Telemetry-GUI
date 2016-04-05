@@ -17,18 +17,13 @@ import com.telemetry.gui.device.MotorPanel;
 
 import org.json.simple.parser.JSONParser;
 
-public class TextFileInput implements Runnable {
+public class TextFileInput extends Thread {
 	private JSONParser parser;
 	private BufferedReader buffer_reader;
 	
-	public TextFileInput() throws FileNotFoundException {
+	public TextFileInput(String directory) throws FileNotFoundException {
 		parser = new JSONParser();
-		buffer_reader = new BufferedReader(new FileReader("pi_data.txt"));
-	}
-	
-	public void Initiate() throws IOException, ParseException {
-		Thread thread = new Thread(new TextFileInput());
-		thread.start();
+		buffer_reader = new BufferedReader(new FileReader(directory));
 	}
 
 	@Override

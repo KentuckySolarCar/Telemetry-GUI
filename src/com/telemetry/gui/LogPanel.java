@@ -13,9 +13,9 @@ import com.telemetry.serial.SerialPortHandler;
 public class LogPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 4467077703107588725L;
-	private static JLabel log_label = new JLabel("Log Display");
-	private static JTextArea text_area;
-	private final JTextField text_field = new JTextField(40);
+	private JTextArea text_area;
+	private JTextField text_field;
+	private JScrollPane scroll_pane;
 	
 	public LogPanel(int tab_panel_x, int tab_panel_y) {
 		super();
@@ -27,12 +27,15 @@ public class LogPanel extends JPanel implements ActionListener {
 		text_area.setEditable(false);
 		text_area.setLineWrap(true);
 		text_area.setAutoscrolls(true);
-//		JScrollPane text_pane = new JScrollPane(text_area);
+		
+		text_field = new JTextField();
 		
 		text_field.addActionListener(this);
+		
+		scroll_pane = new JScrollPane();
+		scroll_pane.add(text_area);
 	
-		add(log_label, BorderLayout.NORTH);
-		add(text_area, BorderLayout.CENTER);
+		add(scroll_pane, BorderLayout.NORTH);
 		add(text_field, BorderLayout.SOUTH);
 	}
 	
@@ -43,10 +46,10 @@ public class LogPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		int command = Integer.valueOf(text_field.getText());
+		String command = text_field.getText();
 		
 		try {
-			SerialPortHandler.write_command(command);
+			SerialPortHandler.write_command(command.getBytes());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

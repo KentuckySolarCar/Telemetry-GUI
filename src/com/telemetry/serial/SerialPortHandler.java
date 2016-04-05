@@ -19,6 +19,12 @@ public class SerialPortHandler {
 	
 	public SerialPortHandler() {
 		port_num = "";
+		try {
+			read_thread = new SerialPortReader(null);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void changePortNum(String port_num) {
@@ -30,7 +36,9 @@ public class SerialPortHandler {
 	}
 	
 	public boolean getPortReadStatus() {
-		return read_thread.getThreadStatus();
+		if(read_thread.getThreadStatus() != true)
+			return false;
+		else return true;
 	}
 	
 	public void connect(String port_num) throws Exception {
@@ -72,8 +80,8 @@ public class SerialPortHandler {
 		}
 	}
 	
-	public static void write_command(int command) throws IOException {
-		writer.write(command);
+	public static void write_command(byte[] bs) throws IOException {
+		writer.write(bs);
 	}
 		
 /*	private void setSerialPortParameters() throws IOException {
