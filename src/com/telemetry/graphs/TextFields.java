@@ -349,7 +349,7 @@ public class TextFields extends JPanel {
 	}
 	
 	public void updateDataSet(double[] data) {
-		average_motor_power_day				.setText(String.valueOf(data[0]));
+//		average_motor_power_day				.setText(String.valueOf(data[0]));
 		average_speed_day					.setText(String.valueOf(data[1]));
 		battery_and_solar_range				.setText(String.valueOf(data[2]));
 		battery_and_solar_runtime_60_sec	.setText(String.valueOf(data[3]));
@@ -367,7 +367,6 @@ public class TextFields extends JPanel {
 		target_watt_hour_per_mile			.setText(String.valueOf(data[15]));
 		target_watt_hour_per_mile_60_sec	.setText(String.valueOf(data[16]));
 		target_watt_hour_per_mile_day		.setText(String.valueOf(data[17]));
-		time_left_in_day					.setText(String.valueOf(data[18]));
 		time_left_in_day					.setText(String.valueOf(data[18]));
 	}
 }

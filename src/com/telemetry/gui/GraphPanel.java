@@ -223,8 +223,77 @@ public class GraphPanel extends JPanel {
 		double[] energy = new double[10]; // needs to be expandable, number of laps
 		double[] power = new double[7];
 		double[] temps = new double[7];
-		double[] text = new double[18];
+		double[] text = new double[19];
 		double[] volts = new double[9];
+		
+		/*
+		 * ENERGY GRAPH DATA
+		 */
+		
+		energy[0]	= (double) ((JSONObject) data.get("calculation_data")).get("time_elapsed");
+//		energy[1]	= (double) ((JSONObject) ((JSONObject) data.get("device_data")).get("motor_data")).get("lap1");
+		
+		/*
+		 * POWER GRAPH DATA
+		 */
+		
+		power[0]	= (double) ((JSONObject) data.get("calculation_data")).get("time_elapsed");
+//		power[1]	= (double) ((JSONObject) data.get("calculation_data")).get("motor_power");
+//		power[2]	= (double) ((JSONObject) data.get("calculation_data")).get("array_power");
+//		power[3]	= (double) ((JSONObject) data.get("calculation_data")).get("tracker1_power");
+//		power[4]	= (double) ((JSONObject) data.get("calculation_data")).get("tracker2_power");
+//		power[5]	= (double) ((JSONObject) data.get("calculation_data")).get("tracker3_power");
+//		power[6]	= (double) ((JSONObject) data.get("calculation_data")).get("tracker4_power");		
+		
+		/*
+		 * TEMPERATURE GRAPH DATA
+		 */
+		
+		temps[0]	= (double) ((JSONObject) data.get("calculation_data")).get("time_elapsed");
+//		temps[1]	= (double) ((JSONObject) ((JSONObject) data.get("device_data")).get("motor_data")).get("temperature");
+//		temps[2]	= (double) ((JSONObject) ((JSONObject) data.get("device_data")).get("motor_data")).get("temperature");
+//		temps[3]	= (double) ((JSONObject) ((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman")).get("t_max");
+//		temps[4]	= (double) ((JSONObject) ((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman")).get("t_min");
+//		temps[5]	= (double) ((JSONObject) ((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin")).get("t_max");
+//		temps[6]	= (double) ((JSONObject) ((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin")).get("t_min");
+		
+		/*
+		 * TEXT FIELD DATA
+		 */
+		
+//		text[0]		= (double) ((JSONObject) data.get("calculation_data")).get("average_motor_power_day");
+		text[1]		= (double) ((JSONObject) data.get("calculation_data")).get("average_speed");
+		text[2]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_and_solar_range");
+		text[3]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_and_solar_runtime_60_sec");
+		text[4]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_charge_remaining");
+		text[5]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_only_range_60_sec");
+		text[6]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_only_runtime_60_sec");
+		text[7]		= (double) ((JSONObject) data.get("calculation_data")).get("battery_watt_hours");
+		text[8]		= (double) ((JSONObject) data.get("calculation_data")).get("distance_left_in_day");
+		text[9]		= (double) ((JSONObject) data.get("calculation_data")).get("motor_power_60_sec");
+		text[10]	= (double) ((JSONObject) data.get("calculation_data")).get("motor_watt_hours");
+		text[11]	= (double) ((JSONObject) ((JSONObject) data.get("device_data")).get("motor_data")).get("odometer");
+		text[12]	= (double) ((JSONObject) data.get("calculation_data")).get("solar_energy_remaining");
+		text[13]	= (double) ((JSONObject) data.get("calculation_data")).get("speed_60_sec");
+		text[14]	= (double) ((JSONObject) data.get("calculation_data")).get("target_speed");
+		text[15]	= (double) ((JSONObject) data.get("calculation_data")).get("target_watt_hour_per_mile");
+		text[16]	= (double) ((JSONObject) data.get("calculation_data")).get("target_watt_hour_per_mile_60_sec");
+		text[17]	= (double) ((JSONObject) data.get("calculation_data")).get("target_watt_hour_per_mile_day");
+		text[18]	= (double) ((JSONObject) data.get("calculation_data")).get("time_left_in_day");
+		
+		/*
+		 * VOLTAGE GRAPH DATA
+		 */
+		
+		volts[0]	= (double) ((JSONObject) data.get("calculation_data")).get("time_elapsed");
+//		volts[1]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman"))).get("v_max");
+//		volts[2]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman"))).get("v_min");
+//		volts[3]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman"))).get("v_average");
+//		volts[4]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("batman"))).get("v_std_dev");
+//		volts[5]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin"))).get("v_max");
+//		volts[6]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin"))).get("v_min");
+//		volts[7]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin"))).get("v_average");
+//		volts[8]	= (double) ((JSONObject) (((JSONObject) ((JSONObject) data.get("device_data")).get("battery_data")).get("robin"))).get("v_std_dev");
 		
 		energy_graph		.updateDataSet(energy);
 		power_graph			.updateDataSet(power);

@@ -262,8 +262,14 @@ public class TelemetryFrame extends JFrame {
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 	}
 	
-	public static void updateGraphPanel() {
-		graph_panel.updateGraphs(calculation_panel.getData());
+	@SuppressWarnings("unchecked")
+	public static void updateGraphPanel(JSONObject obj, String type) {
+		JSONObject combined_data = new JSONObject();
+		JSONObject device_data = device_panel.getDeviceData();
+		JSONObject calculation_data = calculation_panel.getData();
+		combined_data.put("device_data", device_data);
+		combined_data.put("calculation_data", calculation_data);
+		graph_panel.updateGraphs(combined_data);
 	}
 	
 	// Constantly update GUI
