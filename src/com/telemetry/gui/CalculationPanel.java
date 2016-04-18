@@ -48,8 +48,8 @@ public class CalculationPanel extends JPanel{
 	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
-		setSize(tab_panel_x, tab_panel_y);
-	    setLayout(new GridLayout(11, 5, 10, 15));
+	    setLayout(new GridLayout(11, 5, 5, 5));
+//		setSize(tab_panel_x, tab_panel_y);
 	    
 	    battery_runtime_q        = new SizedQueue<Double>(60);
 	    battery_range_q          = new SizedQueue<Double>(60);
@@ -172,27 +172,50 @@ public class CalculationPanel extends JPanel{
 	}
 
 	private void insertFields() {
-		add(new JLabel("Array Power"));                        add(array_power);                       add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Array Power"));                        add(array_power);                       add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Average Speed"));                      add(average_speed);                      
+//		add(new JLabel("Battery Only Run Time (60 secs)"));    add(battery_only_runtime_60_sec);      add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Battery Only Range (60 secs)"));       add(battery_only_range_60_sec);         
+//		add(new JLabel("Battery and Solar Run Time "));        add(battery_and_solar_runtime_60_sec); add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Battery and Solar Range"));            add(battery_and_solar_range);          
+//		add(new JLabel("Battery Charge Remaining"));           add(battery_charge_remaining);          add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Solar Energy Remaining"));             add(solar_energy_remaining);            
+//		add(new JLabel("Battery Watt Hours"));                 add(battery_watt_hours);                add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Motor Power (60 secs)"));              add(motor_power_60_sec);                
+//		add(new JLabel("Target Speed"));                       add(target_speed);                      add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Speed (60 sec)"));                     add(speed_60_sec);                      
+//		add(new JLabel("Target Watt Hour Per Mile"));          add(target_watt_hour_per_mile);         add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Target Watt Hour Per Mile (60 sec)")); add(target_watt_hour_per_mile_60_sec);  
+//		add(new JLabel("Target Watt Hour Per Mile (Day)"));    add(target_watt_hour_per_mile_day);     add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Distance Left in Day"));               add(distance_left_in_day);              
+//		add(new JLabel("Time Left in Day"));                   add(time_left_in_day);                  add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Target Average Motor Power"));         add(target_average_motor_power);        
+//		add(new JLabel("Target Motor Energy"));                add(target_motor_energy);               add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Target Battery State of Charge"));     add(target_battery_state_of_charge);    
+//		add(new JLabel("Predicted Array Power"));              add(predicted_array_power);             add(new JSeparator(SwingConstants.VERTICAL));
+//		add(new JLabel("Motor Watt Hours"));                   add(motor_watt_hours);                  
+		
+		add(new JLabel("Array Power"));                        add(array_power);                       add(new JLabel(" | "));
 		add(new JLabel("Average Speed"));                      add(average_speed);                      
-		add(new JLabel("Battery Only Run Time (60 secs)"));    add(battery_only_runtime_60_sec);      add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Battery Only Run Time (60 secs)"));    add(battery_only_runtime_60_sec);      add(new JLabel(" | "));
 		add(new JLabel("Battery Only Range (60 secs)"));       add(battery_only_range_60_sec);         
-		add(new JLabel("Battery and Solar Run Time "));        add(battery_and_solar_runtime_60_sec); add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Battery and Solar Run Time "));        add(battery_and_solar_runtime_60_sec); add(new JLabel(" | "));
 		add(new JLabel("Battery and Solar Range"));            add(battery_and_solar_range);          
-		add(new JLabel("Battery Charge Remaining"));           add(battery_charge_remaining);          add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Battery Charge Remaining"));           add(battery_charge_remaining);          add(new JLabel(" | "));
 		add(new JLabel("Solar Energy Remaining"));             add(solar_energy_remaining);            
-		add(new JLabel("Battery Watt Hours"));                 add(battery_watt_hours);                add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Battery Watt Hours"));                 add(battery_watt_hours);                add(new JLabel(" | "));
 		add(new JLabel("Motor Power (60 secs)"));              add(motor_power_60_sec);                
-		add(new JLabel("Target Speed"));                       add(target_speed);                      add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Target Speed"));                       add(target_speed);                      add(new JLabel(" | "));
 		add(new JLabel("Speed (60 sec)"));                     add(speed_60_sec);                      
-		add(new JLabel("Target Watt Hour Per Mile"));          add(target_watt_hour_per_mile);         add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Target Watt Hour Per Mile"));          add(target_watt_hour_per_mile);         add(new JLabel(" | "));
 		add(new JLabel("Target Watt Hour Per Mile (60 sec)")); add(target_watt_hour_per_mile_60_sec);  
-		add(new JLabel("Target Watt Hour Per Mile (Day)"));    add(target_watt_hour_per_mile_day);     add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Target Watt Hour Per Mile (Day)"));    add(target_watt_hour_per_mile_day);     add(new JLabel(" | "));
 		add(new JLabel("Distance Left in Day"));               add(distance_left_in_day);              
-		add(new JLabel("Time Left in Day"));                   add(time_left_in_day);                  add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Time Left in Day"));                   add(time_left_in_day);                  add(new JLabel(" | "));
 		add(new JLabel("Target Average Motor Power"));         add(target_average_motor_power);        
-		add(new JLabel("Target Motor Energy"));                add(target_motor_energy);               add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Target Motor Energy"));                add(target_motor_energy);               add(new JLabel(" | "));
 		add(new JLabel("Target Battery State of Charge"));     add(target_battery_state_of_charge);    
-		add(new JLabel("Predicted Array Power"));              add(predicted_array_power);             add(new JSeparator(SwingConstants.VERTICAL));
+		add(new JLabel("Predicted Array Power"));              add(predicted_array_power);             add(new JLabel(" | "));
 		add(new JLabel("Motor Watt Hours"));                   add(motor_watt_hours);                  
 	}
 	

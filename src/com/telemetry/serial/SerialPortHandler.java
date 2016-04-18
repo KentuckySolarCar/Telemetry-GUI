@@ -19,12 +19,6 @@ public class SerialPortHandler {
 	
 	public SerialPortHandler() {
 		port_num = "";
-		try {
-			read_thread = new SerialPortReader(null);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public void changePortNum(String port_num) {
@@ -53,13 +47,14 @@ public class SerialPortHandler {
             
             if ( commPort instanceof SerialPort )
             {
+            	this.port_num = port_num;
                 serial_port = (SerialPort) commPort;
-                serial_port.setSerialPortParams(57600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+                serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
                 input_stream = serial_port.getInputStream();
                 output_stream = serial_port.getOutputStream();
                 
-                (new Thread(new SerialPortReader(input_stream))).start();
+//                (new Thread(new SerialPortReader(input_stream))).start();
             }
             else
             	System.out.println("Error: This is not a serial port!");

@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.TelemetryFrame;
-import com.telemetry.serial.TextFileInput;
 
 public class Main implements Runnable {
 	
@@ -28,7 +27,8 @@ public class Main implements Runnable {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(1000);
+					window.updateRunTime();
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

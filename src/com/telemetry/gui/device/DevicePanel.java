@@ -2,9 +2,10 @@ package com.telemetry.gui.device;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+
 import javax.swing.*;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class DevicePanel extends JPanel{
@@ -16,46 +17,23 @@ public class DevicePanel extends JPanel{
 	TimePanel time_panel = new TimePanel();
 	BatteryPanel battery_panel = new BatteryPanel();
 	
-	GridBagConstraints gbc = new GridBagConstraints();
-	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-		setLayout(new GridBagLayout());
+		setLayout(new GridLayout(7, 1, 10, 10));
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		add(time_panel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		add(new JLabel(separator), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		add(motor_panel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		add(new JLabel(separator), gbc);
-	
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		add(mppt_panel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		add(new JLabel(separator), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 6;
-		add(battery_panel, gbc);
+		add(time_panel);
+		add(new JSeparator(SwingConstants.HORIZONTAL));
+		add(motor_panel);
+		add(new JSeparator(SwingConstants.HORIZONTAL));
+		add(mppt_panel);
+		add(new JSeparator(SwingConstants.HORIZONTAL));
+		add(battery_panel);
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
-		time_panel.updatePanel();
+		time_panel.updatePanel((String) obj.get("Time"));
 		switch(type) {
 		case "motor": {
 			motor_panel.updatePanel(obj);
@@ -86,5 +64,9 @@ public class DevicePanel extends JPanel{
 		device_data.put("battery_data", battery_data);
 		device_data.put("motor_data", motor_data);
 		return device_data;
+	}
+
+	public void updateRunTime() {
+		time_panel.updateRunTime();
 	}
 }

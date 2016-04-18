@@ -3,7 +3,6 @@ package com.telemetry.gui;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -13,19 +12,15 @@ import com.telemetry.serial.TextFileInput;
 import com.telemetry.actions.*;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1900; //1280
-	private static final int HEIGHT = 1000; //720
+	private static final int WIDTH = 1280; //1280
+	private static final int HEIGHT = 720; //720
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput text_input;
@@ -35,8 +30,9 @@ public class TelemetryFrame extends JFrame {
 	private static LogPanel log_panel;
 	private SerialPortHandler serial_port;
 	private StartCalculation calculation_handler;
-	private int tab_panel_x = 1880;	//1260
-	private int tab_panel_y = 920;	//640
+	private int tab_panel_x = 1260;	//1260
+	private int tab_panel_y = 640;	//640
+	private boolean logging_status = false;
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
@@ -51,10 +47,16 @@ public class TelemetryFrame extends JFrame {
 		
 		// Initializes and edits layout of tab_panel container
 		tab_panel = new JTabbedPane();
-	    calculation_panel = new CalculationPanel(tab_panel_x, tab_panel_y);
-	    device_panel = new DevicePanel(tab_panel_x, tab_panel_y);
+	    calculation_panel = new CalculationPanel(tab_panel_x / 2, tab_panel_y);
+	    device_panel = new DevicePanel(tab_panel_x / 2, tab_panel_y);
 	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
 	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
+	    
+	    JPanel combined_panel = new JPanel();
+	    combined_panel.setLayout(new BorderLayout());
+	    combined_panel.add(device_panel, BorderLayout.WEST);
+	    combined_panel.add(new JSeparator(SwingConstants.VERTICAL),	BorderLayout.CENTER);
+	    combined_panel.add(calculation_panel, BorderLayout.EAST);
 	    
 		tab_panel.add("Car Status", device_panel);
 		tab_panel.add("Calculation", calculation_panel);
@@ -63,7 +65,7 @@ public class TelemetryFrame extends JFrame {
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 	    // Uncomment next line to set tab_panel's size
-		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
+		tab_panel.setSize(new Dimension(tab_panel_x, tab_panel_y));
 		
 	    // Uncomment next line to make tab_panel scalable
 		// new JScrollPane(tab_panel);
@@ -79,6 +81,9 @@ public class TelemetryFrame extends JFrame {
 		// Reveals main_frame
 		setVisible(true);
 		setLocationRelativeTo(null);
+
+		validate();
+		repaint();
 	}
 	
 	private void createMenuBar(){
@@ -95,11 +100,13 @@ public class TelemetryFrame extends JFrame {
 		exit_menu_item.addActionListener(new ExitMenuListener());
 		
 		JMenuItem change_port = new JMenuItem("Change Port");		
-		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
+		JMenuItem start_logging = new JMenuItem("Start Logging");
+		JMenuItem stop_logging = new JMenuItem("Stop Logging");
 		
 		JMenuItem change_resolution = new JMenuItem("Change Resolution");
+		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
 		start_calculations.addActionListener(new StartCalculationListener());
@@ -135,6 +142,20 @@ public class TelemetryFrame extends JFrame {
 		//add menu bar to the frame
 		setJMenuBar(menu_bar);
 		setVisible(true);
+	}
+	
+	public void updateRunTime() {
+		device_panel.updateRunTime();
+	}
+	
+	class StartLoggingListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
+			
+		}
+		
 	}
 	
 	class ChangePortListener implements ActionListener {
@@ -246,7 +267,8 @@ public class TelemetryFrame extends JFrame {
 			setSize(1920, 1080);
 		else if(s == "1280 x 720")
 			setSize(1280, 720);
-
+		validate();
+		repaint();
 	}
 	
 	public void DisplayPortErrorDialog(String err_msg) {

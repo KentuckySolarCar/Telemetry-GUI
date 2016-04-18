@@ -1,21 +1,16 @@
 package com.telemetry.gui.device;
 
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.*;
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
 
 import java.util.Queue;
+
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class MotorPanel extends JPanel {
 
@@ -34,6 +29,8 @@ public class MotorPanel extends JPanel {
 	private double odometer;
 	private JButton energy_reset        = new JButton("Energy Reset");
 	private JButton average_speed_reset = new JButton("Speed Reset");
+	
+	private static final double speed_conversion = 0.223693629;
 	
 	public MotorPanel() {
 		setLayout(new GridLayout(1, 3));
@@ -94,7 +91,7 @@ public class MotorPanel extends JPanel {
 		speed_label.setText((String) obj.get("S"));
 		current_label.setText((String) obj.get("I"));
 		
-		speed.add(Double.parseDouble((String) obj.get("S")));
+		speed.add(Double.parseDouble((String) obj.get("S")) * speed_conversion);
 		current.add(Double.parseDouble((String) obj.get("I")));
 		
 		average_speed_label.setText(Double.toString(calculateAveSpeed()));
