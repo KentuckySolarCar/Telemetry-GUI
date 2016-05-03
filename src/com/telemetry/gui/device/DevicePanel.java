@@ -1,5 +1,6 @@
 package com.telemetry.gui.device;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,32 +11,77 @@ import org.json.simple.JSONObject;
 
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
-	private String separator = "----------------------------------------------------------------------------------------------------------------";
 	
-	MotorPanel motor_panel = new MotorPanel();
-	MpptPanel mppt_panel = new MpptPanel();
-	TimePanel time_panel = new TimePanel();
-	BatteryPanel battery_panel = new BatteryPanel();
+	private MotorPanel motor_panel = new MotorPanel();
+	private MpptPanel mppt_panel = new MpptPanel();
+	private TimePanel time_panel = new TimePanel();
+	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
+	private BatteryPanel battery_panel = new BatteryPanel();
 	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-		setLayout(new GridLayout(7, 1, 10, 10));
+//		setBackground(new Color(191, 239, 255));
 		
-		add(time_panel);
-		add(new JSeparator(SwingConstants.HORIZONTAL));
-		add(motor_panel);
-		add(new JSeparator(SwingConstants.HORIZONTAL));
-		add(mppt_panel);
-		add(new JSeparator(SwingConstants.HORIZONTAL));
-		add(battery_panel);
+		JPanel time_speed_panel = new JPanel(new GridLayout(1, 3));
+		time_speed_panel.add(time_panel);
+		time_speed_panel.add(speed_dial_panel);
+		
+//		setLayout(new GridLayout(4, 1));
+//		add(time_panel);
+//		add(motor_panel);
+//		add(mppt_panel);
+//		add(battery_panel);
+
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		add(time_panel, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		add(motor_panel, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridheight = 2;
+		gbc.gridwidth = 2;
+		add(speed_dial_panel, gbc);
+		
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.ipady = 10;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 3;
+		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+		
+		gbc.gridwidth = 3;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		add(mppt_panel, gbc);
+		
+		gbc.ipady = 10;
+		gbc.gridwidth = 3;
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+//		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+		add(new JLabel(""));
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridwidth = 3;
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		add(battery_panel, gbc);
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
 		time_panel.updatePanel((String) obj.get("Time"));
 		switch(type) {
 		case "motor": {
+			speed_dial_panel.updateDial((String) obj.get("S"));
 			motor_panel.updatePanel(obj);
 			break;
 		}

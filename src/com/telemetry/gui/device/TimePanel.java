@@ -26,8 +26,8 @@ public class TimePanel extends JPanel {
 	
 	public TimePanel() {
 		setLayout(new GridLayout(1, 2));
-		time_label_panel.setLayout(new GridLayout(4, 1, 10, 10));
-		time_data_panel.setLayout(new GridLayout(4, 1, 10, 10));
+		time_label_panel.setLayout(new GridLayout(4, 1));
+		time_data_panel.setLayout(new GridLayout(4, 1));
 		
 		// Initialize time labels
 		time_label_panel.add(new JLabel("Time"));

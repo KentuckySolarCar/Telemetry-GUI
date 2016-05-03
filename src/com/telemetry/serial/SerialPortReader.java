@@ -40,6 +40,7 @@ public class SerialPortReader extends Thread {
 			while(status) {
 				line = input_stream.readLine();
 				try {
+					System.out.println(line);
 					JSONObject obj = (JSONObject) parser.parse(line);
 					TelemetryFrame.updateDevicePanel(obj, (String) obj.get("message_id"));
 				} catch (ParseException e) {

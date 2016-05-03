@@ -30,9 +30,14 @@ public class SerialPortHandler {
 	}
 	
 	public boolean getPortReadStatus() {
-		if(read_thread.getThreadStatus() != true)
+		if(read_thread != null) {
+			if(read_thread.getThreadStatus() != true)
+				return false;
+			else
+				return true;
+		}
+		else
 			return false;
-		else return true;
 	}
 	
 	public void connect(String port_num) throws Exception {

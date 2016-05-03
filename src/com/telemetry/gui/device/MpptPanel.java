@@ -11,8 +11,8 @@ public class MpptPanel extends JPanel {
 	
 	public MpptPanel() {
 		setLayout(new GridLayout(1, 2));
-		mppt_label_panel.setLayout(new GridLayout(2, 1, 10, 10));
-		mppt_data_panel.setLayout(new GridLayout(2, 1, 10, 10));
+		mppt_label_panel.setLayout(new GridLayout(2, 1));
+		mppt_data_panel.setLayout(new GridLayout(2, 1));
 		
 		insertLabelPanel();
 		insertDataPanel();

@@ -1,6 +1,7 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
@@ -37,6 +38,17 @@ public class TelemetryFrame extends JFrame {
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
+		
+//		try {
+//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+//		        if ("Nimbus".equals(info.getName())) {
+//		            UIManager.setLookAndFeel(info.getClassName());
+//		            break;
+//		        }
+//		    }
+//		} catch (Exception e) {
+//		    // If Nimbus is not available, you can set the GUI to another look and feel.
+//		}
 		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
