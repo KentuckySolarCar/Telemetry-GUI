@@ -33,7 +33,6 @@ public class TelemetryFrame extends JFrame {
 	private StartCalculation calculation_handler;
 	private int tab_panel_x = 1260;	//1260
 	private int tab_panel_y = 640;	//640
-	private boolean logging_status = false;
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {

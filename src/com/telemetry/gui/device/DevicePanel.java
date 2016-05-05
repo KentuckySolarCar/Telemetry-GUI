@@ -1,9 +1,11 @@
 package com.telemetry.gui.device;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 import javax.swing.*;
 
@@ -18,6 +20,9 @@ public class DevicePanel extends JPanel{
 	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
 	private BatteryPanel battery_panel = new BatteryPanel();
 	
+	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 18);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 16);
+	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
 		
@@ -28,53 +33,72 @@ public class DevicePanel extends JPanel{
 		time_speed_panel.add(time_panel);
 		time_speed_panel.add(speed_dial_panel);
 		
-//		setLayout(new GridLayout(4, 1));
-//		add(time_panel);
-//		add(motor_panel);
-//		add(mppt_panel);
-//		add(battery_panel);
-
 		setLayout(new GridBagLayout());
+		
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(10, 0, 10, 0);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridwidth = 2;
 		add(time_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
+		gbc.gridwidth = 1;
 		add(motor_panel, gbc);
 		
 		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.gridheight = 2;
-		gbc.gridwidth = 2;
-		add(speed_dial_panel, gbc);
-		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.ipady = 10;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 3;
-		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-		
-		gbc.gridwidth = 3;
-		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 1;
 		add(mppt_panel, gbc);
 		
-		gbc.ipady = 10;
-		gbc.gridwidth = 3;
 		gbc.gridx = 0;
-		gbc.gridy = 4;
-//		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-		add(new JLabel(""));
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridwidth = 3;
-		gbc.gridx = 0;
-		gbc.gridy = 5;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
 		add(battery_panel, gbc);
+		
+
+//		setLayout(new GridBagLayout());
+//		GridBagConstraints gbc = new GridBagConstraints();
+//		
+//		gbc.gridx = 0;
+//		gbc.gridy = 0;
+//		add(time_panel, gbc);
+//		
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		add(motor_panel, gbc);
+//		
+//		gbc.gridx = 1;
+//		gbc.gridy = 0;
+//		gbc.gridheight = 2;
+//		gbc.gridwidth = 2;
+//		add(speed_dial_panel, gbc);
+//		
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+////		gbc.ipady = 10;
+//		gbc.gridx = 0;
+//		gbc.gridy = 2;
+//		gbc.gridwidth = 3;
+//		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+//		
+//		gbc.gridwidth = 3;
+//		gbc.gridx = 0;
+//		gbc.gridy = 3;
+//		add(mppt_panel, gbc);
+//		
+//		gbc.ipady = 10;
+//		gbc.gridwidth = 3;
+//		gbc.gridx = 0;
+//		gbc.gridy = 4;
+////		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
+//		add(new JLabel(""));
+//
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gbc.gridwidth = 3;
+//		gbc.gridx = 0;
+//		gbc.gridy = 5;
+//		add(battery_panel, gbc);
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {

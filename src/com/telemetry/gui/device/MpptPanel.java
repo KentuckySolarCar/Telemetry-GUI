@@ -1,6 +1,11 @@
 package com.telemetry.gui.device;
 
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+
 import javax.swing.*;
 
 public class MpptPanel extends JPanel {
@@ -10,12 +15,38 @@ public class MpptPanel extends JPanel {
 	private JLabel out_current = new JLabel("Out Current");
 	
 	public MpptPanel() {
-		setLayout(new GridLayout(1, 2));
-		mppt_label_panel.setLayout(new GridLayout(2, 1));
-		mppt_data_panel.setLayout(new GridLayout(2, 1));
+		setLayout(new GridBagLayout());
+		insertComponents();
+	}
+	
+	private void insertComponents() {
+		GridBagConstraints gbc = new GridBagConstraints();
 		
-		insertLabelPanel();
-		insertDataPanel();
+		// GBC constants
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		//----------------------Title------------------------//
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		JLabel title = new JLabel("MPPTs");
+		title.setFont(DevicePanel.TITLE_FONT);
+		add(title, gbc);
+		
+		//----------------------Labels------------------------//
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		JLabel mppt_label = new JLabel("#");
+		mppt_label.setFont(DevicePanel.FIELD_FONT);
+		add(mppt_label, gbc);
+		
+		//----------------------Labels------------------------//
+		gbc.gridx = 2;
+		gbc.gridy = 1;
+		out_current.setFont(DevicePanel.FIELD_FONT);
+		out_current.setOpaque(true);
+		out_current.setBackground(Color.ORANGE);
+		add(out_current, gbc);
 	}
 	
 	private void insertLabelPanel() {
