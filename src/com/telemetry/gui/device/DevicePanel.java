@@ -1,11 +1,11 @@
 package com.telemetry.gui.device;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -27,7 +27,6 @@ public class DevicePanel extends JPanel{
 		super();
 		
 		setSize(tab_panel_x, tab_panel_y);
-//		setBackground(new Color(191, 239, 255));
 		
 		JPanel time_speed_panel = new JPanel(new GridLayout(1, 3));
 		time_speed_panel.add(time_panel);
@@ -57,48 +56,6 @@ public class DevicePanel extends JPanel{
 		gbc.gridwidth = 2;
 		add(battery_panel, gbc);
 		
-
-//		setLayout(new GridBagLayout());
-//		GridBagConstraints gbc = new GridBagConstraints();
-//		
-//		gbc.gridx = 0;
-//		gbc.gridy = 0;
-//		add(time_panel, gbc);
-//		
-//		gbc.gridx = 0;
-//		gbc.gridy = 1;
-//		add(motor_panel, gbc);
-//		
-//		gbc.gridx = 1;
-//		gbc.gridy = 0;
-//		gbc.gridheight = 2;
-//		gbc.gridwidth = 2;
-//		add(speed_dial_panel, gbc);
-//		
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-////		gbc.ipady = 10;
-//		gbc.gridx = 0;
-//		gbc.gridy = 2;
-//		gbc.gridwidth = 3;
-//		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-//		
-//		gbc.gridwidth = 3;
-//		gbc.gridx = 0;
-//		gbc.gridy = 3;
-//		add(mppt_panel, gbc);
-//		
-//		gbc.ipady = 10;
-//		gbc.gridwidth = 3;
-//		gbc.gridx = 0;
-//		gbc.gridy = 4;
-////		add(new JSeparator(SwingConstants.HORIZONTAL), gbc);
-//		add(new JLabel(""));
-//
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gbc.gridwidth = 3;
-//		gbc.gridx = 0;
-//		gbc.gridy = 5;
-//		add(battery_panel, gbc);
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
@@ -138,5 +95,18 @@ public class DevicePanel extends JPanel{
 
 	public void updateRunTime() {
 		time_panel.updateRunTime();
+	}
+
+	public static String roundDouble(String double_str) {
+		String delimit = "[.]";
+		String[] tokens = double_str.split(delimit);
+		if(tokens.length > 1) {
+			if(tokens[1].length() >= 2)
+				return tokens[0] + "." + tokens[1].substring(0, 2);
+			else
+				return tokens[0] + "." + tokens[1];
+		}
+		else
+			return double_str;
 	}
 }

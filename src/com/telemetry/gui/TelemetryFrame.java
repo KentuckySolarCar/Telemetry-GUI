@@ -1,7 +1,6 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
@@ -38,17 +37,6 @@ public class TelemetryFrame extends JFrame {
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
 		
-//		try {
-//		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//		        if ("Nimbus".equals(info.getName())) {
-//		            UIManager.setLookAndFeel(info.getClassName());
-//		            break;
-//		        }
-//		    }
-//		} catch (Exception e) {
-//		    // If Nimbus is not available, you can set the GUI to another look and feel.
-//		}
-		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
@@ -75,7 +63,6 @@ public class TelemetryFrame extends JFrame {
 	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
-	    // Uncomment next line to set tab_panel's size
 		tab_panel.setSize(new Dimension(tab_panel_x, tab_panel_y));
 		
 	    // Uncomment next line to make tab_panel scalable
@@ -198,7 +185,6 @@ public class TelemetryFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			System.exit(0);
 		}
 		
@@ -218,22 +204,6 @@ public class TelemetryFrame extends JFrame {
 	
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-//			TextFileInput input = null;
-//			try {
-//				input = new TextFileInput();
-//			} catch (FileNotFoundException e2) {
-//				// TODO Auto-generated catch block
-//				e2.printStackTrace();
-//			}
-//	
-//			try {
-//				input.Initiate();
-//				validate();
-//				repaint();
-//			} catch (IOException | ParseException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
 			try {
 				if(serial_port.getPortNum() == "")
 					DisplayPortErrorDialog("Port is Empty!");

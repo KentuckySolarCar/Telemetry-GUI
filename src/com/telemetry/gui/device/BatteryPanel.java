@@ -1,32 +1,20 @@
  package com.telemetry.gui.device;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class BatteryPanel extends JPanel {
 	private static final long serialVersionUID = 3458289157169322167L;
-	private JPanel batman_unit_panel = new JPanel();
-	private JPanel batman_label_panel = new JPanel();
-	private JPanel batman_data_panel = new JPanel();
-	private JPanel batman_button_panel = new JPanel();
-	private JPanel robin_unit_panel = new JPanel();
-	private JPanel robin_label_panel = new JPanel();
-	private JPanel robin_data_panel = new JPanel();
-	private JPanel robin_button_panel = new JPanel();
 	
 	private JLabel batman_v_average_l = new JLabel("0000.000");
 	private JLabel batman_v_max_l = new JLabel("0000.000");
@@ -65,28 +53,19 @@ public class BatteryPanel extends JPanel {
 	private double robin_current_average = 0;
 	private JButton robin_v_global_max_reset = new JButton("Reset");
 	private JButton robin_v_global_min_reset = new JButton("Reset");
-	private DecimalFormat df = new DecimalFormat("#.##");
+	
+	// Threshold for fields
+	private double v_max_threshold = 9999999;
+	private double v_min_threshold = 0;
+	private double v_avg_threshold = 9999999;
+	private double t_max_threshold = 9999999;
+	private double t_min_threshold = 0;
+	private double t_avg_threshold = 9999999;
+	private double current_threshold = 9999999;
 	
 	public BatteryPanel() {
 		setLayout(new GridBagLayout());
-//		batman_unit_panel.setLayout(new GridLayout(10, 1));
-//		batman_label_panel.setLayout(new GridLayout(10, 1));
-//		batman_data_panel.setLayout(new GridLayout(10, 1));
-//		batman_button_panel.setLayout(new GridLayout(10, 1));
-//		robin_label_panel.setLayout(new GridLayout(10, 1));
-//		robin_data_panel.setLayout(new GridLayout(10, 1));
-//		robin_unit_panel.setLayout(new GridLayout(10, 1));
-//		robin_button_panel.setLayout(new GridLayout(10, 1));
-//		
-//		insertBatmanLabelPanel();
-//		insertBatmanDataPanel();
-//		insertBatmanUnitPanel();
-//		insertBatmanButtonPanel();
-//		add(new JLabel(""));
-//		insertRobinLabelPanel();
-//		insertRobinDataPanel();
-//		insertRobinUnitPanel();
-//		insertRobinButtonPanel();
+
 		insertComponents();
 	}
 	
@@ -94,15 +73,43 @@ public class BatteryPanel extends JPanel {
 		if(type.equals("bat_temp")) {
 			if(((String) obj.get("name")).equals("0")) {
 				batman_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-				batman_t_average_l.setText(roundDouble((String) obj.get("Tavg")));
-				batman_t_max_l.setText(roundDouble((String) obj.get("Tmax")));
-				batman_t_min_l.setText(roundDouble((String) obj.get("Tmin")));
+				if(batman_ave_temp > t_avg_threshold)
+					batman_t_average_l.setBackground(Color.RED);
+				else
+					batman_t_average_l.setBackground(Color.GREEN);
+				batman_t_average_l.setText(DevicePanel.roundDouble((String) obj.get("Tavg")));
+				
+				if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
+					batman_t_max_l.setBackground(Color.RED);
+				else
+					batman_t_max_l.setBackground(Color.GREEN);
+				batman_t_max_l.setText(DevicePanel.roundDouble((String) obj.get("Tmax")));
+				
+				if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
+					batman_t_min_l.setBackground(Color.RED);
+				else
+					batman_t_min_l.setBackground(Color.GREEN);
+				batman_t_min_l.setText(DevicePanel.roundDouble((String) obj.get("Tmin")));
 			}
 			else {
 				robin_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-				robin_t_average_l.setText(roundDouble((String) obj.get("Tavg")));
-				robin_t_max_l.setText(roundDouble((String) obj.get("Tmax")));
-				robin_t_min_l.setText(roundDouble((String) obj.get("Tmin")));
+				if(robin_ave_temp > t_avg_threshold)
+					robin_t_average_l.setBackground(Color.RED);
+				else
+					robin_t_average_l.setBackground(Color.GREEN);
+				robin_t_average_l.setText(DevicePanel.roundDouble((String) obj.get("Tavg")));
+				
+				if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
+					robin_t_max_l.setBackground(Color.RED);
+				else
+					robin_t_max_l.setBackground(Color.GREEN);
+				robin_t_max_l.setText(DevicePanel.roundDouble((String) obj.get("Tmax")));
+				
+				if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
+					robin_t_min_l.setBackground(Color.RED);
+				else
+					robin_t_min_l.setBackground(Color.GREEN);
+				robin_t_min_l.setText(DevicePanel.roundDouble((String) obj.get("Tmin")));
 			}
 		}
 		else if(type.equals("bat_volt")) {
@@ -114,39 +121,93 @@ public class BatteryPanel extends JPanel {
 			
 				if(batman_v_global_max < batman_v_max ) {
 					batman_v_global_max = batman_v_max;
-					batman_v_global_max_l.setText(Double.toString(batman_v_global_max / 1000));
+					if(batman_v_global_max > v_max_threshold)
+						batman_v_global_max_l.setBackground(Color.RED);
+					else
+						batman_v_global_max_l.setBackground(Color.GREEN);
+					batman_v_global_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
 				}
 
 				if(batman_v_global_min > batman_v_min ) {
 					batman_v_global_min = batman_v_min;
-					batman_v_global_min_l.setText(Double.toString(batman_v_global_min / 1000));
+					if(batman_v_global_min < v_min_threshold)
+						batman_v_global_min_l.setBackground(Color.RED);
+					else
+						batman_v_global_min_l.setBackground(Color.GREEN);
+					batman_v_global_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
 				}
 
-				batman_v_average_l.setText(Double.toString(batman_v_average / 1000));
-				batman_v_max_l.setText(Double.toString(batman_v_max / 1000));
-				batman_v_min_l.setText(Double.toString(batman_v_min / 1000));
-				batman_current_l.setText((String) obj.get("BC"));
+				if(batman_v_average > v_avg_threshold)
+					batman_v_average_l.setBackground(Color.RED);
+				else
+					batman_v_average_l.setBackground(Color.GREEN);
+				batman_v_average_l.setText(DevicePanel.roundDouble((String) obj.get("Vavg")));
+
+				if(batman_v_max > v_max_threshold)
+					batman_v_max_l.setBackground(Color.RED);
+				else
+					batman_v_max_l.setBackground(Color.GREEN);
+				batman_v_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+
+				if(batman_v_min < v_min_threshold)
+					batman_v_min_l.setBackground(Color.RED);
+				else
+					batman_v_min_l.setBackground(Color.GREEN);
+				batman_v_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+
+				if(batman_current_average > current_threshold)
+					batman_current_l.setBackground(Color.RED);
+				else
+					batman_current_l.setBackground(Color.GREEN);
+				batman_current_l.setText(DevicePanel.roundDouble((String) obj.get("BC")));
 			}
 			else {
 				robin_v_average       = Double.parseDouble((String) obj.get("Vavg"));
 				robin_v_max           = Double.parseDouble((String) obj.get("Vmax"));
 				robin_v_min           = Double.parseDouble((String) obj.get("Vmin"));
 				robin_current_average = Double.parseDouble((String) obj.get("BC"));
-
+			
 				if(robin_v_global_max < robin_v_max ) {
 					robin_v_global_max = robin_v_max;
-					robin_v_global_max_l.setText(Double.toString(robin_v_global_max / 1000));
+					if(robin_v_global_max > v_max_threshold)
+						robin_v_global_max_l.setBackground(Color.RED);
+					else
+						robin_v_global_max_l.setBackground(Color.GREEN);
+					robin_v_global_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
 				}
 
 				if(robin_v_global_min > robin_v_min ) {
 					robin_v_global_min = robin_v_min;
-					robin_v_global_min_l.setText(Double.toString(robin_v_global_min / 1000));
+					if(robin_v_global_min < v_min_threshold)
+						robin_v_global_min_l.setBackground(Color.RED);
+					else
+						robin_v_global_min_l.setBackground(Color.GREEN);
+					robin_v_global_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
 				}
 
-				robin_v_average_l.setText(Double.toString(robin_v_average / 1000));
-				robin_v_max_l.setText(Double.toString(robin_v_max / 1000));
-				robin_v_min_l.setText(Double.toString(robin_v_min / 1000));
-				robin_current_l.setText((String) obj.get("BC"));
+				if(robin_v_average > v_avg_threshold)
+					robin_v_average_l.setBackground(Color.RED);
+				else
+					robin_v_average_l.setBackground(Color.GREEN);
+				robin_v_average_l.setText(DevicePanel.roundDouble((String) obj.get("Vavg")));
+
+				if(robin_v_max > v_max_threshold)
+					robin_v_max_l.setBackground(Color.RED);
+				else
+					robin_v_max_l.setBackground(Color.GREEN);
+				robin_v_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+
+				if(robin_v_min < v_min_threshold)
+					robin_v_min_l.setBackground(Color.RED);
+				else
+					robin_v_min_l.setBackground(Color.GREEN);
+				robin_v_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+
+				if(robin_current_average > current_threshold)
+					robin_current_l.setBackground(Color.RED);
+				else
+					robin_current_l.setBackground(Color.GREEN);
+				robin_current_l.setText(DevicePanel.roundDouble((String) obj.get("BC")));
 			}
 		}
 		
@@ -469,126 +530,6 @@ public class BatteryPanel extends JPanel {
 		// Reset Insets
 		gbc.insets = new Insets(3, 3, 3, 3);
 	}
-	
-	private void insertBatmanLabelPanel() {
-		batman_label_panel.add(new JLabel("    Batman"));
-		batman_label_panel.add(new JLabel("Voltage Average:"));
-		batman_label_panel.add(new JLabel("Voltage Max:"));
-		batman_label_panel.add(new JLabel("Voltage Min:"));
-		batman_label_panel.add(new JLabel("Global Voltage Max:"));
-		batman_label_panel.add(new JLabel("Global Voltage Min:"));
-		batman_label_panel.add(new JLabel("Current:"));
-		batman_label_panel.add(new JLabel("Temp. Average:"));
-		batman_label_panel.add(new JLabel("Temp. Max:"));
-		batman_label_panel.add(new JLabel("Temp. Min:"));
-		add(batman_label_panel);
-	}
-	
-	private void insertBatmanDataPanel() {
-		batman_data_panel.add(new JLabel(" "));
-		batman_data_panel.add(batman_v_average_l);
-		batman_data_panel.add(batman_v_max_l);
-		batman_data_panel.add(batman_v_min_l);
-		batman_data_panel.add(batman_v_global_max_l);
-		batman_data_panel.add(batman_v_global_min_l);
-		batman_data_panel.add(batman_current_l);
-		batman_data_panel.add(batman_t_average_l);
-		batman_data_panel.add(batman_t_max_l);
-		batman_data_panel.add(batman_t_min_l);
-		add(batman_data_panel);
-	}
-	
-	private void insertBatmanUnitPanel() {
-		batman_unit_panel.add(new JLabel(" "));
-		batman_unit_panel.add(new JLabel(" V"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" A"));
-		batman_unit_panel.add(new JLabel(" C"));
-		batman_unit_panel.add(new JLabel(" C"));
-		batman_unit_panel.add(new JLabel(" C"));
-		add(batman_unit_panel);
-	}
-	
-	private void insertBatmanButtonPanel() {
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(batman_v_global_max_reset);
-		batman_button_panel.add(batman_v_global_min_reset);
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		batman_button_panel.add(new JLabel(""));
-		
-		batman_v_global_max_reset.addActionListener(new BatmanGlobalMaxVoltageReset());
-		batman_v_global_min_reset.addActionListener(new BatmanGlobalMinVoltageReset());
-		
-		add(batman_button_panel);
-	}
-	
-	private void insertRobinLabelPanel() {
-		robin_label_panel.add(new JLabel("    Robin"));
-		robin_label_panel.add(new JLabel("Voltage Average:"));
-		robin_label_panel.add(new JLabel("Voltage Max:"));
-		robin_label_panel.add(new JLabel("Voltage Min:"));
-		robin_label_panel.add(new JLabel("Global Voltage Max:"));
-		robin_label_panel.add(new JLabel("Global Voltage Min:"));
-		robin_label_panel.add(new JLabel("Current:"));
-		robin_label_panel.add(new JLabel("Temp. Average:"));
-		robin_label_panel.add(new JLabel("Temp. Max:"));
-		robin_label_panel.add(new JLabel("Temp. Min:"));
-		add(robin_label_panel);
-	}
-	
-	private void insertRobinDataPanel() {
-		robin_data_panel.add(new JLabel(" "));
-		robin_data_panel.add(robin_v_average_l);
-		robin_data_panel.add(robin_v_max_l);
-		robin_data_panel.add(robin_v_min_l);
-		robin_data_panel.add(robin_v_global_max_l);
-		robin_data_panel.add(robin_v_global_min_l);
-		robin_data_panel.add(robin_current_l);
-		robin_data_panel.add(robin_t_average_l);
-		robin_data_panel.add(robin_t_max_l);
-		robin_data_panel.add(robin_t_min_l);
-		add(robin_data_panel);
-	}
-	
-	private void insertRobinUnitPanel() {
-		robin_unit_panel.add(new JLabel(" "));
-		robin_unit_panel.add(new JLabel(" V"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" A"));
-		robin_unit_panel.add(new JLabel(" C"));
-		robin_unit_panel.add(new JLabel(" C"));
-		robin_unit_panel.add(new JLabel(" C"));
-		add(robin_unit_panel);
-	}
-	
-	private void insertRobinButtonPanel() {
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(robin_v_global_max_reset);
-		robin_button_panel.add(robin_v_global_min_reset);
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		robin_button_panel.add(new JLabel(""));
-		
-		robin_v_global_max_reset.addActionListener(new RobinGlobalMaxVoltageReset());
-		robin_v_global_min_reset.addActionListener(new RobinGlobalMinVoltageReset());
-		
-		add(robin_button_panel);
-	}
 
 	class BatmanGlobalMaxVoltageReset implements ActionListener {
 		@Override
@@ -620,11 +561,5 @@ public class BatteryPanel extends JPanel {
 			robin_v_global_min = 9999;
 			robin_v_global_min_l.setText(Double.toString(robin_v_global_min));
 		}
-	}
-	
-	private String roundDouble(String double_str) {
-		String delimit = "[.]";
-		String[] tokens = double_str.split(delimit);
-		return tokens[0] + "." + tokens[1].substring(0, 2);
 	}
 }

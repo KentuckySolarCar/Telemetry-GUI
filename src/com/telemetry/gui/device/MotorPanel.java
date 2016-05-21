@@ -1,10 +1,8 @@
 package com.telemetry.gui.device;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,14 +16,10 @@ import java.util.Queue;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class MotorPanel extends JPanel {
 
 	private static final long serialVersionUID = -4958513623339300406L;
-	private JPanel motor_label_panel    = new JPanel();
-	private JPanel motor_data_panel     = new JPanel();
-	private JPanel motor_button_panel   = new JPanel();
 	private JLabel speed_label          = new JLabel("VALUE");
 	private JLabel current_label        = new JLabel("VALUE");
 	private JLabel energy_label         = new JLabel("VALUE");
@@ -33,12 +27,17 @@ public class MotorPanel extends JPanel {
 	private JButton energy_reset        = new JButton("Energy Reset");
 	private JButton average_speed_reset = new JButton("Speed Reset");
 
-	private Queue<Double> speed;
-	private Queue<Double> current;
+	private SizedQueue<Double> speed;
+	private SizedQueue<Double> current;
 	private double amp_sec;
 	private double watt_sec;
 	private double odometer;
 	private double energy;
+	
+	// Threshold for fields
+	private double speed_threshold = 50;
+	private double current_threshold = 0;
+	private double watt_sec_threshold = 0;
 	
 	private static final double speed_conversion = 0.223693629;
 	
@@ -147,45 +146,24 @@ public class MotorPanel extends JPanel {
 		add(average_speed_reset, gbc);
 	}
 	
-	private void insertLabelPanel() {
-		// Adding labels to motor_label_panel
-		motor_label_panel.add(new JLabel("Motor Controller"));
-		motor_label_panel.add(new JLabel("    Speed: "));
-		motor_label_panel.add(new JLabel("    Current: "));
-		motor_label_panel.add(new JLabel("    Energy: "));
-		motor_label_panel.add(new JLabel("    Av. Speed: "));
-		add(motor_label_panel);
-	}
-	
-	private void insertDataPanel() {
-		motor_data_panel.add(new JLabel(" "));
-		motor_data_panel.add(speed_label);
-		motor_data_panel.add(current_label);
-		motor_data_panel.add(energy_label);
-		motor_data_panel.add(average_speed_label);
-		add(motor_data_panel);
-	}
-	
-	private void insertButtonPanel() {
-		motor_button_panel.add(new JLabel(" "));
-		motor_button_panel.add(new JLabel(" "));
-		motor_button_panel.add(new JLabel(" "));
-		
-		motor_button_panel.add(energy_reset);
-		
-		motor_button_panel.add(average_speed_reset);
-
-		add(motor_button_panel);
-	}
-	
 	public void updatePanel(JSONObject obj) {
-		speed_label.setText((String) obj.get("S"));
-		current_label.setText((String) obj.get("I"));
-		
 		speed.add(Double.parseDouble((String) obj.get("S")) * speed_conversion);
 		current.add(Double.parseDouble((String) obj.get("I")));
+
+		if(speed.getLast() > speed_threshold)
+			speed_label.setBackground(Color.RED);
+		else
+			speed_label.setBackground(Color.GREEN);
+
+		if(current.getLast() > current_threshold)
+			current_label.setBackground(Color.RED);
+		else
+			current_label.setBackground(Color.GREEN);
 		
-		average_speed_label.setText(Double.toString(calculateAveSpeed()));
+		speed_label.setText(DevicePanel.roundDouble((String) obj.get("S")));
+		current_label.setText(DevicePanel.roundDouble((String) obj.get("I")));
+		
+		average_speed_label.setText(DevicePanel.roundDouble(Double.toString(calculateAveSpeed())));
 		validate();
 		repaint();
 	}
@@ -213,11 +191,9 @@ public class MotorPanel extends JPanel {
 	}
 	
 	class AverageSpeedReset implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			average_speed_label.setText("0.0");
 		}
-		
 	}
 }

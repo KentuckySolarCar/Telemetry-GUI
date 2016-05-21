@@ -1,6 +1,9 @@
 package com.telemetry.gui.device;
 
-import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -11,12 +14,9 @@ import javax.swing.*;
 
 public class TimePanel extends JPanel {
 	private static final long serialVersionUID = -8596634937772865283L;
-	private JPanel time_label_panel = new JPanel();
-	private JPanel time_data_panel = new JPanel();
 	private JLabel time_counter = new JLabel();
 	private JLabel time_computer = new JLabel();
 	private JLabel time_pi = new JLabel("VALUE");
-	private JLabel time_blank = new JLabel();
 	private long initial_time;
 	private int hour = 0;
 	private int minute = 0;
@@ -25,31 +25,75 @@ public class TimePanel extends JPanel {
 	private DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	
 	public TimePanel() {
-		setLayout(new GridLayout(1, 2));
-		time_label_panel.setLayout(new GridLayout(4, 1));
-		time_data_panel.setLayout(new GridLayout(4, 1));
-		
-		// Initialize time labels
-		time_label_panel.add(new JLabel("Time"));
-		time_label_panel.add(new JLabel("    Run time: "));
-		time_label_panel.add(new JLabel("    Computer time: "));
-		time_label_panel.add(new JLabel("    PI time: "));
-		
-		add(time_label_panel);
-		
+		setLayout(new GridBagLayout());
+
 		// Initialize time data
 		Date date = new Date();
-		time_blank.setText(" ");
 		initial_time = System.currentTimeMillis()/1000;
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
 		time_computer.setText(date_format.format(date));
 		
-		time_data_panel.add(time_blank);
-		time_data_panel.add(time_counter);
-		time_data_panel.add(time_computer);
-		time_data_panel.add(time_pi);
+		insertComponents();
+	}
+	
+	private void insertComponents() {
+		GridBagConstraints gbc = new GridBagConstraints();
+	
+		// GBC Constants
+		gbc.insets = new Insets(3, 3, 3, 3);
+		gbc.anchor = GridBagConstraints.CENTER;
 		
-		add(time_data_panel);
+		//-------------------------Title---------------------------//
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		JLabel title = new JLabel("Time");
+		title.setFont(DevicePanel.TITLE_FONT);
+		add(title, gbc);
+		
+		// Resets gridwidth
+		gbc.gridwidth = 1;
+		
+		//------------------------Labels----------------------------//
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		JLabel run_time = new JLabel("Run Time:");
+		run_time.setFont(DevicePanel.FIELD_FONT);
+		add(run_time, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		JLabel computer_time = new JLabel("Computer Time:");
+		computer_time.setFont(DevicePanel.FIELD_FONT);
+		add(computer_time, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		JLabel pi_time = new JLabel("PI Time:");
+		pi_time.setFont(DevicePanel.FIELD_FONT);
+		add(pi_time, gbc);
+		
+		//-----------------------Fields-------------------------//
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		time_counter.setFont(DevicePanel.FIELD_FONT);
+		time_counter.setOpaque(true);
+		time_counter.setBackground(Color.GREEN);
+		add(time_counter, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		time_computer.setFont(DevicePanel.FIELD_FONT);
+		time_computer.setOpaque(true);
+		time_computer.setBackground(Color.GREEN);
+		add(time_computer, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		time_pi.setFont(DevicePanel.FIELD_FONT);
+		time_pi.setOpaque(true);
+		time_pi.setBackground(Color.ORANGE);
+		add(time_pi, gbc);
 	}
 	
 	public void updateRunTime() {
