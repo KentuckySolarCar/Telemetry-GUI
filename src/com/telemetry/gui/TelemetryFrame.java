@@ -10,6 +10,7 @@ import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 import com.telemetry.actions.*;
+import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

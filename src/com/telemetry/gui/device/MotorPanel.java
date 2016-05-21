@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
+import com.telemetry.custom.Tools;
 
 import java.util.Queue;
 
@@ -160,10 +161,10 @@ public class MotorPanel extends JPanel {
 		else
 			current_label.setBackground(Color.GREEN);
 		
-		speed_label.setText(DevicePanel.roundDouble((String) obj.get("S")));
-		current_label.setText(DevicePanel.roundDouble((String) obj.get("I")));
+		speed_label.setText(Tools.roundDouble((String) obj.get("S")));
+		current_label.setText(Tools.roundDouble((String) obj.get("I")));
 		
-		average_speed_label.setText(DevicePanel.roundDouble(Double.toString(calculateAveSpeed())));
+		average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
 		validate();
 		repaint();
 	}

@@ -13,6 +13,8 @@ import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
+import com.telemetry.custom.Tools;
+
 public class BatteryPanel extends JPanel {
 	private static final long serialVersionUID = 3458289157169322167L;
 	
@@ -77,19 +79,19 @@ public class BatteryPanel extends JPanel {
 					batman_t_average_l.setBackground(Color.RED);
 				else
 					batman_t_average_l.setBackground(Color.GREEN);
-				batman_t_average_l.setText(DevicePanel.roundDouble((String) obj.get("Tavg")));
+				batman_t_average_l.setText(Tools.roundDouble((String) obj.get("Tavg")));
 				
 				if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
 					batman_t_max_l.setBackground(Color.RED);
 				else
 					batman_t_max_l.setBackground(Color.GREEN);
-				batman_t_max_l.setText(DevicePanel.roundDouble((String) obj.get("Tmax")));
+				batman_t_max_l.setText(Tools.roundDouble((String) obj.get("Tmax")));
 				
 				if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
 					batman_t_min_l.setBackground(Color.RED);
 				else
 					batman_t_min_l.setBackground(Color.GREEN);
-				batman_t_min_l.setText(DevicePanel.roundDouble((String) obj.get("Tmin")));
+				batman_t_min_l.setText(Tools.roundDouble((String) obj.get("Tmin")));
 			}
 			else {
 				robin_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
@@ -97,19 +99,19 @@ public class BatteryPanel extends JPanel {
 					robin_t_average_l.setBackground(Color.RED);
 				else
 					robin_t_average_l.setBackground(Color.GREEN);
-				robin_t_average_l.setText(DevicePanel.roundDouble((String) obj.get("Tavg")));
+				robin_t_average_l.setText(Tools.roundDouble((String) obj.get("Tavg")));
 				
 				if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
 					robin_t_max_l.setBackground(Color.RED);
 				else
 					robin_t_max_l.setBackground(Color.GREEN);
-				robin_t_max_l.setText(DevicePanel.roundDouble((String) obj.get("Tmax")));
+				robin_t_max_l.setText(Tools.roundDouble((String) obj.get("Tmax")));
 				
 				if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
 					robin_t_min_l.setBackground(Color.RED);
 				else
 					robin_t_min_l.setBackground(Color.GREEN);
-				robin_t_min_l.setText(DevicePanel.roundDouble((String) obj.get("Tmin")));
+				robin_t_min_l.setText(Tools.roundDouble((String) obj.get("Tmin")));
 			}
 		}
 		else if(type.equals("bat_volt")) {
@@ -125,7 +127,7 @@ public class BatteryPanel extends JPanel {
 						batman_v_global_max_l.setBackground(Color.RED);
 					else
 						batman_v_global_max_l.setBackground(Color.GREEN);
-					batman_v_global_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+					batman_v_global_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
 				}
 
 				if(batman_v_global_min > batman_v_min ) {
@@ -134,32 +136,32 @@ public class BatteryPanel extends JPanel {
 						batman_v_global_min_l.setBackground(Color.RED);
 					else
 						batman_v_global_min_l.setBackground(Color.GREEN);
-					batman_v_global_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+					batman_v_global_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
 				}
 
 				if(batman_v_average > v_avg_threshold)
 					batman_v_average_l.setBackground(Color.RED);
 				else
 					batman_v_average_l.setBackground(Color.GREEN);
-				batman_v_average_l.setText(DevicePanel.roundDouble((String) obj.get("Vavg")));
+				batman_v_average_l.setText(Tools.roundDouble((String) obj.get("Vavg")));
 
 				if(batman_v_max > v_max_threshold)
 					batman_v_max_l.setBackground(Color.RED);
 				else
 					batman_v_max_l.setBackground(Color.GREEN);
-				batman_v_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+				batman_v_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
 
 				if(batman_v_min < v_min_threshold)
 					batman_v_min_l.setBackground(Color.RED);
 				else
 					batman_v_min_l.setBackground(Color.GREEN);
-				batman_v_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+				batman_v_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
 
 				if(batman_current_average > current_threshold)
 					batman_current_l.setBackground(Color.RED);
 				else
 					batman_current_l.setBackground(Color.GREEN);
-				batman_current_l.setText(DevicePanel.roundDouble((String) obj.get("BC")));
+				batman_current_l.setText(Tools.roundDouble((String) obj.get("BC")));
 			}
 			else {
 				robin_v_average       = Double.parseDouble((String) obj.get("Vavg"));
@@ -173,7 +175,7 @@ public class BatteryPanel extends JPanel {
 						robin_v_global_max_l.setBackground(Color.RED);
 					else
 						robin_v_global_max_l.setBackground(Color.GREEN);
-					robin_v_global_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+					robin_v_global_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
 				}
 
 				if(robin_v_global_min > robin_v_min ) {
@@ -182,32 +184,32 @@ public class BatteryPanel extends JPanel {
 						robin_v_global_min_l.setBackground(Color.RED);
 					else
 						robin_v_global_min_l.setBackground(Color.GREEN);
-					robin_v_global_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+					robin_v_global_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
 				}
 
 				if(robin_v_average > v_avg_threshold)
 					robin_v_average_l.setBackground(Color.RED);
 				else
 					robin_v_average_l.setBackground(Color.GREEN);
-				robin_v_average_l.setText(DevicePanel.roundDouble((String) obj.get("Vavg")));
+				robin_v_average_l.setText(Tools.roundDouble((String) obj.get("Vavg")));
 
 				if(robin_v_max > v_max_threshold)
 					robin_v_max_l.setBackground(Color.RED);
 				else
 					robin_v_max_l.setBackground(Color.GREEN);
-				robin_v_max_l.setText(DevicePanel.roundDouble((String) obj.get("Vmax")));
+				robin_v_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
 
 				if(robin_v_min < v_min_threshold)
 					robin_v_min_l.setBackground(Color.RED);
 				else
 					robin_v_min_l.setBackground(Color.GREEN);
-				robin_v_min_l.setText(DevicePanel.roundDouble((String) obj.get("Vmin")));
+				robin_v_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
 
 				if(robin_current_average > current_threshold)
 					robin_current_l.setBackground(Color.RED);
 				else
 					robin_current_l.setBackground(Color.GREEN);
-				robin_current_l.setText(DevicePanel.roundDouble((String) obj.get("BC")));
+				robin_current_l.setText(Tools.roundDouble((String) obj.get("BC")));
 			}
 		}
 		

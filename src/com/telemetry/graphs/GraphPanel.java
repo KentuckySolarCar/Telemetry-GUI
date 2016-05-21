@@ -1,6 +1,7 @@
- package com.telemetry.gui;
+ package com.telemetry.graphs;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,12 +11,6 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.json.simple.JSONObject;
-
-import com.telemetry.graphs.EnergyGraph;
-import com.telemetry.graphs.PowerGraph;
-import com.telemetry.graphs.TemperatureGraph;
-import com.telemetry.graphs.VoltageGraph;
-import com.telemetry.graphs.TextFields;
 
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = 6054350621681751868L;
@@ -41,6 +36,9 @@ public class GraphPanel extends JPanel {
 //	private JPanel button_panel_powr;
 //	private JPanel button_panel_temp;
 //	private JPanel button_panel_volt;
+
+	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 16);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 15);
 	
 	public GraphPanel(int grid_panel_x, int grid_panel_y) {
 		//this.setLayout(new GridLayout(3, 2));
