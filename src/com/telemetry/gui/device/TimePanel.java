@@ -22,7 +22,7 @@ public class TimePanel extends JPanel {
 	private int minute = 0;
 	private int second = 0;
 	
-	private DateFormat date_format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	public TimePanel() {
 		setLayout(new GridBagLayout());
@@ -32,7 +32,8 @@ public class TimePanel extends JPanel {
 		initial_time = System.currentTimeMillis()/1000;
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
 		time_computer.setText(date_format.format(date));
-		
+
+		setLayout(new GridBagLayout());
 		insertComponents();
 	}
 	
@@ -93,7 +94,6 @@ public class TimePanel extends JPanel {
 		time_pi.setFont(DevicePanel.FIELD_FONT);
 		time_pi.setOpaque(true);
 		time_pi.setBackground(Color.ORANGE);
-		add(time_pi, gbc);
 	}
 	
 	public void updateRunTime() {
