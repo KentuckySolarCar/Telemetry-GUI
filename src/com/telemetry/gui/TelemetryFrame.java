@@ -31,8 +31,8 @@ public class TelemetryFrame extends JFrame {
 	private static LogPanel log_panel;
 	private SerialPortHandler serial_port;
 	private StartCalculation calculation_handler;
-	private int tab_panel_x = 1260;	//1260
-	private int tab_panel_y = 640;	//640
+	private int tab_panel_x = 1920;	//1260
+	private int tab_panel_y = 1080;	//640
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
