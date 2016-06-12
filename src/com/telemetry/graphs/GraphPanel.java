@@ -4,217 +4,58 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Insets;
+
 import javax.swing.*;
-import org.jfree.chart.*;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.json.simple.JSONObject;
+
+import com.telemetry.gui.CalculationPanel;
 
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = 6054350621681751868L;
-//	private JFreeChart speed_chart;
-//	private JFreeChart motor_current_chart;
-//	private JFreeChart array_current_chart;
-//	private JFreeChart battery_voltage_chart;
-//	private ChartPanel speed_panel;
-//	private ChartPanel motor_current_panel;
-//	private ChartPanel array_current_panel;
-//	private ChartPanel battery_voltage_panel;
-//	private XYDataset speed_dataset;
-//	private XYDataset motor_current_dataset;
-//	private XYDataset array_current_dataset;
-//	private XYDataset battery_voltage_dataset;
-//	private JTabbedPane tab_panel;
 	private TemperatureGraph temperature_graph;
 	private VoltageGraph voltage_graph;
 	private PowerGraph power_graph;
 	private EnergyGraph energy_graph;
 	private TextFields text_field;
-//	private JPanel button_panel_enrg;
-//	private JPanel button_panel_powr;
-//	private JPanel button_panel_temp;
-//	private JPanel button_panel_volt;
 
 	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 16);
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 15);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 14);
 	
-	public GraphPanel(int grid_panel_x, int grid_panel_y) {
-		//this.setLayout(new GridLayout(3, 2));
-		//this.setSize(grid_panel_x, grid_panel_y);
-		this.setLayout(new GridBagLayout());;
+	public GraphPanel(CalculationPanel calculation_panel) {
+		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		temperature_graph = new TemperatureGraph();
-		voltage_graph = new VoltageGraph();
-		power_graph = new PowerGraph();
-		energy_graph = new EnergyGraph();
-		
-		text_field = new TextFields();
-		
-		/*button_panel_enrg = new JPanel();
-		button_panel_enrg.setLayout(new GridLayout(5, 5));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		button_panel_enrg.add(new JButton("Bla"));
-		
-		button_panel_powr = new JPanel();
-		button_panel_powr.setLayout(new GridLayout(7, 14));
-		button_panel_powr.add(new JTextArea("Motor Watt Hours\nTesting"));
-		button_panel_powr.add(new JButton("Reset"));
-		button_panel_powr.add(new JTextArea("Battery Watt Hours\nTesting"));
-		button_panel_powr.add(new JButton("Reset"));
-		button_panel_powr.add(new JTextArea("60 Second Motor Power\nTesting"));
-		button_panel_powr.add(new JLabel(""));
-		button_panel_powr.add(new JTextArea("Day's Avg Motor Power\nTesting"));
-		button_panel_powr.add(new JLabel(""));
-		button_panel_powr.add(new JTextArea("Target Speed\nTesting"));
-		button_panel_powr.add(new JLabel(""));
-		button_panel_powr.add(new JTextArea("60 Second Speed\nTesting"));
-		button_panel_powr.add(new JLabel(""));
-		button_panel_powr.add(new JTextArea("Day's Average Speed\nTesting"));
-		button_panel_powr.add(new JButton("Reset"));
-		
-		button_panel_temp = new JPanel();
-		button_panel_temp.setLayout(new GridLayout(6, 12));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		button_panel_temp.add(new JButton("Bla"));
-		
-		button_panel_volt = new JPanel();
-		button_panel_volt.setLayout(new GridLayout(6, 12));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));
-		button_panel_volt.add(new JButton("Bla"));*/
+		temperature_graph = new TemperatureGraph(getWidth()/2, getHeight()/3*2);
+		voltage_graph = new VoltageGraph(getWidth()/2, getHeight()/3*2);
+		power_graph = new PowerGraph(getWidth()/2, getHeight()/3*2);
+		energy_graph = new EnergyGraph(getWidth()/2, getHeight()/3*2);
+		text_field = new TextFields(getWidth()/2, getHeight()/3*2);
 		
 		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 2;
-		gbc.weighty = 0;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(1, 1, 1, 1);
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		this.add(power_graph, gbc);
+		add(power_graph, gbc);
 		
-		/*gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.ipadx = 0;
-		gbc.ipady = 90;
-		this.add(button_panel_powr, gbc);*/
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0.1;
-		gbc.weighty = 0;
-		gbc.gridx = 2;
-		gbc.gridy = 0;
-		gbc.ipadx = 0;
-		gbc.ipady = 0;
-		this.add(energy_graph, gbc);
-		
-		/*gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 3;
-		gbc.gridy = 0;
-		gbc.ipady = 200;
-		this.add(button_panel_enrg, gbc);*/
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 2;
-		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.ipady = 0;
-		this.add(voltage_graph, gbc);
-		
-		/*gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.ipady = 90;
-		this.add(button_panel_volt, gbc);*/
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0.1;
-		gbc.weighty = 0;
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		gbc.ipady = 0;
-		this.add(text_field, gbc);
-		
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 2;
-		gbc.weighty = 0;
+		add(voltage_graph, gbc);
+
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		gbc.ipady = 0;
-		this.add(temperature_graph, gbc);
-		
-		/*gbc.fill = GridBagConstraints.BOTH;
-		gbc.weightx = 0;
-		gbc.weighty = 0.5;
+		add(temperature_graph, gbc);
+
 		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.ipady = 90;
-		this.add(button_panel_temp, gbc);*/
+		gbc.gridy = 0;
+		add(energy_graph, gbc);
 		
-//		speed_chart           = ChartFactory.createXYLineChart("Speed (mph)", "Time", "Miles Per Hour", speed_dataset);
-//		motor_current_chart   = ChartFactory.createXYLineChart("Motor Current (A)", "Time", "Amperage", motor_current_dataset);
-//		array_current_chart   = ChartFactory.createXYLineChart("Array Current (A)", "Time", "Amperage", array_current_dataset);
-//		battery_voltage_chart = ChartFactory.createXYLineChart("Total Battery Voltage (V)", "Time", "Voltage", battery_voltage_dataset);
-		
-//		speed_panel           = new ChartPanel(speed_chart);
-//		motor_current_panel   = new ChartPanel(motor_current_chart);
-//		array_current_panel   = new ChartPanel(array_current_chart);
-//		battery_voltage_panel = new ChartPanel(battery_voltage_chart);
-		
-//		add(speed_panel);
-//		add(motor_current_panel);
-//		
-//		add(array_current_panel);
-//		add(battery_voltage_panel);
-		
-//		tab_panel = new JTabbedPane();
-//		tab_panel.setPreferredSize(new Dimension(tab_panel_x, tab_panel_y));
-		
-//		tab_panel.add("Temperature", temperature_graph);
-//		tab_panel.add("Voltage", voltage_graph);
-//		tab_panel.add("Power", power_graph);
-//		tab_panel.add("Energy", energy_graph);
-		
-		// Old layout with GridLayout and buttons inside each graph
-		/*this.add(temperature_graph);
-		this.add(energy_graph);
-		this.add(voltage_graph);
-		this.add(new JLabel(""));
-		this.add(power_graph);*/
-		
-//		add(tab_panel);
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		add(text_field, gbc);
 	}
 	
 	public void updateGraphs(JSONObject data) {

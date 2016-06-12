@@ -39,17 +39,17 @@ public class DevicePanel extends JPanel{
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridwidth = 2;
 		add(time_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 1;
 		add(motor_panel, gbc);
 		
 		gbc.gridx = 1;
-		gbc.gridy = 1;
-		add(mppt_panel, gbc);
+		gbc.gridy = 0;
+		gbc.gridheight = 2;
+		add(speed_dial_panel, gbc);
+		gbc.gridheight = 1;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;

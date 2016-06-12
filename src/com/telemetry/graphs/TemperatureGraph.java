@@ -31,7 +31,9 @@ public class TemperatureGraph extends JPanel {
 	private XYSeries r_temp_max;
 	private XYSeries r_temp_min;
 	
-	public TemperatureGraph() {
+	public TemperatureGraph(int width, int height) {
+		setSize(width, height);
+		
 		temperature_dataset = createTemperatureDataSet();
 		
 		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (min)", "Degree (C)", temperature_dataset);

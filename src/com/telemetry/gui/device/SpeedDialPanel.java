@@ -34,7 +34,7 @@ public class SpeedDialPanel extends JPanel {
 	public SpeedDialPanel() {
 		super(new BorderLayout());
 		
-		speed_dataset = new DefaultValueDataset(10D);
+		speed_dataset = new DefaultValueDataset(0D);
 		
 		speed_dial.setView(0.0D, 0.0D, 1.0D, 1.0D);
 		speed_dial.setDataset(0, speed_dataset);

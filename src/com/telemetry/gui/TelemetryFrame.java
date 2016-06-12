@@ -47,9 +47,9 @@ public class TelemetryFrame extends JFrame {
 		
 		// Initializes and edits layout of tab_panel container
 		tab_panel = new JTabbedPane();
-	    calculation_panel = new CalculationPanel(tab_panel_x / 2, tab_panel_y);
+	    calculation_panel = new CalculationPanel(graph_panel);
 	    device_panel = new DevicePanel(tab_panel_x / 2, tab_panel_y);
-	    graph_panel = new GraphPanel(tab_panel_x, tab_panel_y);
+	    graph_panel = new GraphPanel(calculation_panel);
 	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
 	    
 	    JPanel combined_panel = new JPanel();

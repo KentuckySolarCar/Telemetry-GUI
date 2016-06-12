@@ -32,7 +32,9 @@ public class VoltageGraph extends JPanel {
 	private XYSeries r_cell_mean;
 	private XYSeries r_std_dev;
 	
-	public VoltageGraph() {
+	public VoltageGraph(int width, int height) {
+		setSize(width, height);
+
 		voltage_dataset = createVoltageDataSet();
 		
 		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);

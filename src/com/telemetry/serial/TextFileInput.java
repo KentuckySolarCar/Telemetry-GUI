@@ -34,7 +34,7 @@ public class TextFileInput extends Thread {
 				JSONObject obj = (JSONObject) parser.parse(line);
 				String message_type = (String) obj.get("message_id");
 				TelemetryFrame.updateDevicePanel(obj, message_type);
-				Thread.sleep(500);
+				Thread.sleep(100);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {
 			// TODO Auto-generated catch block

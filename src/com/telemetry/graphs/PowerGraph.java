@@ -29,7 +29,9 @@ public class PowerGraph extends JPanel {
 	private XYSeries tracker_3;
 	private XYSeries tracker_4;
 	
-	public PowerGraph() {
+	public PowerGraph(int width, int height) {
+		setSize(width, height);
+
 		power_dataset = createPowerDataSet();
 		
 		power_chart = ChartFactory.createXYLineChart("Power", "Time (min)", "Power (Watts)", power_dataset);

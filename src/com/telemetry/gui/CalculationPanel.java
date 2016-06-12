@@ -14,7 +14,8 @@ import javax.swing.*;
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
-import com.telemetry.equations.EnergyModelFunctions; 
+import com.telemetry.equations.EnergyModelFunctions;
+import com.telemetry.graphs.GraphPanel; 
 
 public class CalculationPanel extends JPanel{
 	private static final long serialVersionUID = -2305051374349231050L;
@@ -47,15 +48,16 @@ public class CalculationPanel extends JPanel{
 	private SizedQueue<Double> battery_solar_runtime_q;
 	private SizedQueue<Double> motor_power_q;
 	private SizedQueue<Double> speed_q;
+	
+	private GraphPanel graph_panel;
 
 	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 16);
 	
 	
-	public CalculationPanel(int tab_panel_x, int tab_panel_y) {
-		super();
+	public CalculationPanel(GraphPanel graph_panel) {
+		this.graph_panel = graph_panel;
 		
 	    setLayout(new GridBagLayout());
-//		setSize(tab_panel_x, tab_panel_y);
 	    
 	    battery_runtime_q        = new SizedQueue<Double>(60);
 	    battery_range_q          = new SizedQueue<Double>(60);

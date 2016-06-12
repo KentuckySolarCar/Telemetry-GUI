@@ -13,54 +13,96 @@ import javax.swing.*;
 
 public class TextFields extends JPanel {
 	private static final long serialVersionUID = 800851946880569758L;				
-	private JPanel text_panel_powr;
-	private JPanel text_panel_speed;
-	private JPanel text_panel_volt;
-	private JPanel text_panel_temp;
-	private JPanel text_panel_strat;
-	private JTextArea average_motor_power_day			= new JTextArea("000.000");
-	private JTextArea average_speed_day					= new JTextArea("000.000");
-	private JTextArea battery_and_solar_range			= new JTextArea("000.000");
-	private JTextArea battery_and_solar_runtime_60_sec	= new JTextArea("000.000");
-	private JTextArea battery_charge_remaining			= new JTextArea("000.000");
-	private JTextArea battery_only_range_60_sec			= new JTextArea("000.000");
-	private JTextArea battery_only_runtime_60_sec		= new JTextArea("000.000");
-	private JTextArea battery_watt_hours				= new JTextArea("000.000");
-	private JTextArea distance_left_in_day				= new JTextArea("000.000");
-	private JTextArea motor_power_60_sec				= new JTextArea("000.000");
-	private JTextArea motor_watt_hours					= new JTextArea("000.000");
-	private JTextArea odometer							= new JTextArea("000.000");
-	private JTextArea solar_energy_remaining			= new JTextArea("000.000");
-	private JTextArea speed_60_sec						= new JTextArea("000.000");
-	private JTextArea target_speed						= new JTextArea("000.000");
-	private JTextArea target_watt_hour_per_mile			= new JTextArea("000.000");
-	private JTextArea target_watt_hour_per_mile_60_sec	= new JTextArea("000.000");
-	private JTextArea target_watt_hour_per_mile_day		= new JTextArea("000.000");
-	private JTextArea time_left_in_day					= new JTextArea("000.000");
+	private JPanel text_panel_powr  = new JPanel();
+	private JPanel text_panel_speed = new JPanel();
+	private JPanel text_panel_volt  = new JPanel();
+	private JPanel text_panel_misc  = new JPanel();
+	private JPanel text_panel_strat = new JPanel();
+	private JLabel average_motor_power_day			= new JLabel("000.000");
+	private JLabel average_speed_day				= new JLabel("000.000");
+	private JLabel battery_and_solar_range			= new JLabel("000.000");
+	private JLabel battery_and_solar_runtime_60_sec	= new JLabel("000.000");
+	private JLabel battery_charge_remaining			= new JLabel("000.000");
+	private JLabel battery_only_range_60_sec		= new JLabel("000.000");
+	private JLabel battery_only_runtime_60_sec		= new JLabel("000.000");
+	private JLabel battery_watt_hours				= new JLabel("000.000");
+	private JLabel distance_left_in_day				= new JLabel("000.000");
+	private JLabel motor_power_60_sec				= new JLabel("000.000");
+	private JLabel motor_watt_hours					= new JLabel("000.000");
+	private JLabel odometer							= new JLabel("000.000");
+	private JLabel solar_energy_remaining			= new JLabel("000.000");
+	private JLabel speed_60_sec						= new JLabel("000.000");
+	private JLabel target_speed						= new JLabel("000.000");
+	private JLabel target_watt_hour_per_mile		= new JLabel("000.000");
+	private JLabel target_watt_hour_per_mile_60_sec	= new JLabel("000.000");
+	private JLabel target_watt_hour_per_mile_day	= new JLabel("000.000");
+	private JLabel time_left_in_day					= new JLabel("000.000");
+	private JTextField solar_const_a = new JTextField(6);
+	private JTextField solar_const_b = new JTextField(6);
+	private JTextField solar_const_c = new JTextField(6);
+	private JTextField solar_const_d = new JTextField(6);
 	
-	public TextFields() {
-		this.setLayout(new GridBagLayout());
+	public TextFields(int width, int height) {
+		setSize(width, height);
+		setLayout(new GridBagLayout());
 		
-		text_panel_powr = new JPanel();
 		text_panel_powr.setLayout(new GridBagLayout());
-		text_panel_volt = new JPanel();
 		text_panel_volt.setLayout(new GridBagLayout());
-		text_panel_temp = new JPanel();
-		text_panel_temp.setLayout(new GridBagLayout());
-		text_panel_strat = new JPanel();
+		text_panel_misc.setLayout(new GridBagLayout());
 		text_panel_strat.setLayout(new GridBagLayout());
-		text_panel_speed = new JPanel();
 		text_panel_speed.setLayout(new GridBagLayout());
 	
 		insertComponents();
 	}
 	
+	public void updateDataSet(double[] data) {
+//		average_motor_power_day				.setText(String.valueOf(data[0]));
+		average_speed_day					.setText(String.valueOf(data[1]));
+		battery_and_solar_range				.setText(String.valueOf(data[2]));
+		battery_and_solar_runtime_60_sec	.setText(String.valueOf(data[3]));
+		battery_charge_remaining			.setText(String.valueOf(data[4]));
+		battery_only_range_60_sec			.setText(String.valueOf(data[5]));
+		battery_only_runtime_60_sec			.setText(String.valueOf(data[6]));
+		battery_watt_hours					.setText(String.valueOf(data[7]));
+		distance_left_in_day				.setText(String.valueOf(data[8]));
+		motor_power_60_sec					.setText(String.valueOf(data[9]));
+		motor_watt_hours					.setText(String.valueOf(data[10]));
+		odometer							.setText(String.valueOf(data[11]));
+		solar_energy_remaining				.setText(String.valueOf(data[12]));
+		speed_60_sec						.setText(String.valueOf(data[13]));
+		target_speed						.setText(String.valueOf(data[14]));
+		target_watt_hour_per_mile			.setText(String.valueOf(data[15]));
+		target_watt_hour_per_mile_60_sec	.setText(String.valueOf(data[16]));
+		target_watt_hour_per_mile_day		.setText(String.valueOf(data[17]));
+		time_left_in_day					.setText(String.valueOf(data[18]));
+	}
+
 	private void insertComponents() {
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		// GBC Constants
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.insets = new Insets(3, 3, 3, 3);
+		
+		// Major Components
+		gbc.gridx = 0; 
+		gbc.gridy = 0;
+		gbc.gridheight = 2;
+		add(text_panel_volt, gbc);
+		gbc.gridheight = 1;
+		
+		gbc.gridx = 1;
+		add(text_panel_powr, gbc);
+		
+		gbc.gridy = 1;
+		add(text_panel_speed, gbc);
+		
+		gbc.gridx = 2;
+		gbc.gridy = 0;
+		add(text_panel_misc, gbc);
+		
+		gbc.gridy = 1;
+		add(text_panel_strat, gbc);
 
 		//---------------------------------Power Fields-------------------------------------//
 		gbc.gridx = 0;
@@ -152,10 +194,6 @@ public class TextFields extends JPanel {
 		average_motor_power_day.setPreferredSize(average_motor_power_day.getMinimumSize());
 		average_motor_power_day.setMaximumSize(average_motor_power_day.getMinimumSize());
 		text_panel_powr.add(average_motor_power_day, gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		this.add(text_panel_powr, gbc);
 		
 		//---------------------------------Speed Fields-------------------------------------//
 		gbc.gridx = 0;
@@ -221,10 +259,6 @@ public class TextFields extends JPanel {
 			}
 		});
 		text_panel_speed.add(new JButton("Reset"), gbc);
-
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		this.add(text_panel_speed, gbc);
 		
 		//---------------------------------Battery/Watt Hour Fields-------------------------------------//
 		gbc.gridx = 0;
@@ -350,148 +384,147 @@ public class TextFields extends JPanel {
 		battery_and_solar_range.setMaximumSize(battery_and_solar_range.getMinimumSize());
 		text_panel_volt.add(battery_and_solar_range, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		this.add(text_panel_volt, gbc);
-		
-		/*
-		 * TEMPERATURE TEXT FIELDS
-		 */
-		
+		//---------------------------------Misc. Fields-------------------------------------//
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		text_panel_temp.add(new JTextArea("Odometer"), gbc);
+		gbc.gridwidth = 3;
+		JLabel misc_title = new JLabel("Misc. Strategy");
+		misc_title.setFont(GraphPanel.TITLE_FONT);
+		text_panel_misc.add(misc_title, gbc);
+		gbc.gridwidth = 1;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		text_panel_temp.add(odometer, gbc);
+		JLabel odometer_label = new JLabel("Odometer");
+		odometer_label.setFont(GraphPanel.FIELD_FONT);
+		text_panel_misc.add(odometer_label, gbc);
 		
-		gbc.gridheight = 2;
 		gbc.gridx = 1;
-		gbc.gridy = 0;
-		text_panel_temp.add(new JButton("Reset"), gbc);
-		
-		gbc.gridheight = 1;
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		text_panel_temp.add(new JLabel("\n"), gbc);
-		
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		text_panel_temp.add(new JTextArea("Distance Left in Day"), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		text_panel_temp.add(distance_left_in_day, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		text_panel_temp.add(new JTextArea("Time Left in Day"), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 6;
-		text_panel_temp.add(time_left_in_day, gbc);
-		
-		gbc.weightx = 0.5;
-		gbc.weighty = 0.5;
-		gbc.gridx = 0;
-		gbc.gridy = 7;
-		text_panel_temp.add(new JLabel("\n"), gbc);
-		
-		gbc.weightx = 0;
-		gbc.weighty = 0;
-		gbc.gridx = 0;
-		gbc.gridy = 8;
-		text_panel_temp.add(new JTextArea("Battery Charge Remaining"), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 9;
-		text_panel_temp.add(battery_charge_remaining, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 10;
-		text_panel_temp.add(new JTextArea("Energy Remaining in Day"), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 11;
-		text_panel_temp.add(solar_energy_remaining, gbc);
+		gbc.gridy = 1;
+		odometer.setFont(GraphPanel.FIELD_FONT);
+		odometer.setOpaque(true);
+		odometer.setBackground(Color.ORANGE);
+		text_panel_misc.add(odometer, gbc);
 		
 		gbc.gridx = 2;
-		gbc.gridy = 0;
-		this.add(text_panel_temp, gbc);
-		
-		/*
-		 * STRATEGY TEXT FIELDS
-		 */
-		
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		text_panel_strat.add(new JTextArea("Input Solar Const A"), gbc);
-		
-		gbc.gridx = 0;
 		gbc.gridy = 1;
-		text_panel_strat.add(new JTextField(""), gbc);
+		JButton odometer_reset = new JButton("Reset");
+		odometer_reset.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+			}
+		});
+		text_panel_misc.add(odometer_reset, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		text_panel_strat.add(new JTextArea("Input Solar Const B"), gbc);
+		JLabel dist_left_label = new JLabel("Distance Left in Day");
+		dist_left_label.setFont(GraphPanel.FIELD_FONT);
+		text_panel_misc.add(dist_left_label, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		distance_left_in_day.setFont(GraphPanel.FIELD_FONT);
+		distance_left_in_day.setOpaque(true);
+		distance_left_in_day.setBackground(Color.ORANGE);
+		text_panel_misc.add(distance_left_in_day, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		text_panel_strat.add(new JTextField(""), gbc);
+		JLabel time_left_label = new JLabel("Time Left in Day");
+		time_left_label.setFont(GraphPanel.FIELD_FONT);
+		text_panel_misc.add(time_left_label, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		time_left_in_day.setFont(GraphPanel.FIELD_FONT);
+		time_left_in_day.setOpaque(true);
+		time_left_in_day.setBackground(Color.ORANGE);
+		text_panel_misc.add(time_left_in_day, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 4;
-		text_panel_strat.add(new JTextArea("Input Solar Const C"), gbc);
+		JLabel battery_charge_remaining_label = new JLabel("Battery Charge Remaining");
+		battery_charge_remaining_label.setFont(GraphPanel.FIELD_FONT);
+		text_panel_misc.add(battery_charge_remaining_label, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		battery_charge_remaining.setFont(GraphPanel.FIELD_FONT);
+		battery_charge_remaining.setOpaque(true);
+		battery_charge_remaining.setBackground(Color.ORANGE);
+		text_panel_misc.add(battery_charge_remaining, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 5;
-		text_panel_strat.add(new JTextField(""), gbc);
+		JLabel energy_remaining_label = new JLabel("Energy Remaining");
+		energy_remaining_label.setFont(GraphPanel.FIELD_FONT);
+		text_panel_misc.add(energy_remaining_label, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		solar_energy_remaining.setFont(GraphPanel.FIELD_FONT);
+		solar_energy_remaining.setOpaque(true);
+		solar_energy_remaining.setBackground(Color.ORANGE);
+		text_panel_misc.add(solar_energy_remaining, gbc);
+		
+		//---------------------------------Strategy Fields-------------------------------------//
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		JLabel strat_label = new JLabel("Strategy");
+		strat_label.setFont(GraphPanel.TITLE_FONT);
+		text_panel_strat.add(strat_label, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		JButton calculate_button = new JButton("Recalculate Strategy");
+		calculate_button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+			}
+		});
+		text_panel_strat.add(calculate_button, gbc);
 		
 		gbc.gridx = 0;
-		gbc.gridy = 6;
-		text_panel_strat.add(new JTextArea("Input Solar Const D"), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 7;
-		text_panel_strat.add(new JTextField(""), gbc);
+		gbc.gridy = 1;
+		JLabel input_solar_const_a = new JLabel("Input Solar Const A");
+		input_solar_const_a.setFont(GraphPanel.FIELD_FONT);
+		text_panel_strat.add(input_solar_const_a, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		text_panel_strat.add(new JTextArea("\"60 Second\" Interval (sec)"), gbc);
+		text_panel_strat.add(solar_const_a, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		JLabel input_solar_const_b = new JLabel("Input Solar Const B");
+		input_solar_const_b.setFont(GraphPanel.FIELD_FONT);
+		text_panel_strat.add(input_solar_const_b, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		text_panel_strat.add(new JButton("Recalculate Strategy"), gbc);
+		text_panel_strat.add(solar_const_b, gbc);
 		
-		gbc.gridx = 3;
-		gbc.gridy = 0;
-		this.add(text_panel_strat, gbc);	
-	}
-	
-	public void updateDataSet(double[] data) {
-//		average_motor_power_day				.setText(String.valueOf(data[0]));
-		average_speed_day					.setText(String.valueOf(data[1]));
-		battery_and_solar_range				.setText(String.valueOf(data[2]));
-		battery_and_solar_runtime_60_sec	.setText(String.valueOf(data[3]));
-		battery_charge_remaining			.setText(String.valueOf(data[4]));
-		battery_only_range_60_sec			.setText(String.valueOf(data[5]));
-		battery_only_runtime_60_sec			.setText(String.valueOf(data[6]));
-		battery_watt_hours					.setText(String.valueOf(data[7]));
-		distance_left_in_day				.setText(String.valueOf(data[8]));
-		motor_power_60_sec					.setText(String.valueOf(data[9]));
-		motor_watt_hours					.setText(String.valueOf(data[10]));
-		odometer							.setText(String.valueOf(data[11]));
-		solar_energy_remaining				.setText(String.valueOf(data[12]));
-		speed_60_sec						.setText(String.valueOf(data[13]));
-		target_speed						.setText(String.valueOf(data[14]));
-		target_watt_hour_per_mile			.setText(String.valueOf(data[15]));
-		target_watt_hour_per_mile_60_sec	.setText(String.valueOf(data[16]));
-		target_watt_hour_per_mile_day		.setText(String.valueOf(data[17]));
-		time_left_in_day					.setText(String.valueOf(data[18]));
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		JLabel input_solar_const_c = new JLabel("Input Solar Const C");
+		input_solar_const_c.setFont(GraphPanel.FIELD_FONT);
+		text_panel_strat.add(input_solar_const_c, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		text_panel_strat.add(solar_const_c, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		JLabel input_solar_const_d = new JLabel("Input Solar Const D");
+		input_solar_const_d.setFont(GraphPanel.FIELD_FONT);
+		text_panel_strat.add(input_solar_const_d, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		text_panel_strat.add(solar_const_d, gbc);
 	}
 }
