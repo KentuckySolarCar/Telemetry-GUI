@@ -8,12 +8,14 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
+import com.telemetry.custom.Tools;
 import com.telemetry.equations.EnergyModelFunctions;
 import com.telemetry.graphs.GraphPanel; 
 
@@ -68,33 +70,33 @@ public class CalculationPanel extends JPanel{
 		insertFields();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public JSONObject getData() {
-		JSONObject dataset = new JSONObject();
+	public HashMap<String, Double> getData() {
+		HashMap<String, Double> dataset = new HashMap<String, Double>();
 		
-		dataset.put("array_power",                      array_power.getText());
-		dataset.put("average_speed",                    average_speed.getText());
-		dataset.put("battery_and_solar_range",          battery_and_solar_range.getText());
-		dataset.put("battery_and_solar_runtime_60_sec", battery_and_solar_runtime_60_sec.getText());
-		dataset.put("battery_charge_remaining",         battery_charge_remaining.getText());
-		dataset.put("battery_only_range_60_sec",        battery_only_range_60_sec.getText());
-		dataset.put("battery_only_runtime_60_sec",      battery_only_runtime_60_sec.getText());
-		dataset.put("battery_watt_hours",               battery_watt_hours.getText());
-		dataset.put("distance_left_in_day",             distance_left_in_day.getText());
-		dataset.put("motor_power_60_sec",               motor_power_60_sec.getText());
-		dataset.put("motor_watt_hours",                 motor_watt_hours.getText());
-		dataset.put("predicted_array_power",            predicted_array_power.getText());
-		dataset.put("solar_energy_remaining",           solar_energy_remaining.getText());
-		dataset.put("speed_60_sec",                     speed_60_sec.getText());
-		dataset.put("target_average_motor_power",       target_average_motor_power.getText());
-		dataset.put("target_battery_state_of_charge",   target_battery_state_of_charge.getText());
-		dataset.put("target_motor_energy",              target_motor_energy.getText());
-		dataset.put("target_speed",                     target_speed.getText());
-		dataset.put("target_watt_hour_per_mile",        target_watt_hour_per_mile.getText());
-		dataset.put("target_watt_hour_per_mile_60_sec", target_watt_hour_per_mile_60_sec.getText());
-		dataset.put("target_watt_hour_per_mile_day",    target_watt_hour_per_mile_day.getText());
-		dataset.put("time_elapsed",                     time_elapsed.getText());
-		dataset.put("time_left_in_day",                 time_left_in_day.getText());
+		
+		dataset.put("array_power",                      Tools.getLabelDouble(array_power));
+		dataset.put("average_speed",                    Tools.getLabelDouble(average_speed));
+		dataset.put("battery_and_solar_range",          Tools.getLabelDouble(battery_and_solar_range));
+		dataset.put("battery_and_solar_runtime_60_sec", Tools.getLabelDouble(battery_and_solar_runtime_60_sec));
+		dataset.put("battery_charge_remaining",         Tools.getLabelDouble(battery_charge_remaining));
+		dataset.put("battery_only_range_60_sec",        Tools.getLabelDouble(battery_only_range_60_sec));
+		dataset.put("battery_only_runtime_60_sec",      Tools.getLabelDouble(battery_only_runtime_60_sec));
+		dataset.put("battery_watt_hours",               Tools.getLabelDouble(battery_watt_hours));
+		dataset.put("distance_left_in_day",             Tools.getLabelDouble(distance_left_in_day));
+		dataset.put("motor_power_60_sec",               Tools.getLabelDouble(motor_power_60_sec));
+		dataset.put("motor_watt_hours",                 Tools.getLabelDouble(motor_watt_hours));
+		dataset.put("predicted_array_power",            Tools.getLabelDouble(predicted_array_power));
+		dataset.put("solar_energy_remaining",           Tools.getLabelDouble(solar_energy_remaining));
+		dataset.put("speed_60_sec",                     Tools.getLabelDouble(speed_60_sec));
+		dataset.put("target_average_motor_power",       Tools.getLabelDouble(target_average_motor_power));
+		dataset.put("target_battery_state_of_charge",   Tools.getLabelDouble(target_battery_state_of_charge));
+		dataset.put("target_motor_energy",              Tools.getLabelDouble(target_motor_energy));
+		dataset.put("target_speed",                     Tools.getLabelDouble(target_speed));
+		dataset.put("target_watt_hour_per_mile",        Tools.getLabelDouble(target_watt_hour_per_mile));
+		dataset.put("target_watt_hour_per_mile_60_sec", Tools.getLabelDouble(target_watt_hour_per_mile_60_sec));
+		dataset.put("target_watt_hour_per_mile_day",    Tools.getLabelDouble(target_watt_hour_per_mile_day));
+		dataset.put("time_elapsed",                     Tools.getLabelDouble(time_elapsed));
+		dataset.put("time_left_in_day",                 Tools.getLabelDouble(time_left_in_day));
 		
 		return dataset;
 	}
@@ -177,6 +179,8 @@ public class CalculationPanel extends JPanel{
 		
 		validate();
 		repaint();
+		
+		graph_panel.updatePanel(this.getData());
 	}
 
 	private void insertFields() {

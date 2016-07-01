@@ -33,7 +33,7 @@ public class TextFileInput extends Thread {
 			while((line = buffer_reader.readLine()) != null) {
 				JSONObject obj = (JSONObject) parser.parse(line);
 				String message_type = (String) obj.get("message_id");
-				TelemetryFrame.updateDevicePanel(obj, message_type);
+				TelemetryFrame.updateAllPanels(obj, message_type);
 				Thread.sleep(100);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {

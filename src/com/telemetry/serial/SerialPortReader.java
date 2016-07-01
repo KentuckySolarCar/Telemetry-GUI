@@ -42,7 +42,7 @@ public class SerialPortReader extends Thread {
 				try {
 					System.out.println(line);
 					JSONObject obj = (JSONObject) parser.parse(line);
-					TelemetryFrame.updateDevicePanel(obj, (String) obj.get("message_id"));
+					TelemetryFrame.updateAllPanels(obj, (String) obj.get("message_id"));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					System.out.println("Incomplete Data, ignored...");

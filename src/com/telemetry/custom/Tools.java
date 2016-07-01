@@ -1,5 +1,7 @@
 package com.telemetry.custom;
 
+import javax.swing.JLabel;
+
 public class Tools {
 	public static String roundDouble(String double_str) {
 		String delimit = "[.]";
@@ -12,5 +14,9 @@ public class Tools {
 		}
 		else
 			return double_str;
+	}
+	
+	public static double getLabelDouble(JLabel label) {
+		return Double.parseDouble(label.getText());
 	}
 }

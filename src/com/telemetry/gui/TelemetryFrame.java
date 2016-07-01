@@ -30,7 +30,6 @@ public class TelemetryFrame extends JFrame {
 	private static GraphPanel graph_panel;
 	private static LogPanel log_panel;
 	private SerialPortHandler serial_port;
-	private StartCalculation calculation_handler;
 	private int tab_panel_x = 1920;	//1260
 	private int tab_panel_y = 1080;	//640
 	
@@ -108,7 +107,7 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
-		start_calculations.addActionListener(new StartCalculationListener());
+//		start_calculations.addActionListener(new StartCalculationListener());
 		change_port.addActionListener(new ChangePortListener());
 		change_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
@@ -183,23 +182,22 @@ public class TelemetryFrame extends JFrame {
 	}
 
 	class ExitMenuListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			System.exit(0);
 		}
-		
 	}
 	
+	 // For now, lets assume calculation is started every time telemetry is started
 	class StartCalculationListener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
-			if(serial_port.getPortReadStatus() != true) {
-				DisplayPortErrorDialog("Not listening to any ports yet");
-			}
-			else {
-				calculation_handler = new StartCalculation();
-				calculation_handler.start();
-			}
+//			if(serial_port.getPortReadStatus() != true) {
+//				DisplayPortErrorDialog("Not listening to any ports yet");
+//			}
+//			else {
+//				calculation_handler = new StartCalculation();
+//				calculation_handler.start();
+//			}
 		}
 	}
 	
@@ -211,7 +209,6 @@ public class TelemetryFrame extends JFrame {
 				else   
 					serial_port.startReadThread();
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -262,47 +259,9 @@ public class TelemetryFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
-	public static void updateCalculationPanel() {
-		calculation_panel.updatePanel(device_panel.getDeviceData());
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static void updateGraphPanel(JSONObject obj, String type) {
-		JSONObject combined_data = new JSONObject();
-		JSONObject device_data = device_panel.getDeviceData();
-		JSONObject calculation_data = calculation_panel.getData();
-		combined_data.put("device_data", device_data);
-		combined_data.put("calculation_data", calculation_data);
-		graph_panel.updateGraphs(combined_data);
-	}
-	
-	// Constantly update GUI
-	public static void updateDevicePanel(JSONObject obj, String type) {
-		// Log Panel will not be updated for the time being
-		// log_panel.updatePanel(obj);
+	public static void updateAllPanels(JSONObject obj, String type) {
 		device_panel.updatePanel(obj, type);
-
-		
-//		if(type.equals("motor")) {
-//			double mph = Double.parseDouble((String) obj.get("S"));
-//			graph_panel.updateSpeedDataSet(mph, time[0], time[1], time[2]);
-//			
-//			double mCurrent = Double.parseDouble((String) obj.get("S"));
-//			graph_panel.updateMotorCurrentDataSet(mCurrent, time[0], time[1], time[2]);
-//			
-//			double aCurrent = Double.parseDouble((String) obj.get("S"));
-//			graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);
-//		}
-//		else if((type.equals("bat_volt")) && ((String) obj.get("name")).equals("0")) {
-//			double v = Double.parseDouble((String) obj.get("Vavg"));
-//			graph_panel.updateBatteryVoltageDataSet(v, time[0], time[1], time[2]);
-//		}
-		
-		// TODO: Implement Array and Motor current loops
-		/*double mCurrent = Double.parseDouble((String) obj.get("S"));
-		graph_panel.updateMotorCurrentDataSet(mCurrent, time[0], time[1], time[2]);
-		
-		double aCurrent = Double.parseDouble((String) obj.get("S"));
-		graph_panel.updateArrayCurrentDataSet(aCurrent, time[0], time[1], time[2]);*/
+		calculation_panel.updatePanel(device_panel.getDeviceData());
+		// GraphPanel is updated with calculation panel, for concurrency issues
 	}
 }
