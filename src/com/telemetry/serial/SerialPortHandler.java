@@ -7,18 +7,21 @@ import java.io.UnsupportedEncodingException;
 
 import javax.swing.JOptionPane;
 
+import com.telemetry.gui.TelemetryFrame;
+
 import gnu.io.*;
 
 public class SerialPortHandler {
 	private SerialPort serial_port;
 	private OutputStream output_stream;
 	private InputStream input_stream;
-	private static SerialPortWriter writer;
 	private String port_num;
 	private SerialPortReader read_thread;
+	private TelemetryFrame telem_frame;
 	
-	public SerialPortHandler() {
+	public SerialPortHandler(TelemetryFrame telem_frame) {
 		port_num = "";
+		this.telem_frame = telem_frame;
 	}
 	
 	public void changePortNum(String port_num) {
@@ -52,27 +55,38 @@ public class SerialPortHandler {
             
             if ( commPort instanceof SerialPort )
             {
-            	this.port_num = port_num;
                 serial_port = (SerialPort) commPort;
                 serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+            	this.port_num = port_num;
                 
                 input_stream = serial_port.getInputStream();
                 output_stream = serial_port.getOutputStream();
-                
-//                (new Thread(new SerialPortReader(input_stream))).start();
             }
             else
             	System.out.println("Error: This is not a serial port!");
         }
 	}
 	
-	public void stopReadThread() {
-		read_thread.stopThread();
+	public void stopSerialPort() {
+		try {
+			read_thread.stopThread();
+			input_stream.close();
+			output_stream.close();
+			serial_port.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void restartReadThread() throws Exception {
+		stopSerialPort();
+		connect(port_num);
+		startReadThread();
 	}
 	
 	public void startReadThread() {
 		try {
-			read_thread = new SerialPortReader(input_stream);
+			read_thread = new SerialPortReader(input_stream, telem_frame);
 			read_thread.start();
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -80,9 +94,9 @@ public class SerialPortHandler {
 		}
 	}
 	
-	public static void write_command(byte[] bs) throws IOException {
-		writer.write(bs);
-	}
+//	public static void write_command(byte[] bs) throws IOException {
+//		writer.write(bs);
+//	}
 		
 /*	private void setSerialPortParameters() throws IOException {
         int baudRate = 57600; // 57600bps

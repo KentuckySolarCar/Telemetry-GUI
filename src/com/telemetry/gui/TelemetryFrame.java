@@ -9,11 +9,14 @@ import org.json.simple.parser.ParseException;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
+import com.sun.glass.events.KeyEvent;
 import com.telemetry.actions.*;
 import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -25,6 +28,7 @@ public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
 	private static final int WIDTH = 1280; //1280
 	private static final int HEIGHT = 720; //720
+	private static final Font MONO_FONT = new Font("Consolas", Font.PLAIN, 14);
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput text_input;
@@ -32,6 +36,7 @@ public class TelemetryFrame extends JFrame {
 	private static DevicePanel device_panel;
 	private static GraphPanel graph_panel;
 	private static LogPanel log_panel;
+	private JTextArea serial_bar;
 	private SerialPortHandler serial_port;
 	private int tab_panel_x = 1920;	//1260
 	private int tab_panel_y = 1080;	//640
@@ -74,9 +79,41 @@ public class TelemetryFrame extends JFrame {
 		// and log_panel EAST 
 		add(tab_panel, BorderLayout.CENTER);
 		
+		//---------------------------------Temp-----------------------------//
+//		JPanel serial_panel = new JPanel();
+//		serial_panel.setLayout(new BorderLayout());
+
+	    serial_bar = new JTextArea();
+	    serial_bar.setFont(MONO_FONT);
+	    serial_bar.setEditable(false);
+	    serial_bar.setBounds(serial_bar.getX(),
+	    					 serial_bar.getY(),
+	    					 WIDTH-10, 
+	    					 serial_bar.getHeight());
+//		serial_panel.add(serial_bar, BorderLayout.WEST);
+	    add(serial_bar, BorderLayout.SOUTH);
+
+//		JButton reset_monitor = new JButton("Reset Monitor");
+//		reset_monitor.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				try {
+//					serial_port.restartReadThread();
+//				} catch (NullPointerException e) {
+//					updateSerialBar("No serial port running");
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//		serial_panel.add(reset_monitor, BorderLayout.EAST);
+//		
+//		add(serial_panel, BorderLayout.SOUTH);
+		//---------------------------------Temp-----------------------------//
+		
 		createMenuBar();
 		
-		serial_port = new SerialPortHandler();
+		serial_port = new SerialPortHandler(this);
 		
 		// Reveals main_frame
 		setVisible(true);
@@ -92,25 +129,61 @@ public class TelemetryFrame extends JFrame {
 		// create menus
 		JMenu file_menu = new JMenu("File");
 		JMenu control_menu = new JMenu("Control");
+		control_menu.setMnemonic(KeyEvent.VK_ALT);
 		JMenu tool_menu = new JMenu("Tool");
+		// Temporary! ---------------------------------------------
+		JMenu reset_monitor = new JMenu("Reset Monitor");
+		reset_monitor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					serial_port.restartReadThread();
+				} catch (NullPointerException e) {
+					updateSerialBar("No serial port running");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		reset_monitor.setMnemonic(KeyEvent.VK_F1);
 		final JMenu about_menu = new JMenu("About");
 		
 		// create menu items
 		JMenuItem exit_menu_item = new JMenuItem("Exit");
 		exit_menu_item.addActionListener(new ExitMenuListener());
 		
-		JMenuItem change_port = new JMenuItem("Change Port");		
-		JMenuItem start_monitor = new JMenuItem("Start Monitor");	
+		JMenuItem change_port        = new JMenuItem("Change Port");		
+		JMenuItem start_monitor      = new JMenuItem("Start Monitor");	
+		JMenuItem stop_monitor       = new JMenuItem("Stop Monitor");
+		JMenuItem restart_monitor    = new JMenuItem("Reconnect");
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
-		JMenuItem start_logging = new JMenuItem("Start Logging");
-		JMenuItem stop_logging = new JMenuItem("Stop Logging");
+		JMenuItem start_logging      = new JMenuItem("Start Logging");
+		JMenuItem stop_logging       = new JMenuItem("Stop Logging");
 		
 		JMenuItem change_resolution = new JMenuItem("Change Resolution");
 		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
+		stop_monitor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				serial_port.stopSerialPort();
+			}
+		});
 //		start_calculations.addActionListener(new StartCalculationListener());
 		change_port.addActionListener(new ChangePortListener());
+		restart_monitor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					serial_port.restartReadThread();
+				} catch (NullPointerException e) {
+					updateSerialBar("No serial port running");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		change_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
 		
@@ -126,7 +199,10 @@ public class TelemetryFrame extends JFrame {
 		//add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
+		control_menu.add(restart_monitor);
+		control_menu.add(stop_monitor);
 		control_menu.add(start_calculations);
+		
 		
 		//add about menu
 		about_menu.add(about_page);
@@ -138,6 +214,7 @@ public class TelemetryFrame extends JFrame {
 		menu_bar.add(control_menu);
 		menu_bar.add(tool_menu);
 		menu_bar.add(about_menu);
+		menu_bar.add(reset_monitor);
 		
 		//add menu bar to the frame
 		setJMenuBar(menu_bar);
@@ -153,9 +230,7 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
-			
 		}
-		
 	}
 	
 	class ChangePortListener implements ActionListener {
@@ -231,7 +306,7 @@ public class TelemetryFrame extends JFrame {
 		chooser.setFileFilter(filter);
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			text_input = new TextFileInput(chooser.getSelectedFile().toString());
+			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
 			text_input.start();
 		}
 	}
@@ -261,9 +336,18 @@ public class TelemetryFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
-	public static void updateAllPanels(JSONObject obj, String type) {
+	public void updateAllPanels(JSONObject obj, String type) {
 		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 		// GraphPanel is updated with calculation panel, for concurrency issues
+	}
+	
+	public void updateSerialBar(String text) {
+		serial_bar.removeAll();
+		serial_bar.setText(text);
+	}
+	
+	public void setTimer(int seconds) {
+		device_panel.setTimer(seconds);
 	}
 }

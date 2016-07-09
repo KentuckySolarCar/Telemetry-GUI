@@ -20,10 +20,12 @@ import org.json.simple.parser.JSONParser;
 public class TextFileInput extends Thread {
 	private JSONParser parser;
 	private BufferedReader buffer_reader;
+	private TelemetryFrame telem_frame;
 	
-	public TextFileInput(String directory) throws FileNotFoundException {
+	public TextFileInput(String directory, TelemetryFrame telem_frame) throws FileNotFoundException {
 		parser = new JSONParser();
 		buffer_reader = new BufferedReader(new FileReader(directory));
+		this.telem_frame = telem_frame;
 	}
 
 	@Override
@@ -33,7 +35,8 @@ public class TextFileInput extends Thread {
 			while((line = buffer_reader.readLine()) != null) {
 				JSONObject obj = (JSONObject) parser.parse(line);
 				String message_type = (String) obj.get("message_id");
-				TelemetryFrame.updateAllPanels(obj, message_type);
+				telem_frame.updateSerialBar(obj.toString());
+				telem_frame.updateAllPanels(obj, message_type);
 				Thread.sleep(100);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {

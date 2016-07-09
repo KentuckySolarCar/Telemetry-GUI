@@ -1,5 +1,6 @@
 package com.telemetry.gui.device;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -95,6 +96,10 @@ public class DevicePanel extends JPanel{
 
 	public void updateRunTime() {
 		time_panel.updateRunTime();
+	}
+	
+	public void setTimer(int seconds) {
+		time_panel.setTimer(seconds);
 	}
 
 	public static String roundDouble(String double_str) {

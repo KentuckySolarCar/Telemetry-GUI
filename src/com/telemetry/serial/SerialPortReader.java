@@ -1,5 +1,6 @@
 package com.telemetry.serial;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,15 +18,18 @@ public class SerialPortReader extends Thread {
 	private BufferedReader input_stream;
 	private JSONParser parser;
 	private boolean status;
+	private TelemetryFrame telem_frame;
 	
-	public SerialPortReader (InputStream input_stream) throws UnsupportedEncodingException {
+	public SerialPortReader (InputStream input_stream, TelemetryFrame telem_frame) throws UnsupportedEncodingException {
 		status = false;
 		this.input_stream = new BufferedReader(new InputStreamReader(input_stream));
+		this.telem_frame = telem_frame;
 		parser = new JSONParser();
 	}
 	
-	public void stopThread() {
+	public void stopThread() throws IOException {
 		status = false;
+		input_stream.close();
 	}
 	
 	public boolean getThreadStatus() {
@@ -37,23 +41,18 @@ public class SerialPortReader extends Thread {
 		status = true;
 		try {
 			String line;
-
 			while(status) {
-				line = input_stream.readLine();
-//				try {
-					System.out.println(line);
-//						JSONObject obj = (JSONObject) parser.parse(line);
-//						TelemetryFrame.updateAllPanels(obj, (String) obj.get("message_id"));
-//					}
-//				} catch (/*ParseException*/ e) {
-					// TODO Auto-generated catch block
-//					System.out.println("Incomplete Data, ignored...");
-//				}
-//				Thread.sleep(200);
+				if((line = input_stream.readLine()) != null) {
+					telem_frame.updateSerialBar(line);
+					JSONObject obj = (JSONObject) parser.parse(line);
+					telem_frame.updateAllPanels(obj, (String) obj.get("message_id"));
+				}
+				else
+					telem_frame.updateSerialBar("Waiting on Serial Port");
+					Thread.sleep(1*60*1000);
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
+		} catch (IOException | InterruptedException | ParseException e) {
+			e.printStackTrace();
 		}
 	}
 }

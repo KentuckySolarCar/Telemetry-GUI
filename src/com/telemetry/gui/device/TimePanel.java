@@ -17,10 +17,15 @@ public class TimePanel extends JPanel {
 	private JLabel time_counter = new JLabel();
 	private JLabel time_computer = new JLabel();
 	private JLabel time_pi = new JLabel("VALUE");
+	private JLabel time_stop_watch = new JLabel();
 	private long initial_time;
 	private int hour = 0;
 	private int minute = 0;
 	private int second = 0;
+	private int stop_watch_hour = 0;
+	private int stop_watch_minute = 0;
+	private int stop_watch_second = 0;
+	private boolean stop_watch_on = false;
 	
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
@@ -31,6 +36,9 @@ public class TimePanel extends JPanel {
 		Date date = new Date();
 		initial_time = System.currentTimeMillis()/1000;
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
+		time_stop_watch.setText(stop_watch_hour + " H " 
+								+ stop_watch_minute + " M " 
+								+ stop_watch_second + " S ");
 		time_computer.setText(date_format.format(date));
 
 		setLayout(new GridBagLayout());
@@ -86,7 +94,6 @@ public class TimePanel extends JPanel {
 		gbc.gridy = 2;
 		time_computer.setFont(DevicePanel.FIELD_FONT);
 		time_computer.setOpaque(true);
-		time_computer.setBackground(Color.GREEN);
 		add(time_computer, gbc);
 
 		gbc.gridx = 1;
@@ -106,6 +113,16 @@ public class TimePanel extends JPanel {
 		
 		time_computer.setText(date_format.format(date));
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
+		
+//		if(stop_watch_on) {
+//			if(stop_watch_hour + stop_watch_minute + stop_watch_second == 0) {
+//				time_stop_watch.setBackground(Color.ORANGE);
+//			}
+//			else {
+//				time_stop_watch.setBackground(Color.RED);
+//				second--;
+//			}
+//		}
 
 		validate();
 		repaint();
@@ -124,4 +141,8 @@ public class TimePanel extends JPanel {
 		int time[] = {hour, minute, second};
 		return time;
 	}
+	
+//	public void setTimer(int seconds) {
+//		time_computer.setBackground(color);
+//	}
 }
