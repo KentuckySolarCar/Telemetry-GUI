@@ -14,6 +14,9 @@ import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -52,13 +55,12 @@ public class TelemetryFrame extends JFrame {
 	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
 	    
 	    JPanel combined_panel = new JPanel();
-	    combined_panel.setLayout(new BorderLayout());
-	    combined_panel.add(device_panel, BorderLayout.WEST);
-	    combined_panel.add(new JSeparator(SwingConstants.VERTICAL),	BorderLayout.CENTER);
-	    combined_panel.add(calculation_panel, BorderLayout.EAST);
+	    combined_panel.setLayout(new GridLayout(1,2));
+	    combined_panel.add(device_panel);
+	    combined_panel.add(calculation_panel);
 	    
-		tab_panel.add("Car Status", device_panel);
-		tab_panel.add("Calculation", calculation_panel);
+		tab_panel.add("Car Status", combined_panel);
+//		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
 	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));

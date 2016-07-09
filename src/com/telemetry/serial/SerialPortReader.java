@@ -21,6 +21,7 @@ public class SerialPortReader extends Thread {
 	public SerialPortReader (InputStream input_stream) throws UnsupportedEncodingException {
 		status = false;
 		this.input_stream = new BufferedReader(new InputStreamReader(input_stream));
+		parser = new JSONParser();
 	}
 	
 	public void stopThread() {
@@ -32,26 +33,27 @@ public class SerialPortReader extends Thread {
 	}
 
 	@Override
-	public void run() {
+	public synchronized void run() {
 		status = true;
 		try {
 			String line;
 
 			while(status) {
 				line = input_stream.readLine();
-				try {
+//				try {
 					System.out.println(line);
-					JSONObject obj = (JSONObject) parser.parse(line);
-					TelemetryFrame.updateAllPanels(obj, (String) obj.get("message_id"));
-				} catch (ParseException e) {
+//						JSONObject obj = (JSONObject) parser.parse(line);
+//						TelemetryFrame.updateAllPanels(obj, (String) obj.get("message_id"));
+//					}
+//				} catch (/*ParseException*/ e) {
 					// TODO Auto-generated catch block
-					System.out.println("Incomplete Data, ignored...");
-				}
-				Thread.sleep(1000);
+//					System.out.println("Incomplete Data, ignored...");
+//				}
+//				Thread.sleep(200);
 			}
-		} catch (InterruptedException | IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 }
