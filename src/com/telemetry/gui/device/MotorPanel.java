@@ -148,23 +148,25 @@ public class MotorPanel extends JPanel {
 	}
 	
 	public void updatePanel(JSONObject obj) {
-		speed.add(Double.parseDouble((String) obj.get("S")) * speed_conversion);
-		current.add(Double.parseDouble((String) obj.get("I")));
+		try {
+			speed.add(Double.parseDouble((String) obj.get("S")) * speed_conversion);
+			current.add(Double.parseDouble((String) obj.get("I")));
 
-		if(speed.getLast() > speed_threshold)
-			speed_label.setBackground(Color.RED);
-		else
-			speed_label.setBackground(Color.GREEN);
+			if(speed.getLast() > speed_threshold)
+				speed_label.setBackground(Color.RED);
+			else
+				speed_label.setBackground(Color.GREEN);
 
-		if(current.getLast() > current_threshold)
-			current_label.setBackground(Color.RED);
-		else
-			current_label.setBackground(Color.GREEN);
-		
-		speed_label.setText(Tools.roundDouble((String) obj.get("S")));
-		current_label.setText(Tools.roundDouble((String) obj.get("I")));
-		
-		average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
+			if(current.getLast() > current_threshold)
+				current_label.setBackground(Color.RED);
+			else
+				current_label.setBackground(Color.GREEN);
+			
+			speed_label.setText(Tools.roundDouble((String) obj.get("S")));
+			current_label.setText(Tools.roundDouble((String) obj.get("I")));
+			
+			average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
+		} catch(Exception e) {}
 		validate();
 		repaint();
 	}

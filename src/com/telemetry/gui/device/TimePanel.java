@@ -131,7 +131,7 @@ public class TimePanel extends JPanel {
 	public void updatePanel(String pi_time) {
 		List<String> parsed_string = Arrays.asList(pi_time.split(":"));
 
-		time_pi.setText(parsed_string.get(0) + " H " + parsed_string.get(1) + " M " + parsed_string.get(2) + " S ");
+//		time_pi.setText(parsed_string.get(0) + " H " + parsed_string.get(1) + " M " + parsed_string.get(2) + " S ");
 		
 		validate();
 		repaint();

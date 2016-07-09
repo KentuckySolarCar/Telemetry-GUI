@@ -61,19 +61,23 @@ public class DevicePanel extends JPanel{
 	
 	public void updatePanel(JSONObject obj, String type) {
 		time_panel.updatePanel((String) obj.get("Time"));
-		switch(type) {
-		case "motor": {
-			speed_dial_panel.updateDial((String) obj.get("S"));
-			motor_panel.updatePanel(obj);
-			break;
-		}
-		case "bat_volt": 
-		case "bat_temp": {
-			battery_panel.updatePanel(obj, type);
-			break;
-		}
-		default:
-			break;
+		try{
+			switch(type) {
+			case "motor": {
+				speed_dial_panel.updateDial((String) obj.get("S"));
+				motor_panel.updatePanel(obj);
+				break;
+			}
+			case "bat_volt": 
+			case "bat_temp": {
+				battery_panel.updatePanel(obj, type);
+				break;
+			}
+			default:
+				break;
+			}
+		} catch(NullPointerException e) {
+			
 		}
 		
 		validate();
@@ -99,7 +103,7 @@ public class DevicePanel extends JPanel{
 	}
 	
 	public void setTimer(int seconds) {
-		time_panel.setTimer(seconds);
+//		time_panel.setTimer(seconds);
 	}
 
 	public static String roundDouble(String double_str) {

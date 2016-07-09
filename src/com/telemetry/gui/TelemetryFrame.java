@@ -41,6 +41,10 @@ public class TelemetryFrame extends JFrame {
 	private int tab_panel_x = 1920;	//1260
 	private int tab_panel_y = 1080;	//640
 	
+	// Temp
+	JScrollPane log_pane;
+	JTextArea log;
+	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
@@ -59,6 +63,9 @@ public class TelemetryFrame extends JFrame {
 	    graph_panel = new GraphPanel(calculation_panel);
 	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
 	    
+	    log = new JTextArea();
+	    log_pane = new JScrollPane(log);
+	    
 	    JPanel combined_panel = new JPanel();
 	    combined_panel.setLayout(new GridLayout(1,2));
 	    combined_panel.add(device_panel);
@@ -67,7 +74,7 @@ public class TelemetryFrame extends JFrame {
 		tab_panel.add("Car Status", combined_panel);
 //		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
-	    tab_panel.add("Log", log_panel);
+	    tab_panel.add("Log", log_pane);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 		tab_panel.setSize(new Dimension(tab_panel_x, tab_panel_y));
@@ -131,21 +138,6 @@ public class TelemetryFrame extends JFrame {
 		JMenu control_menu = new JMenu("Control");
 		control_menu.setMnemonic(KeyEvent.VK_ALT);
 		JMenu tool_menu = new JMenu("Tool");
-		// Temporary! ---------------------------------------------
-		JMenu reset_monitor = new JMenu("Reset Monitor");
-		reset_monitor.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					serial_port.restartReadThread();
-				} catch (NullPointerException e) {
-					updateSerialBar("No serial port running");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		reset_monitor.setMnemonic(KeyEvent.VK_F1);
 		final JMenu about_menu = new JMenu("About");
 		
 		// create menu items
@@ -186,6 +178,17 @@ public class TelemetryFrame extends JFrame {
 		});
 		change_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
+		start_logging.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					logFileSaver();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
 		about_page.addAncestorListener (null);
@@ -202,6 +205,7 @@ public class TelemetryFrame extends JFrame {
 		control_menu.add(restart_monitor);
 		control_menu.add(stop_monitor);
 		control_menu.add(start_calculations);
+		control_menu.add(start_logging);
 		
 		
 		//add about menu
@@ -214,7 +218,6 @@ public class TelemetryFrame extends JFrame {
 		menu_bar.add(control_menu);
 		menu_bar.add(tool_menu);
 		menu_bar.add(about_menu);
-		menu_bar.add(reset_monitor);
 		
 		//add menu bar to the frame
 		setJMenuBar(menu_bar);
@@ -261,6 +264,10 @@ public class TelemetryFrame extends JFrame {
 	class ExitMenuListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			try {
+				serial_port.stopSerialPort();
+			} catch(Exception e1) {}
+
 			System.exit(0);
 		}
 	}
@@ -298,6 +305,20 @@ public class TelemetryFrame extends JFrame {
 			changeResolution();
 		}
 		
+	}
+	
+	public void logFileSaver() throws IOException {
+//		JFileChooser chooser = new JFileChooser();
+//		int returnVal = chooser.showOpenDialog(this);
+//		if(returnVal == JFileChooser.APPROVE_OPTION) {
+//			String root_dir = chooser.getSelectedFile().toString();
+		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
+			int[] current_time = device_panel.getTime();
+			String log_filename = root_dir + "/" + current_time[0]
+							+ "_" + current_time[1] + "_"
+							+ current_time[2] + "_log.txt";
+			serial_port.startLogging(log_filename);
+//		}
 	}
 	
 	public void testMonitor() throws IOException, ParseException {
@@ -339,6 +360,7 @@ public class TelemetryFrame extends JFrame {
 	public void updateAllPanels(JSONObject obj, String type) {
 		device_panel.updatePanel(obj, type);
 		calculation_panel.updatePanel(device_panel.getDeviceData());
+		log.append(obj.toString()+"\n\n");
 		// GraphPanel is updated with calculation panel, for concurrency issues
 	}
 	

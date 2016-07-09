@@ -94,6 +94,10 @@ public class SerialPortHandler {
 		}
 	}
 	
+	public void startLogging(String log_filename) throws IOException {
+		read_thread.enableLogging(log_filename);
+	}
+	
 //	public static void write_command(byte[] bs) throws IOException {
 //		writer.write(bs);
 //	}

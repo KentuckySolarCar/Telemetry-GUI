@@ -53,74 +53,76 @@ public class BatteryPanel extends JPanel {
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
-		if(type.equals("bat_temp")) {
-			ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-			if(ave_temp > t_avg_threshold)
-				t_average_l.setBackground(Color.RED);
-			else
-				t_average_l.setBackground(Color.GREEN);
-			t_average_l.setText(Tools.roundDouble((String) obj.get("Tavg")));
-			
-			if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
-				t_max_l.setBackground(Color.RED);
-			else
-				t_max_l.setBackground(Color.GREEN);
-			t_max_l.setText(Tools.roundDouble((String) obj.get("Tmax")));
-			
-			if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
-				t_min_l.setBackground(Color.RED);
-			else
-				t_min_l.setBackground(Color.GREEN);
-			t_min_l.setText(Tools.roundDouble((String) obj.get("Tmin")));
-		}
-		else if(type.equals("bat_volt")) {
-			v_average       = Double.parseDouble((String) obj.get("Vavg"));
-			v_max           = Double.parseDouble((String) obj.get("Vmax"));
-			v_min           = Double.parseDouble((String) obj.get("Vmin"));
-			current_average = Double.parseDouble((String) obj.get("BC"));
-		
-			if(v_global_max < v_max ) {
-				v_global_max = v_max;
-				if(v_global_max > v_max_threshold)
-					v_global_max_l.setBackground(Color.RED);
+		try {
+			if(type.equals("bat_temp")) {
+				ave_temp = Double.parseDouble((String) obj.get("Tavg"));
+				if(ave_temp > t_avg_threshold)
+					t_average_l.setBackground(Color.RED);
 				else
-					v_global_max_l.setBackground(Color.GREEN);
-				v_global_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
-			}
-
-			if(v_global_min > v_min ) {
-				v_global_min = v_min;
-				if(v_global_min < v_min_threshold)
-					v_global_min_l.setBackground(Color.RED);
+					t_average_l.setBackground(Color.GREEN);
+				t_average_l.setText(Tools.roundDouble((String) obj.get("Tavg")));
+				
+				if(Double.parseDouble((String) obj.get("Tmax")) > t_max_threshold)
+					t_max_l.setBackground(Color.RED);
 				else
-					v_global_min_l.setBackground(Color.GREEN);
-				v_global_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
+					t_max_l.setBackground(Color.GREEN);
+				t_max_l.setText(Tools.roundDouble((String) obj.get("Tmax")));
+				
+				if(Double.parseDouble((String) obj.get("Tmin")) < t_min_threshold)
+					t_min_l.setBackground(Color.RED);
+				else
+					t_min_l.setBackground(Color.GREEN);
+				t_min_l.setText(Tools.roundDouble((String) obj.get("Tmin")));
 			}
+			else if(type.equals("bat_volt")) {
+				v_average       = Double.parseDouble((String) obj.get("Vavg"));
+				v_max           = Double.parseDouble((String) obj.get("Vmax"));
+				v_min           = Double.parseDouble((String) obj.get("Vmin"));
+				current_average = Double.parseDouble((String) obj.get("BC"));
+			
+				if(v_global_max < v_max ) {
+					v_global_max = v_max;
+					if(v_global_max > v_max_threshold)
+						v_global_max_l.setBackground(Color.RED);
+					else
+						v_global_max_l.setBackground(Color.GREEN);
+					v_global_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
+				}
 
-			if(v_average > v_avg_threshold)
-				v_average_l.setBackground(Color.RED);
-			else
-				v_average_l.setBackground(Color.GREEN);
-			v_average_l.setText(Tools.roundDouble((String) obj.get("Vavg")));
+				if(v_global_min > v_min ) {
+					v_global_min = v_min;
+					if(v_global_min < v_min_threshold)
+						v_global_min_l.setBackground(Color.RED);
+					else
+						v_global_min_l.setBackground(Color.GREEN);
+					v_global_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
+				}
 
-			if(v_max > v_max_threshold)
-				v_max_l.setBackground(Color.RED);
-			else
-				v_max_l.setBackground(Color.GREEN);
-			v_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
+				if(v_average > v_avg_threshold)
+					v_average_l.setBackground(Color.RED);
+				else
+					v_average_l.setBackground(Color.GREEN);
+				v_average_l.setText(Tools.roundDouble((String) obj.get("Vavg")));
 
-			if(v_min < v_min_threshold)
-				v_min_l.setBackground(Color.RED);
-			else
-				v_min_l.setBackground(Color.GREEN);
-			v_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
+				if(v_max > v_max_threshold)
+					v_max_l.setBackground(Color.RED);
+				else
+					v_max_l.setBackground(Color.GREEN);
+				v_max_l.setText(Tools.roundDouble((String) obj.get("Vmax")));
 
-			if(current_average > current_threshold)
-				current_l.setBackground(Color.RED);
-			else
-				current_l.setBackground(Color.GREEN);
-			current_l.setText(Tools.roundDouble((String) obj.get("BC")));
-		}
+				if(v_min < v_min_threshold)
+					v_min_l.setBackground(Color.RED);
+				else
+					v_min_l.setBackground(Color.GREEN);
+				v_min_l.setText(Tools.roundDouble((String) obj.get("Vmin")));
+
+				if(current_average > current_threshold)
+					current_l.setBackground(Color.RED);
+				else
+					current_l.setBackground(Color.GREEN);
+				current_l.setText(Tools.roundDouble((String) obj.get("BC")));
+			}
+		} catch (Exception e) {}
 		
 		validate();
 		repaint();
