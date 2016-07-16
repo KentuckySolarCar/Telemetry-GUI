@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.ContentHandler;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -56,23 +57,20 @@ public class SerialPortReader extends Thread {
 			String line;
 			try {
 				if((line = input_stream.readLine()) != null) {
-					telem_frame.updateSerialBar(line);
+					telem_frame.updateInputStatus(line);
 					try {
 						JSONObject obj = (JSONObject) parser.parse(line);
-						telem_frame.updateAllPanels(obj, (String) obj.get("message_id"));
-						if(logging) {
+						if(logging)
 							writer.write(line + "\n");
-						}
 					} catch(Exception e) {}
 				}
 				else {
-					telem_frame.updateSerialBar("Waiting on Serial Port");
 					input_stream.wait(3*60*1000);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
-				telem_frame.updateSerialBar("Waiting on Serial Port");
+				telem_frame.updateInputStatus("Waiting on Serial Port");
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e1) {
@@ -80,13 +78,6 @@ public class SerialPortReader extends Thread {
 					e1.printStackTrace();
 				}
 			}
-//				char input;
-//				if((input = (char) input_stream.read()) != '\n') {
-//					line += input;
-//				}
-//				telem_frame.updateSerialBar(line);
-//				JSONObject obj = (JSONObject) parser.parse(line);
-//				telem_frame.updateAllPanels(obj, (String) obj.get("message_id"));
 		}
 	}
 }

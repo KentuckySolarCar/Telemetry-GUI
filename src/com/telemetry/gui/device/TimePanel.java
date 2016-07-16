@@ -113,16 +113,6 @@ public class TimePanel extends JPanel {
 		
 		time_computer.setText(date_format.format(date));
 		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
-		
-//		if(stop_watch_on) {
-//			if(stop_watch_hour + stop_watch_minute + stop_watch_second == 0) {
-//				time_stop_watch.setBackground(Color.ORANGE);
-//			}
-//			else {
-//				time_stop_watch.setBackground(Color.RED);
-//				second--;
-//			}
-//		}
 
 		validate();
 		repaint();
@@ -131,18 +121,18 @@ public class TimePanel extends JPanel {
 	public void updatePanel(String pi_time) {
 		List<String> parsed_string = Arrays.asList(pi_time.split(":"));
 
-//		time_pi.setText(parsed_string.get(0) + " H " + parsed_string.get(1) + " M " + parsed_string.get(2) + " S ");
+		time_pi.setText(parsed_string.get(0) + " H " + parsed_string.get(1) + " M " + parsed_string.get(2) + " S ");
 		
 		validate();
 		repaint();
 	}
 	
-	public int[] getTime() {
+	public int[] getRunTime() {
 		int time[] = {hour, minute, second};
 		return time;
 	}
 	
-//	public void setTimer(int seconds) {
-//		time_computer.setBackground(color);
-//	}
+	public String getSystemTime() {
+		return time_computer.getText();
+	}
 }

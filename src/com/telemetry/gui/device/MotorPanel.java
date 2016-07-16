@@ -149,8 +149,17 @@ public class MotorPanel extends JPanel {
 	
 	public void updatePanel(JSONObject obj) {
 		try {
-			speed.add(Double.parseDouble((String) obj.get("S")) * speed_conversion);
-			current.add(Double.parseDouble((String) obj.get("I")));
+			double speed_instant = Double.parseDouble((String) obj.get("S")) * speed_conversion;
+			double current_instant = Double.parseDouble((String) obj.get("I"));
+			
+			if(speed_instant + current_instant == 0) {
+				speed_label.setBackground(Color.CYAN);
+				current_label.setBackground(Color.CYAN);
+				return;
+			}
+			
+			speed.add(speed_instant);
+			current.add(current_instant);
 
 			if(speed.getLast() > speed_threshold)
 				speed_label.setBackground(Color.RED);
@@ -167,6 +176,7 @@ public class MotorPanel extends JPanel {
 			
 			average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
 		} catch(Exception e) {}
+
 		validate();
 		repaint();
 	}

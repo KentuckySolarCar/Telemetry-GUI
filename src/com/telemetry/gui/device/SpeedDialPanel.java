@@ -77,9 +77,20 @@ public class SpeedDialPanel extends JPanel {
 	}
 	
 	public void updateDial(String speed) {
-		double int_speed = Double.parseDouble(speed);
-		speed_dataset.setValue(int_speed);
-		validate();
-		repaint();
+		double new_speed = Double.parseDouble(speed);
+		if(new_speed != 0D) {
+			speed_dataset.setValue(new_speed);
+			validate();
+			repaint();
+		}
+	}
+	
+	private double abs(Double decimal) {
+		if(decimal > 0)
+			return decimal;
+		else if(decimal < 0)
+			return -decimal;
+		else
+			return decimal;
 	}
 }

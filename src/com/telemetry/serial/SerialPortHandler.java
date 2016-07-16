@@ -34,10 +34,7 @@ public class SerialPortHandler {
 	
 	public boolean getPortReadStatus() {
 		if(read_thread != null) {
-			if(read_thread.getThreadStatus() != true)
-				return false;
-			else
-				return true;
+			return read_thread.getThreadStatus();
 		}
 		else
 			return false;

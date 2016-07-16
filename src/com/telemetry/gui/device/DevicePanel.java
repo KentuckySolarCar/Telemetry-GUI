@@ -21,8 +21,8 @@ public class DevicePanel extends JPanel{
 	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
 	private BatteryPanel battery_panel = new BatteryPanel();
 	
-	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 18);
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 16);
+	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 28);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 26);
 	
 	public DevicePanel(int tab_panel_x, int tab_panel_y) {
 		super();
@@ -59,9 +59,10 @@ public class DevicePanel extends JPanel{
 		
 	}
 	
-	public void updatePanel(JSONObject obj, String type) {
-		time_panel.updatePanel((String) obj.get("Time"));
+	public void updatePanel(JSONObject obj) {
 		try{
+			time_panel.updatePanel((String) obj.get("Time"));
+			String type = (String) obj.get("message_id");
 			switch(type) {
 			case "motor": {
 				speed_dial_panel.updateDial((String) obj.get("S"));
@@ -84,8 +85,12 @@ public class DevicePanel extends JPanel{
 		repaint();
 	}
 	
-	public int[] getTime() {
-		return time_panel.getTime();
+	public int[] getRunTime() {
+		return time_panel.getRunTime();
+	}
+	
+	public String getSystemTime() {
+		return time_panel.getSystemTime();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -100,22 +105,5 @@ public class DevicePanel extends JPanel{
 
 	public void updateRunTime() {
 		time_panel.updateRunTime();
-	}
-	
-	public void setTimer(int seconds) {
-//		time_panel.setTimer(seconds);
-	}
-
-	public static String roundDouble(String double_str) {
-		String delimit = "[.]";
-		String[] tokens = double_str.split(delimit);
-		if(tokens.length > 1) {
-			if(tokens[1].length() >= 2)
-				return tokens[0] + "." + tokens[1].substring(0, 2);
-			else
-				return tokens[0] + "." + tokens[1];
-		}
-		else
-			return double_str;
 	}
 }

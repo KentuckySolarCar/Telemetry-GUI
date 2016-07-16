@@ -28,14 +28,18 @@ public class EnergyModelFunctions {
 		System.out.println("Elevation: " + soPos.elevation);
 		System.out.println("Azimuth: " + soPos.azimuth);
 		System.out.println("Energy Left: " + energyLeft);
+		System.out.println(getTimeLeftInDay());
 	}
 	
 	/**
 	 * Returns the time left in day from the current time
+	 * @TODO Offset hour by timezone and race end time
 	 * @param current_time (seconds)
 	 */
-	public static String getTimeLeftInDay(long current_time) {
-		int seconds_left = (int) (seconds_in_day - current_time/1000);
+	public static String getTimeLeftInDay() {
+		LocalDateTime local = LocalDateTime.now();
+		int current_time = local.getHour()*3600 + local.getMinute()*60 + local.getSecond();
+		int seconds_left = (int) (seconds_in_day - current_time);
 		int hour = seconds_left / 3600;
 		int minute = (seconds_left - hour * 3600) / 60;
 		int second = seconds_left - hour * 3600 - minute * 60;
@@ -109,15 +113,13 @@ public class EnergyModelFunctions {
 	/**
 	 * Returns the array power
 	 * @param motorCurrent
-	 * @param avgBatmanCurrent
-	 * @param avgRobinCurrent
-	 * @param avgBatmanVoltage
-	 * @param avgRobinVoltage
+	 * @param avgBatteryCurrent
+	 * @param avgBatteryVoltage
 	 * @return
 	 */
-	public static double getArrayPower(double motorCurrent, double avgBatmanCurrent, double avgRobinCurrent, double avgBatmanVoltage, double avgRobinVoltage)
+	public static double getArrayPower(double motorCurrent, double avgBatteryCurrent, double avgBatteryVoltage)
 	{
-		return 20 * (((motorCurrent - avgBatmanCurrent) * avgBatmanVoltage) + ((motorCurrent - avgRobinCurrent) * avgRobinVoltage));
+		return 20 * (((motorCurrent - avgBatteryCurrent) * avgBatteryVoltage));
 	}
 	
 	/**

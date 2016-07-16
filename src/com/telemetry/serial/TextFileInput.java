@@ -34,9 +34,7 @@ public class TextFileInput extends Thread {
 			String line;
 			while((line = buffer_reader.readLine()) != null) {
 				JSONObject obj = (JSONObject) parser.parse(line);
-				String message_type = (String) obj.get("message_id");
-				telem_frame.updateSerialBar(obj.toString());
-				telem_frame.updateAllPanels(obj, message_type);
+				telem_frame.updateAllPanels(obj);
 				Thread.sleep(100);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {

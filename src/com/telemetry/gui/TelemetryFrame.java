@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.device.DevicePanel;
@@ -17,6 +18,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -26,9 +30,9 @@ import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1280; //1280
-	private static final int HEIGHT = 720; //720
-	private static final Font MONO_FONT = new Font("Consolas", Font.PLAIN, 14);
+	private static final int WIDTH = 1920; //1280
+	private static final int HEIGHT = 1080; //720
+	private static Font MONO_FONT = new Font("Consolas", Font.PLAIN, 24);
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput text_input;
@@ -40,6 +44,9 @@ public class TelemetryFrame extends JFrame {
 	private SerialPortHandler serial_port;
 	private int tab_panel_x = 1920;	//1260
 	private int tab_panel_y = 1080;	//640
+	private JSONParser parser;
+	private AuxFrame aux_frame;
+	private boolean aux_frame_on = false;
 	
 	// Temp
 	JScrollPane log_pane;
@@ -48,6 +55,9 @@ public class TelemetryFrame extends JFrame {
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
+		
+		// Variable Initializations
+		parser = new JSONParser();
 		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
@@ -154,6 +164,7 @@ public class TelemetryFrame extends JFrame {
 		
 		JMenuItem change_resolution = new JMenuItem("Change Resolution");
 		JMenuItem test_monitor = new JMenuItem("Test Monitor");
+		JMenuItem start_aux_frame = new JMenuItem("Start Aux Frame");
 		
 		start_monitor.addActionListener(new StartMonitorListener());
 		stop_monitor.addActionListener(new ActionListener() {
@@ -170,7 +181,7 @@ public class TelemetryFrame extends JFrame {
 				try {
 					serial_port.restartReadThread();
 				} catch (NullPointerException e) {
-					updateSerialBar("No serial port running");
+					updateInputStatus("No serial port running");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -189,13 +200,20 @@ public class TelemetryFrame extends JFrame {
 				}
 			}
 		});
+		start_aux_frame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				startAuxFrame();
+			}
+		});
 		
 		JPopupMenu about_page = new JPopupMenu ("About");
-		about_page.addAncestorListener (null);
+		about_page.addAncestorListener(null);
 		
 		// Tool Menu Items
 		tool_menu.add(change_resolution);
 		tool_menu.add(test_monitor);
+		tool_menu.add(start_aux_frame);
 		
 		//add menu items file menu);
 		file_menu.add(exit_menu_item);
@@ -229,7 +247,6 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	class StartLoggingListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
@@ -299,37 +316,52 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	class ChangeResolutionListener implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			changeResolution();
 		}
-		
 	}
 	
 	public void logFileSaver() throws IOException {
-//		JFileChooser chooser = new JFileChooser();
-//		int returnVal = chooser.showOpenDialog(this);
-//		if(returnVal == JFileChooser.APPROVE_OPTION) {
-//			String root_dir = chooser.getSelectedFile().toString();
-		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
-			int[] current_time = device_panel.getTime();
-			String log_filename = root_dir + "/" + current_time[0]
-							+ "_" + current_time[1] + "_"
-							+ current_time[2] + "_log.txt";
+		JFileChooser chooser = new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			String root_dir = chooser.getSelectedFile().toString();
+//		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
+			String current_time = device_panel.getSystemTime();
+			String log_filename = root_dir + "/" + current_time + "_log.txt";
 			serial_port.startLogging(log_filename);
-//		}
+		}
 	}
 	
 	public void testMonitor() throws IOException, ParseException {
-		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-		chooser.setFileFilter(filter);
-		int returnVal = chooser.showOpenDialog(this);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
-			text_input.start();
+//		JFileChooser chooser = new JFileChooser();
+//		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+//		chooser.setFileFilter(filter);
+//		int returnVal = chooser.showOpenDialog(this);
+//		if(returnVal == JFileChooser.APPROVE_OPTION) {
+//			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
+//			text_input.start();
+//		}
+		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
+		text_input.start();
+	}
+	
+	public void startAuxFrame() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice[] screens = ge.getScreenDevices();
+		GraphicsConfiguration target_screen_id = null;
+		for(int i = 0; i < screens.length; i++) {
+			if(screens[i].getDefaultConfiguration().getDevice() != this.getGraphicsConfiguration().getDevice());
+				target_screen_id = screens[i].getDefaultConfiguration();
 		}
+		
+		aux_frame = new AuxFrame(target_screen_id);
+		aux_frame.setSize(1080, 1080);
+		aux_frame.setLocationRelativeTo(null);
+		aux_frame.setVisible(true);
+		aux_frame_on = true;
 	}
 	
 	public void changeResolution() {
@@ -340,10 +372,15 @@ public class TelemetryFrame extends JFrame {
 				"Resolution Changer",
 				JOptionPane.PLAIN_MESSAGE,
 				null, resolution_options, resolution_options[0]);
-		if(s == "1920 x 1080")
+		if(s == "1920 x 1080") {
 			setSize(1920, 1080);
-		else if(s == "1280 x 720")
+			MONO_FONT = new Font("Consolas", Font.PLAIN, 24);
+			validate();
+		}
+		else if(s == "1280 x 720") {
 			setSize(1280, 720);
+			MONO_FONT = new Font("Consolas", Font.PLAIN, 20);
+		}
 		validate();
 		repaint();
 	}
@@ -357,19 +394,25 @@ public class TelemetryFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
-	public void updateAllPanels(JSONObject obj, String type) {
-		device_panel.updatePanel(obj, type);
+	public void updateAllPanels(JSONObject obj) {
+		if(aux_frame_on) {
+			aux_frame.updatePanel(obj);
+			aux_frame.validate();
+			aux_frame.repaint();
+		}
+		device_panel.updatePanel(obj);
 		calculation_panel.updatePanel(device_panel.getDeviceData());
 		log.append(obj.toString()+"\n\n");
+		serial_bar.setText(obj.toString());
 		// GraphPanel is updated with calculation panel, for concurrency issues
 	}
 	
-	public void updateSerialBar(String text) {
+	public void updateInputStatus(String text) {
 		serial_bar.removeAll();
 		serial_bar.setText(text);
-	}
-	
-	public void setTimer(int seconds) {
-		device_panel.setTimer(seconds);
+		
+		if(text == "Waiting on Serial Port")
+			if(aux_frame_on)
+				aux_frame.setInputIndicator(Color.RED);
 	}
 }

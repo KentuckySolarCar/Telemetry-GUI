@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class CalculationPanel extends JPanel{
 	
 	private GraphPanel graph_panel;
 
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 16);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 24);
 	
 	
 	public CalculationPanel(GraphPanel graph_panel) {
@@ -102,89 +101,89 @@ public class CalculationPanel extends JPanel{
 	}
 	
 	public void updatePanel(JSONObject device_data) {
-		try {
-			// Motor data includes:
-			//	ave_speed, ave_current, amp_sec, watt_sec, odometer
-			JSONObject motor_data   = (JSONObject) device_data.get("motor_data");
-			// Battery data includes:
-			//	batman: ave_temp, v_average, v_min, current_average
-			//	robin : ave_temo, v_average, v_min, current_average
-			JSONObject battery_data = (JSONObject) device_data.get("battery_data");
-			JSONObject batman_data  = (JSONObject) battery_data.get("batman");
-			JSONObject robin_data   = (JSONObject) battery_data.get("robin");
-			
-			double ave_speed   = (Double) motor_data.get("ave_speed");
-			double ave_current = (Double) motor_data.get("ave_current");
-			double amp_sec     = (Double) motor_data.get("amp_sec");
-			double watt_sec    = (Double) motor_data.get("watt_sec");
-			double odometer    = (Double) motor_data.get("odometer");
-			
-			double b_ave_temp        = (Double) batman_data.get("ave_temp");
-			double b_v_average       = (Double) batman_data.get("v_average");
-			double b_v_min           = (Double) batman_data.get("v_min");
-			double b_current_average = (Double) batman_data.get("current_average");
-			
-			double r_ave_temp        = (Double) robin_data.get("ave_temp");
-			double r_v_average       = (Double) robin_data.get("v_average");
-			double r_v_min           = (Double) robin_data.get("v_min");
-			double r_current_average = (Double) robin_data.get("current_average");
-			
-			double total_batt_v = EnergyModelFunctions.getTotalBatteryVoltage(b_v_average, r_v_average);
-			double total_batt_c = b_current_average + r_current_average;
-			double battery_runtime_current = EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, total_batt_v, total_batt_c);
-			double battery_range_current = EnergyModelFunctions.getBatteryRange(battery_runtime_current, ave_speed);
-			double motor_power_current = EnergyModelFunctions.getMotorPower(ave_current, total_batt_v);
-			
-			LocalDateTime localTime 	= LocalDateTime.now();
-			int GMTOffset           	= -5;
-			double latitude         	= 38.035831;
-			double longitude        	= -84.506800;
-			int dayTypeCode 			= 0;
-			double startChargeInMorning = 7;
-			double startRacingInMorning = 9;
-			double chargeInEveTime 		= 17;
-			double stopChargingInEve 	= 20;
-			
-			battery_runtime_q.add(battery_runtime_current);
-			if(battery_runtime_q.size() == 60) {
-				double battery_runtime_average = getAverage(battery_runtime_q);
-				battery_only_runtime_60_sec.setText(Double.toString(battery_runtime_average));
-			}	
-			
-			battery_range_q.add(battery_range_current);
-			if(battery_range_q.size() == 60) {
-				double battery_range_average = getAverage(battery_range_q);
-				battery_only_range_60_sec.setText(Double.toString(battery_range_average));
-			}
-			
-			motor_power_q.add(motor_power_current);
-			if(motor_power_q.size() == 60) {
-				double motor_power_average = getAverage(motor_power_q);
-				motor_power_60_sec.setText(Double.toString(motor_power_average));
-			}
-			
-			speed_q.add(ave_speed);
-			if(speed_q.size() == 60) {
-				double ave_speed_60_sec = getAverage(speed_q);
-				speed_60_sec.setText(Double.toString(ave_speed_60_sec));
-			}
-			
-			array_power                    .setText(Double.toString(EnergyModelFunctions.getArrayPower(ave_current, b_current_average, r_current_average, b_v_average, r_v_average)));
-			average_speed                  .setText(Double.toString(ave_speed));
-			battery_only_range_60_sec         .setText("Needs Implementing");
-			battery_and_solar_runtime_60_sec .setText("Needs Implementing");
-			battery_and_solar_range        .setText("Needs Implementing");
-			battery_charge_remaining       .setText("Needs Implementing");
-			solar_energy_remaining         .setText(Double.toString(EnergyModelFunctions.getEnergyLeftInDay(localTime, GMTOffset, latitude, longitude, dayTypeCode, startChargeInMorning, startRacingInMorning, chargeInEveTime, stopChargingInEve)));
-			time_left_in_day               .setText(EnergyModelFunctions.getTimeLeftInDay(System.currentTimeMillis()));
-			
-			validate();
-			repaint();
-			
-			graph_panel.updatePanel(this.getData());
-		} catch(NullPointerException e) {
-			// Ha nothing here...
+		// Motor data includes:
+		//	ave_speed, ave_current, amp_sec, watt_sec, odometer
+		JSONObject motor_data   = (JSONObject) device_data.get("motor_data");
+		// Battery data includes:
+		//	batman: ave_temp, v_average, v_min, current_average
+		//	robin : ave_temo, v_average, v_min, current_average
+		JSONObject battery_data = (JSONObject) device_data.get("battery_data");
+		
+		double ave_speed   = (Double) motor_data.get("ave_speed");
+		double ave_current = (Double) motor_data.get("ave_current");
+		double amp_sec     = (Double) motor_data.get("amp_sec");
+		double watt_sec    = (Double) motor_data.get("watt_sec");
+		double odometer    = (Double) motor_data.get("odometer");
+		
+		double batt_temp_avg        = (Double) battery_data.get("ave_temp");
+		double batt_v_avg           = (Double) battery_data.get("v_average");
+		double batt_v_min           = (Double) battery_data.get("v_min");
+		double batt_current_average = (Double) battery_data.get("current_average");
+		
+		double battery_runtime_current = EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, batt_v_avg, batt_current_average);
+		double battery_range_current = EnergyModelFunctions.getBatteryRange(battery_runtime_current, ave_speed);
+		double motor_power_current = EnergyModelFunctions.getMotorPower(ave_current, batt_v_avg);
+		
+		LocalDateTime localTime 	= LocalDateTime.now();
+		int GMTOffset           	= -5;
+		double latitude         	= 38.035831;
+		double longitude        	= -84.506800;
+		int dayTypeCode 			= 0;
+		double startChargeInMorning = 7;
+		double startRacingInMorning = 9;
+		double chargeInEveTime 		= 17;
+		double stopChargingInEve 	= 20;
+		
+		battery_runtime_q.add(battery_runtime_current);
+		if(battery_runtime_q.size() >= 60) {
+			double battery_runtime_average = getAverage(battery_runtime_q);
+			battery_only_runtime_60_sec.setText(Tools.roundDouble(battery_runtime_average));
+		}	
+		
+		battery_range_q.add(battery_range_current);
+		if(battery_range_q.size() >= 60) {
+			double battery_range_average = getAverage(battery_range_q);
+			battery_only_range_60_sec.setText(Tools.roundDouble(battery_range_average));
 		}
+		
+		motor_power_q.add(motor_power_current);
+		if(motor_power_q.size() >= 60) {
+			double motor_power_average = getAverage(motor_power_q);
+			motor_power_60_sec.setText(Tools.roundDouble(motor_power_average));
+		}
+		
+		speed_q.add(ave_speed);
+		if(speed_q.size() >= 60) {
+			double ave_speed_60_sec = getAverage(speed_q);
+			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
+		}
+	
+		array_power                      .setText(Tools.roundDouble(EnergyModelFunctions.getArrayPower(ave_current, batt_current_average, batt_v_avg)));
+		average_speed                    .setText(Tools.roundDouble(ave_speed));
+		solar_energy_remaining           .setText(Tools.roundDouble(EnergyModelFunctions.getEnergyLeftInDay(localTime, GMTOffset, latitude, longitude, dayTypeCode, startChargeInMorning, startRacingInMorning, chargeInEveTime, stopChargingInEve)));
+		time_left_in_day                 .setText(EnergyModelFunctions.getTimeLeftInDay());
+		battery_and_solar_runtime_60_sec .setText("Needs Implementing");
+		battery_and_solar_range          .setText("Needs Implementing");
+		battery_charge_remaining         .setText("Needs Implementing");
+		battery_and_solar_range          .setText("Needs Implementing");
+		battery_and_solar_runtime_60_sec .setText("Needs Implementing");
+		battery_charge_remaining         .setText("Needs Implementing");
+		battery_watt_hours               .setText("Needs Implementing");
+		distance_left_in_day             .setText("Needs Implementing");
+		motor_watt_hours                 .setText("Needs Implementing");
+		predicted_array_power            .setText("Needs Implementing");
+		target_average_motor_power       .setText("Needs Implementing");
+		target_battery_state_of_charge   .setText("Needs Implementing");
+		target_motor_energy.              setText("Needs Implementing");
+		target_speed                     .setText("Needs Implementing");
+		target_watt_hour_per_mile        .setText("Needs Implementing");
+		target_watt_hour_per_mile_60_sec .setText("Needs Implementing");
+		target_watt_hour_per_mile_day    .setText("Needs Implementing");
+		
+		validate();
+		repaint();
+		
+//		graph_panel.updatePanel(this.getData());
 	}
 
 	private void insertFields() {
