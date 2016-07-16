@@ -12,8 +12,6 @@ import org.json.simple.JSONObject;
 import com.telemetry.custom.SizedQueue;
 import com.telemetry.custom.Tools;
 
-import java.util.Queue;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -161,18 +159,11 @@ public class MotorPanel extends JPanel {
 			speed.add(speed_instant);
 			current.add(current_instant);
 
-			if(speed.getLast() > speed_threshold)
-				speed_label.setBackground(Color.RED);
-			else
-				speed_label.setBackground(Color.GREEN);
-
-			if(current.getLast() > current_threshold)
-				current_label.setBackground(Color.RED);
-			else
-				current_label.setBackground(Color.GREEN);
+			Tools.thresholdCheck(speed_label, speed_instant, speed_threshold, Tools.RED, Tools.GREEN);
+			Tools.thresholdCheck(current_label, current_instant, current_threshold, Tools.RED, Tools.GREEN);
 			
-			speed_label.setText(Tools.roundDouble((String) obj.get("S")));
-			current_label.setText(Tools.roundDouble((String) obj.get("I")));
+			speed_label.setText(Tools.roundDouble(speed_instant));
+			current_label.setText(Tools.roundDouble(current_instant));
 			
 			average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
 		} catch(Exception e) {}

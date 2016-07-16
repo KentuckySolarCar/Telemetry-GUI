@@ -72,7 +72,6 @@ public class CalculationPanel extends JPanel{
 	public HashMap<String, Double> getData() {
 		HashMap<String, Double> dataset = new HashMap<String, Double>();
 		
-		
 		dataset.put("array_power",                      Tools.getLabelDouble(array_power));
 		dataset.put("average_speed",                    Tools.getLabelDouble(average_speed));
 		dataset.put("battery_and_solar_range",          Tools.getLabelDouble(battery_and_solar_range));
@@ -110,7 +109,7 @@ public class CalculationPanel extends JPanel{
 		JSONObject battery_data = (JSONObject) device_data.get("battery_data");
 		
 		double ave_speed   = (Double) motor_data.get("ave_speed");
-		double ave_current = (Double) motor_data.get("ave_current");
+		double motor_current_average = (Double) motor_data.get("ave_current");
 		double amp_sec     = (Double) motor_data.get("amp_sec");
 		double watt_sec    = (Double) motor_data.get("watt_sec");
 		double odometer    = (Double) motor_data.get("odometer");
@@ -122,7 +121,7 @@ public class CalculationPanel extends JPanel{
 		
 		double battery_runtime_current = EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, batt_v_avg, batt_current_average);
 		double battery_range_current = EnergyModelFunctions.getBatteryRange(battery_runtime_current, ave_speed);
-		double motor_power_current = EnergyModelFunctions.getMotorPower(ave_current, batt_v_avg);
+		double motor_power_current = EnergyModelFunctions.getMotorPower(motor_current_average, batt_v_avg);
 		
 		LocalDateTime localTime 	= LocalDateTime.now();
 		int GMTOffset           	= -5;
@@ -158,7 +157,7 @@ public class CalculationPanel extends JPanel{
 			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
 		}
 	
-		array_power                      .setText(Tools.roundDouble(EnergyModelFunctions.getArrayPower(ave_current, batt_current_average, batt_v_avg)));
+		array_power                      .setText(Tools.roundDouble(EnergyModelFunctions.getArrayPower(motor_current_average, batt_current_average, batt_v_avg)));
 		average_speed                    .setText(Tools.roundDouble(ave_speed));
 		solar_energy_remaining           .setText(Tools.roundDouble(EnergyModelFunctions.getEnergyLeftInDay(localTime, GMTOffset, latitude, longitude, dayTypeCode, startChargeInMorning, startRacingInMorning, chargeInEveTime, stopChargingInEve)));
 		time_left_in_day                 .setText(EnergyModelFunctions.getTimeLeftInDay());
@@ -182,6 +181,13 @@ public class CalculationPanel extends JPanel{
 		
 		validate();
 		repaint();
+
+		HashMap<String, Double> dataset = this.getData();
+		dataset.put("motor_current", motor_current_average);
+		dataset.put("batt_current", batt_current_average);
+		dataset.put("batt_temp_avg", batt_temp_avg);
+		dataset.put("batt_v_avg", batt_v_avg);
+		dataset.put("batt_v_min", batt_v_min);
 		
 //		graph_panel.updatePanel(this.getData());
 	}

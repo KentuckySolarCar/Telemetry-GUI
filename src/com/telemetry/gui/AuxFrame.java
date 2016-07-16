@@ -24,8 +24,6 @@ public class AuxFrame extends JFrame {
 	private static final double speed_conversion = 0.223693629;
 	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 20); // 60
 	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 20); // 140
-	private static final Color GREEN = new Color(198, 224, 180);
-	private static final Color RED = new Color(224, 176, 132);
 	
 	private JPanel text_fields;
 
@@ -149,7 +147,7 @@ public class AuxFrame extends JFrame {
 			
 			speed_f.setText(Tools.roundDouble(speed));
 			motor_current_f.setText(Tools.roundDouble(motor_current));
-			Tools.thresholdCheck(motor_current_f, motor_current, 0D, RED, GREEN);
+			Tools.thresholdCheck(motor_current_f, motor_current, 0D, Tools.RED, Tools.GREEN);
 			break;
 		}
 		case "bat_volt": {
@@ -159,14 +157,14 @@ public class AuxFrame extends JFrame {
 			Double v_avg = Tools.getJSONDouble(obj, "Vavg") / 10000;
 			
 			if(bus_current + v_min + v_max == 0) {
-				zero_batt_indicator.setBackground(RED);
+				zero_batt_indicator.setBackground(Tools.RED);
 				return;
 			}
 			else
-				zero_batt_indicator.setBackground(GREEN);
+				zero_batt_indicator.setBackground(Tools.GREEN);
 			
 			battery_current_f.setText(Tools.roundDouble(bus_current));
-			Tools.thresholdCheck(battery_current_f, bus_current, 0D, RED, GREEN);
+			Tools.thresholdCheck(battery_current_f, bus_current, 0D, Tools.RED, Tools.GREEN);
 			bat_volt_min_f.setText(Tools.roundDouble(v_min));
 			bat_volt_max_f.setText(Tools.roundDouble(v_max));
 			break;
@@ -175,14 +173,14 @@ public class AuxFrame extends JFrame {
 			Double max_temp = Tools.getJSONDouble(obj, "Tmax");
 			
 			if(max_temp == 0) {
-				zero_batt_indicator.setBackground(RED);
+				zero_batt_indicator.setBackground(Tools.RED);
 				return;
 			}
 			else
-				zero_batt_indicator.setBackground(GREEN);
+				zero_batt_indicator.setBackground(Tools.GREEN);
 			
 			bat_temp_max_f.setText(Tools.roundDouble(max_temp));
-			Tools.thresholdCheck(bat_temp_max_f, max_temp, 45D, RED, GREEN);
+			Tools.thresholdCheck(bat_temp_max_f, max_temp, 45D, Tools.RED, Tools.GREEN);
 			break;
 		}
 		default:

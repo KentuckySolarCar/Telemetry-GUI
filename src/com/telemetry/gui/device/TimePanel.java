@@ -86,21 +86,16 @@ public class TimePanel extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		time_counter.setFont(DevicePanel.FIELD_FONT);
-		time_counter.setOpaque(true);
-		time_counter.setBackground(Color.GREEN);
 		add(time_counter, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		time_computer.setFont(DevicePanel.FIELD_FONT);
-		time_computer.setOpaque(true);
 		add(time_computer, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
 		time_pi.setFont(DevicePanel.FIELD_FONT);
-		time_pi.setOpaque(true);
-		time_pi.setBackground(Color.ORANGE);
 	}
 	
 	public void updateRunTime() {

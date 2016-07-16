@@ -7,6 +7,9 @@ import javax.swing.JLabel;
 import org.json.simple.JSONObject;
 
 public class Tools {
+	public static final Color GREEN = new Color(198, 224, 180);
+	public static final Color RED = new Color(224, 176, 132);
+
 	public static String roundDouble(String double_str) {
 		String delimit = "[.]";
 		String[] tokens = double_str.split(delimit);

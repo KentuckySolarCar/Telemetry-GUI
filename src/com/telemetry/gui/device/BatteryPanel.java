@@ -62,22 +62,13 @@ public class BatteryPanel extends JPanel {
 					return;
 				}
 
-				if(ave_temp > t_avg_threshold)
-					t_average_l.setBackground(Color.RED);
-				else
-					t_average_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(t_average_l, ave_temp, t_avg_threshold, Tools.RED, Tools.GREEN);
 				t_average_l.setText(Tools.roundDouble(ave_temp));
 				
-				if(max_temp > t_max_threshold)
-					t_max_l.setBackground(Color.RED);
-				else
-					t_max_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(t_max_l, max_temp, t_max_threshold, Tools.RED, Tools.GREEN);
 				t_max_l.setText(Tools.roundDouble(max_temp));
 				
-				if(min_temp < t_min_threshold)
-					t_min_l.setBackground(Color.RED);
-				else
-					t_min_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(t_min_l, min_temp, t_min_threshold, Tools.GREEN, Tools.RED);
 				t_min_l.setText(Tools.roundDouble(min_temp));
 			}
 			else if(type.equals("bat_volt")) {
@@ -94,28 +85,16 @@ public class BatteryPanel extends JPanel {
 					return;
 				}
 			
-				if(v_average > v_avg_threshold)
-					v_average_l.setBackground(Color.RED);
-				else
-					v_average_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(v_average_l, v_average, v_avg_threshold, Tools.RED, Tools.GREEN);
 				v_average_l.setText(Tools.roundDouble(v_average));
 
-				if(v_max > v_max_threshold)
-					v_max_l.setBackground(Color.RED);
-				else
-					v_max_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(v_max_l, v_max, v_max_threshold, Tools.RED, Tools.GREEN);
 				v_max_l.setText(Tools.roundDouble(v_max));
 
-				if(v_min < v_min_threshold)
-					v_min_l.setBackground(Color.RED);
-				else
-					v_min_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(v_min_l, v_min, v_min_threshold, Tools.GREEN, Tools.RED);
 				v_min_l.setText(Tools.roundDouble(v_min));
 
-				if(current_average > current_threshold)
-					current_l.setBackground(Color.RED);
-				else
-					current_l.setBackground(Color.GREEN);
+				Tools.thresholdCheck(current_l, current_average, current_threshold, Tools.RED, Tools.GREEN);
 				current_l.setText(Tools.roundDouble(current_average));
 			}
 		} catch (Exception e) {}

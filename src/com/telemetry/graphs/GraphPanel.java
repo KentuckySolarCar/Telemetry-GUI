@@ -89,6 +89,11 @@ public class GraphPanel extends JPanel {
 	 *  	target_watt_hour_per_mile_day
 	 *  	time_elapsed
 	 *  	time_left_in_day
+	 *   	motor_current
+	 *   	batt_current
+	 *   	batt_temp_avg
+	 *   	batt_v_avg
+	 *   	batt_v_min
 	 *  
 	 * @see CalculationPanel -> getData() for more info on input data
 	 *  	
