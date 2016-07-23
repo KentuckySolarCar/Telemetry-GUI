@@ -21,13 +21,8 @@ public class DevicePanel extends JPanel{
 	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
 	private BatteryPanel battery_panel = new BatteryPanel();
 	
-	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 28);
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 26);
-	
-	public DevicePanel(int tab_panel_x, int tab_panel_y) {
+	public DevicePanel() {
 		super();
-		
-		setSize(tab_panel_x, tab_panel_y);
 		
 		JPanel time_speed_panel = new JPanel(new GridLayout(1, 3));
 		time_speed_panel.add(time_panel);
@@ -60,25 +55,21 @@ public class DevicePanel extends JPanel{
 	}
 	
 	public void updatePanel(JSONObject obj) {
-		try{
-			time_panel.updatePanel((String) obj.get("Time"));
-			String type = (String) obj.get("message_id");
-			switch(type) {
-			case "motor": {
-				speed_dial_panel.updateDial((String) obj.get("S"));
-				motor_panel.updatePanel(obj);
-				break;
-			}
-			case "bat_volt": 
-			case "bat_temp": {
-				battery_panel.updatePanel(obj, type);
-				break;
-			}
-			default:
-				break;
-			}
-		} catch(NullPointerException e) {
-			
+		time_panel.updatePanel((String) obj.get("Time"));
+		String type = (String) obj.get("message_id");
+		switch(type) {
+		case "motor": {
+			speed_dial_panel.updateDial((String) obj.get("S"));
+			motor_panel.updatePanel(obj);
+			break;
+		}
+		case "bat_volt": 
+		case "bat_temp": {
+			battery_panel.updatePanel(obj, type);
+			break;
+		}
+		default:
+			break;
 		}
 		
 		validate();

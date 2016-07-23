@@ -16,21 +16,18 @@ public class LogPanel extends JPanel {
 	private JTextArea text_area;
 	private JScrollPane scroll_pane;
 	
-	public LogPanel(int tab_panel_x, int tab_panel_y) {
-		super();
-		
-		setSize(tab_panel_x, tab_panel_y);
+	public LogPanel() {
+//		setSize(tab_panel_x, tab_panel_y);
+		setLayout(new BorderLayout());
 		
 		text_area = new JTextArea();
-		text_area.setSize(new Dimension(tab_panel_x, tab_panel_y));
 		text_area.setEditable(false);
 		text_area.setLineWrap(true);
 //		text_area.setAutoscrolls(true);
 		
 		scroll_pane = new JScrollPane(text_area);
-		scroll_pane.setSize(tab_panel_x, tab_panel_y);
 	
-		add(text_area);
+		add(scroll_pane, BorderLayout.CENTER);
 	}
 	
 	public void updatePanel(JSONObject obj) {

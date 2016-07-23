@@ -57,7 +57,7 @@ public class SerialPortReader extends Thread {
 			String line;
 			try {
 				if((line = input_stream.readLine()) != null) {
-					telem_frame.updateInputStatus(line);
+					telem_frame.updateStatus(line);
 					try {
 						JSONObject obj = (JSONObject) parser.parse(line);
 						if(logging)
@@ -70,7 +70,7 @@ public class SerialPortReader extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
-				telem_frame.updateInputStatus("Waiting on Serial Port");
+				telem_frame.updateStatus("Waiting on Serial Port");
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e1) {

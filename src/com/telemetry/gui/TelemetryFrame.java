@@ -12,6 +12,7 @@ import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 import com.sun.glass.events.KeyEvent;
 import com.telemetry.actions.*;
+import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
@@ -30,9 +31,8 @@ import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1920; //1280
-	private static final int HEIGHT = 1080; //720
-	private static Font MONO_FONT = new Font("Consolas", Font.PLAIN, 24);
+	private static final int WIDTH = 1280; //1280
+	private static final int HEIGHT = 720; //720
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput text_input;
@@ -42,9 +42,6 @@ public class TelemetryFrame extends JFrame {
 	private static LogPanel log_panel;
 	private JTextArea serial_bar;
 	private SerialPortHandler serial_port;
-	private int tab_panel_x = 1920;	//1260
-	private int tab_panel_y = 1080;	//640
-	private JSONParser parser;
 	private AuxFrame aux_frame;
 	private boolean aux_frame_on = false;
 	
@@ -56,22 +53,29 @@ public class TelemetryFrame extends JFrame {
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
 		
-		// Variable Initializations
-		parser = new JSONParser();
-		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
-//		setResizable(false);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		insertComponents();
 		
-		// Initializes and edits layout of tab_panel container
+		serial_port = new SerialPortHandler(this);
+		
+		// Reveals main_frame
+		setVisible(true);
+		setLocationRelativeTo(null);
+
+		validate();
+		repaint();
+	}
+	
+	private void insertComponents() {
 		tab_panel = new JTabbedPane();
 	    calculation_panel = new CalculationPanel(graph_panel);
-	    device_panel = new DevicePanel(tab_panel_x / 2, tab_panel_y);
+	    device_panel = new DevicePanel();
 	    graph_panel = new GraphPanel(calculation_panel);
-	    log_panel = new LogPanel(tab_panel_x, tab_panel_y);
+	    log_panel = new LogPanel();
 	    
 	    log = new JTextArea();
 	    log_pane = new JScrollPane(log);
@@ -84,13 +88,8 @@ public class TelemetryFrame extends JFrame {
 		tab_panel.add("Car Status", combined_panel);
 //		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
-	    tab_panel.add("Log", log_pane);
+	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
-		
-		tab_panel.setSize(new Dimension(tab_panel_x, tab_panel_y));
-		
-	    // Uncomment next line to make tab_panel scalable
-		// new JScrollPane(tab_panel);
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
 		// and log_panel EAST 
@@ -101,43 +100,16 @@ public class TelemetryFrame extends JFrame {
 //		serial_panel.setLayout(new BorderLayout());
 
 	    serial_bar = new JTextArea();
-	    serial_bar.setFont(MONO_FONT);
+	    serial_bar.setFont(Tools.FIELD_FONT);
 	    serial_bar.setEditable(false);
 	    serial_bar.setBounds(serial_bar.getX(),
 	    					 serial_bar.getY(),
 	    					 WIDTH-10, 
 	    					 serial_bar.getHeight());
-//		serial_panel.add(serial_bar, BorderLayout.WEST);
 	    add(serial_bar, BorderLayout.SOUTH);
-
-//		JButton reset_monitor = new JButton("Reset Monitor");
-//		reset_monitor.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				try {
-//					serial_port.restartReadThread();
-//				} catch (NullPointerException e) {
-//					updateSerialBar("No serial port running");
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//		serial_panel.add(reset_monitor, BorderLayout.EAST);
-//		
-//		add(serial_panel, BorderLayout.SOUTH);
 		//---------------------------------Temp-----------------------------//
 		
 		createMenuBar();
-		
-		serial_port = new SerialPortHandler(this);
-		
-		// Reveals main_frame
-		setVisible(true);
-		setLocationRelativeTo(null);
-
-		validate();
-		repaint();
 	}
 	
 	private void createMenuBar(){
@@ -146,26 +118,28 @@ public class TelemetryFrame extends JFrame {
 		// create menus
 		JMenu file_menu = new JMenu("File");
 		JMenu control_menu = new JMenu("Control");
-		control_menu.setMnemonic(KeyEvent.VK_ALT);
 		JMenu tool_menu = new JMenu("Tool");
-		final JMenu about_menu = new JMenu("About");
+		JMenu aux_menu = new JMenu("Aux");
+		JMenu about_menu = new JMenu("About");
+		control_menu.setMnemonic(KeyEvent.VK_ALT);
 		
 		// create menu items
 		JMenuItem exit_menu_item = new JMenuItem("Exit");
-		exit_menu_item.addActionListener(new ExitMenuListener());
-		
 		JMenuItem change_port        = new JMenuItem("Change Port");		
 		JMenuItem start_monitor      = new JMenuItem("Start Monitor");	
 		JMenuItem stop_monitor       = new JMenuItem("Stop Monitor");
 		JMenuItem restart_monitor    = new JMenuItem("Reconnect");
 		JMenuItem start_calculations = new JMenuItem("Start Calculations");
 		JMenuItem start_logging      = new JMenuItem("Start Logging");
-		JMenuItem stop_logging       = new JMenuItem("Stop Logging");
-		
-		JMenuItem change_resolution = new JMenuItem("Change Resolution");
+		JMenuItem main_resolution = new JMenuItem("Main Resolution");
 		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		JMenuItem start_aux_frame = new JMenuItem("Start Aux Frame");
+		JMenuItem aux_resolution = new JMenuItem("Aux Resolution");
+		JMenuItem main_font = new JMenuItem("Change Main Font");
 		
+		JPopupMenu about_page = new JPopupMenu ("About");
+
+		exit_menu_item.addActionListener(new ExitMenuListener());
 		start_monitor.addActionListener(new StartMonitorListener());
 		stop_monitor.addActionListener(new ActionListener() {
 			@Override
@@ -173,7 +147,6 @@ public class TelemetryFrame extends JFrame {
 				serial_port.stopSerialPort();
 			}
 		});
-//		start_calculations.addActionListener(new StartCalculationListener());
 		change_port.addActionListener(new ChangePortListener());
 		restart_monitor.addActionListener(new ActionListener() {
 			@Override
@@ -181,13 +154,13 @@ public class TelemetryFrame extends JFrame {
 				try {
 					serial_port.restartReadThread();
 				} catch (NullPointerException e) {
-					updateInputStatus("No serial port running");
+					updateStatus("No serial port running");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
-		change_resolution.addActionListener(new ChangeResolutionListener());
+		main_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
 		start_logging.addActionListener(new ActionListener() {
 			@Override
@@ -206,18 +179,22 @@ public class TelemetryFrame extends JFrame {
 				startAuxFrame();
 			}
 		});
-		
-		JPopupMenu about_page = new JPopupMenu ("About");
+		aux_resolution.addActionListener(new AuxResolutionListener());
+		main_font.addActionListener(new ChangeMainFontListener());
 		about_page.addAncestorListener(null);
 		
 		// Tool Menu Items
-		tool_menu.add(change_resolution);
+		tool_menu.add(main_resolution);
+		tool_menu.add(main_font);
 		tool_menu.add(test_monitor);
-		tool_menu.add(start_aux_frame);
 		
-		//add menu items file menu);
+		// Aux Menu Items
+		aux_menu.add(start_aux_frame);
+		aux_menu.add(aux_resolution);
+		
+		// add menu items file menu);
 		file_menu.add(exit_menu_item);
-		//add control items to control menu
+		// add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
 		control_menu.add(restart_monitor);
@@ -226,18 +203,17 @@ public class TelemetryFrame extends JFrame {
 		control_menu.add(start_logging);
 		
 		
-		//add about menu
+		// add about menu
 		about_menu.add(about_page);
 
-		//pop up menu
-		
-		//add menu to menu bar
+		// add menu to menu bar
 		menu_bar.add(file_menu);
 		menu_bar.add(control_menu);
 		menu_bar.add(tool_menu);
+		menu_bar.add(aux_menu);
 		menu_bar.add(about_menu);
 		
-		//add menu bar to the frame
+		// add menu bar to the frame
 		setJMenuBar(menu_bar);
 		setVisible(true);
 	}
@@ -261,7 +237,22 @@ public class TelemetryFrame extends JFrame {
 				serial_port.connect(s);
 				DisplayCurrentPortDialog(s);
 			} catch (Exception e) {
-				DisplayPortErrorDialog("Cannot Connect to " + s);
+				displayErrorDialog("Cannot Connect to " + s);
+			}
+		}
+	}
+	
+	class AuxResolutionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				aux_frame.getClass();
+				String s = JOptionPane.showInputDialog("Please enter the resolution\nSeparated by a comma (W/H)", null);
+				String resolution[] = s.split(",");
+				aux_frame.setSize(Tools.stringToInt(resolution[0]), Tools.stringToInt(resolution[1]));
+				updateStatus("Aux Frame Resolution Changed");
+			} catch(NullPointerException e) {
+				updateStatus("Aux Frame not initialized");
 			}
 		}
 	}
@@ -289,24 +280,11 @@ public class TelemetryFrame extends JFrame {
 		}
 	}
 	
-	 // For now, lets assume calculation is started every time telemetry is started
-	class StartCalculationListener implements ActionListener {
-		public void actionPerformed(ActionEvent e){
-//			if(serial_port.getPortReadStatus() != true) {
-//				DisplayPortErrorDialog("Not listening to any ports yet");
-//			}
-//			else {
-//				calculation_handler = new StartCalculation();
-//				calculation_handler.start();
-//			}
-		}
-	}
-	
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				if(serial_port.getPortNum() == "")
-					DisplayPortErrorDialog("Port is Empty!");
+					displayErrorDialog("Port is Empty!");
 				else   
 					serial_port.startReadThread();
 			} catch (Exception e1) {
@@ -318,8 +296,18 @@ public class TelemetryFrame extends JFrame {
 	class ChangeResolutionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			changeResolution();
+			changeMainResolution();
 		}
+	}
+	
+	class ChangeMainFontListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			String s = JOptionPane.showInputDialog("Please enter the desired font", null);
+			Tools.FIELD_FONT = new Font(Tools.FIELD_FONT.getFontName(), Tools.FIELD_FONT.getStyle(), Tools.stringToInt(s));
+			changeFontHelper(Tools.FIELD_FONT);
+		}
+		
 	}
 	
 	public void logFileSaver() throws IOException {
@@ -364,7 +352,7 @@ public class TelemetryFrame extends JFrame {
 		aux_frame_on = true;
 	}
 	
-	public void changeResolution() {
+	public void changeMainResolution() {
 		Object[] resolution_options = {"1920 x 1080", "1280 x 720"};
 		String s = (String) JOptionPane.showInputDialog(
 				this,
@@ -374,19 +362,19 @@ public class TelemetryFrame extends JFrame {
 				null, resolution_options, resolution_options[0]);
 		if(s == "1920 x 1080") {
 			setSize(1920, 1080);
-			MONO_FONT = new Font("Consolas", Font.PLAIN, 24);
+			Tools.FIELD_FONT = new Font("Consolas", Font.PLAIN, 24);
 			validate();
 		}
 		else if(s == "1280 x 720") {
 			setSize(1280, 720);
-			MONO_FONT = new Font("Consolas", Font.PLAIN, 20);
+			Tools.FIELD_FONT = new Font("Consolas", Font.PLAIN, 20);
 		}
 		validate();
 		repaint();
 	}
 	
-	public void DisplayPortErrorDialog(String err_msg) {
-		JOptionPane.showMessageDialog(this, err_msg, "Port Error", JOptionPane.ERROR_MESSAGE);
+	public void displayErrorDialog(String err_msg) {
+		JOptionPane.showMessageDialog(this, err_msg, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	public void DisplayCurrentPortDialog(String port_num) {
@@ -407,12 +395,16 @@ public class TelemetryFrame extends JFrame {
 		// GraphPanel is updated with calculation panel, for concurrency issues
 	}
 	
-	public void updateInputStatus(String text) {
+	public void updateStatus(String text) {
 		serial_bar.removeAll();
 		serial_bar.setText(text);
 		
 		if(text == "Waiting on Serial Port")
 			if(aux_frame_on)
 				aux_frame.setInputIndicator(Color.RED);
+	}
+	
+	public void changeFontHelper(Font font) {
+		Tools.changeFrameFonts(this, font);
 	}
 }

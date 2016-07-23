@@ -1,6 +1,5 @@
 package com.telemetry.gui.device;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.*;
+
+import com.telemetry.custom.Tools;
 
 public class TimePanel extends JPanel {
 	private static final long serialVersionUID = -8596634937772865283L;
@@ -25,7 +26,6 @@ public class TimePanel extends JPanel {
 	private int stop_watch_hour = 0;
 	private int stop_watch_minute = 0;
 	private int stop_watch_second = 0;
-	private boolean stop_watch_on = false;
 	
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
@@ -40,6 +40,7 @@ public class TimePanel extends JPanel {
 								+ stop_watch_minute + " M " 
 								+ stop_watch_second + " S ");
 		time_computer.setText(date_format.format(date));
+		time_pi.setText("VALUE");
 
 		setLayout(new GridBagLayout());
 		insertComponents();
@@ -57,7 +58,7 @@ public class TimePanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		JLabel title = new JLabel("Time");
-		title.setFont(DevicePanel.TITLE_FONT);
+		title.setFont(Tools.TITLE_FONT);
 		add(title, gbc);
 		
 		// Resets gridwidth
@@ -67,35 +68,36 @@ public class TimePanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		JLabel run_time = new JLabel("Run Time:");
-		run_time.setFont(DevicePanel.FIELD_FONT);
+		run_time.setFont(Tools.FIELD_FONT);
 		add(run_time, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		JLabel computer_time = new JLabel("Computer Time:");
-		computer_time.setFont(DevicePanel.FIELD_FONT);
+		computer_time.setFont(Tools.FIELD_FONT);
 		add(computer_time, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		JLabel pi_time = new JLabel("PI Time:");
-		pi_time.setFont(DevicePanel.FIELD_FONT);
+		pi_time.setFont(Tools.FIELD_FONT);
 		add(pi_time, gbc);
 		
 		//-----------------------Fields-------------------------//
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		time_counter.setFont(DevicePanel.FIELD_FONT);
+		time_counter.setFont(Tools.FIELD_FONT);
 		add(time_counter, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		time_computer.setFont(DevicePanel.FIELD_FONT);
+		time_computer.setFont(Tools.FIELD_FONT);
 		add(time_computer, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		time_pi.setFont(DevicePanel.FIELD_FONT);
+		time_pi.setFont(Tools.FIELD_FONT);
+		add(time_pi, gbc);
 	}
 	
 	public void updateRunTime() {
@@ -116,7 +118,9 @@ public class TimePanel extends JPanel {
 	public void updatePanel(String pi_time) {
 		List<String> parsed_string = Arrays.asList(pi_time.split(":"));
 
-		time_pi.setText(parsed_string.get(0) + " H " + parsed_string.get(1) + " M " + parsed_string.get(2) + " S ");
+		time_pi.setText(parsed_string.get(0) + ":" 
+							+ parsed_string.get(1) + ":" 
+							+ Tools.stringToInt(parsed_string.get(2)));
 		
 		validate();
 		repaint();

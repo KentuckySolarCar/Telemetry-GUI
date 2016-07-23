@@ -70,59 +70,59 @@ public class MotorPanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.CENTER;
 		JLabel motor_controller = new JLabel("Motor Controller");
-		motor_controller.setFont(DevicePanel.TITLE_FONT);
+		motor_controller.setFont(Tools.TITLE_FONT);
 		add(motor_controller, gbc);
 		
 		//----------------------Labels------------------------//
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		JLabel speed = new JLabel("Speed:");
-		speed.setFont(DevicePanel.FIELD_FONT);
+		speed.setFont(Tools.FIELD_FONT);
 		add(speed, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		JLabel current = new JLabel("Current:");
-		current.setFont(DevicePanel.FIELD_FONT);
+		current.setFont(Tools.FIELD_FONT);
 		add(current, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		JLabel energy = new JLabel("Energy:");
-		energy.setFont(DevicePanel.FIELD_FONT);
+		energy.setFont(Tools.FIELD_FONT);
 		add(energy, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridy = 4;
 		JLabel av_speed = new JLabel("Av. Speed:");
-		av_speed.setFont(DevicePanel.FIELD_FONT);
+		av_speed.setFont(Tools.FIELD_FONT);
 		add(av_speed, gbc);
 			
 		//----------------------Fields------------------------//
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		speed_label.setFont(DevicePanel.FIELD_FONT);
+		speed_label.setFont(Tools.FIELD_FONT);
 		speed_label.setOpaque(true);
 		speed_label.setBackground(Color.ORANGE);
 		add(speed_label, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		current_label.setFont(DevicePanel.FIELD_FONT);
+		current_label.setFont(Tools.FIELD_FONT);
 		current_label.setOpaque(true);
 		current_label.setBackground(Color.ORANGE);
 		add(current_label, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		energy_label.setFont(DevicePanel.FIELD_FONT);
+		energy_label.setFont(Tools.FIELD_FONT);
 		energy_label.setOpaque(true);
 		energy_label.setBackground(Color.ORANGE);
 		add(energy_label, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		average_speed_label.setFont(DevicePanel.FIELD_FONT);
+		average_speed_label.setFont(Tools.FIELD_FONT);
 		average_speed_label.setOpaque(true);
 		average_speed_label.setBackground(Color.ORANGE);
 		add(average_speed_label, gbc);

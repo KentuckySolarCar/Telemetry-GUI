@@ -7,6 +7,9 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -36,6 +39,7 @@ public class AuxFrame extends JFrame {
 	private JLabel bat_temp_max_f    = new JLabel("00.000");
 	private JLabel input_indicator   = new JLabel("Continuous Input");
 	private JLabel zero_batt_indicator = new JLabel("Non-zero Values");
+	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	public AuxFrame(GraphicsConfiguration target_screen_id) {
 		super(target_screen_id);
@@ -139,6 +143,8 @@ public class AuxFrame extends JFrame {
 	}
 	
 	public void updatePanel(JSONObject obj) {
+		Date date = new Date();
+		time_f.setText(date_format.format(date));
 		String type = (String) obj.get("message_id");
 		switch(type) {
 		case "motor": {

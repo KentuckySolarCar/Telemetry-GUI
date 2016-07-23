@@ -52,7 +52,7 @@ public class CalculationPanel extends JPanel{
 	
 	private GraphPanel graph_panel;
 
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 24);
+	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 14);
 	
 	
 	public CalculationPanel(GraphPanel graph_panel) {

@@ -127,7 +127,7 @@ public class BatteryPanel extends JPanel {
 		gbc.gridy = 0;
 		gbc.gridwidth = 8;
 		JLabel title = new JLabel("Battery");
-		title.setFont(DevicePanel.TITLE_FONT);
+		title.setFont(Tools.TITLE_FONT);
 		add(title, gbc);
 
 		// Set the grid width back to 1
@@ -149,7 +149,7 @@ public class BatteryPanel extends JPanel {
 		gbc.gridy = 2;
 		
 		for(JLabel label : labels) {
-			label.setFont(DevicePanel.FIELD_FONT);
+			label.setFont(Tools.FIELD_FONT);
 			add(label, gbc);
 			gbc.gridy++;
 		}
@@ -169,7 +169,7 @@ public class BatteryPanel extends JPanel {
 		gbc.gridy = 2;
 		
 		for(JLabel unit_label : units) {
-			unit_label.setFont(DevicePanel.FIELD_FONT);
+			unit_label.setFont(Tools.FIELD_FONT);
 			add(unit_label, gbc);
 			gbc.gridy++;
 		}
@@ -179,49 +179,49 @@ public class BatteryPanel extends JPanel {
 		
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		v_average_l.setFont(DevicePanel.FIELD_FONT);
+		v_average_l.setFont(Tools.FIELD_FONT);
 		v_average_l.setOpaque(true);
 		v_average_l.setBackground(Color.ORANGE);
 		add(v_average_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		v_max_l.setFont(DevicePanel.FIELD_FONT);
+		v_max_l.setFont(Tools.FIELD_FONT);
 		v_max_l.setOpaque(true);
 		v_max_l.setBackground(Color.ORANGE);
 		add(v_max_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 4;
-		v_min_l.setFont(DevicePanel.FIELD_FONT);
+		v_min_l.setFont(Tools.FIELD_FONT);
 		v_min_l.setOpaque(true);
 		v_min_l.setBackground(Color.ORANGE);
 		add(v_min_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 5;
-		current_l.setFont(DevicePanel.FIELD_FONT);
+		current_l.setFont(Tools.FIELD_FONT);
 		current_l.setOpaque(true);
 		current_l.setBackground(Color.ORANGE);
 		add(current_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 6;
-		t_average_l.setFont(DevicePanel.FIELD_FONT);
+		t_average_l.setFont(Tools.FIELD_FONT);
 		t_average_l.setOpaque(true);
 		t_average_l.setBackground(Color.ORANGE);
 		add(t_average_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 7;
-		t_max_l.setFont(DevicePanel.FIELD_FONT);
+		t_max_l.setFont(Tools.FIELD_FONT);
 		t_max_l.setOpaque(true);
 		t_max_l.setBackground(Color.ORANGE);
 		add(t_max_l, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 8;
-		t_min_l.setFont(DevicePanel.FIELD_FONT);
+		t_min_l.setFont(Tools.FIELD_FONT);
 		t_min_l.setOpaque(true);
 		t_min_l.setBackground(Color.ORANGE);
 		add(t_min_l, gbc);

@@ -27,33 +27,33 @@ public class MpptPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.CENTER;
 		
 		//----------------------Title------------------------//
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		JLabel title = new JLabel("MPPTs");
-		title.setFont(DevicePanel.TITLE_FONT);
-		add(title, gbc);
-		
-		//----------------------Labels------------------------//
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		JLabel mppt_label = new JLabel("#");
-		mppt_label.setFont(DevicePanel.FIELD_FONT);
-		add(mppt_label, gbc);
-		
-		//----------------------Labels------------------------//
-		gbc.gridx = 2;
-		gbc.gridy = 1;
-		out_current.setFont(DevicePanel.FIELD_FONT);
-		out_current.setOpaque(true);
-		out_current.setBackground(Color.ORANGE);
-		add(out_current, gbc);
+//		gbc.gridx = 1;
+//		gbc.gridy = 0;
+//		JLabel title = new JLabel("MPPTs");
+//		title.setFont(DevicePanel.TITLE_FONT);
+//		add(title, gbc);
+//		
+//		//----------------------Labels------------------------//
+//		gbc.gridx = 0;
+//		gbc.gridy = 1;
+//		JLabel mppt_label = new JLabel("#");
+//		mppt_label.setFont(DevicePanel.FIELD_FONT);
+//		add(mppt_label, gbc);
+//		
+//		//----------------------Labels------------------------//
+//		gbc.gridx = 2;
+//		gbc.gridy = 1;
+//		out_current.setFont(DevicePanel.FIELD_FONT);
+//		out_current.setOpaque(true);
+//		out_current.setBackground(Color.ORANGE);
+//		add(out_current, gbc);
 	}
-	
-	private void insertLabelPanel() {
-		mppt_label_panel.add(new JLabel("MPPTs"));
-		mppt_label_panel.add(new JLabel("    #"));
-		add(mppt_label_panel);
-	}
+//	
+//	private void insertLabelPanel() {
+//		mppt_label_panel.add(new JLabel("MPPTs"));
+//		mppt_label_panel.add(new JLabel("    #"));
+//		add(mppt_label_panel);
+//	}
 	
 	private void insertDataPanel() {
 		mppt_data_panel.add(new JLabel(" "));
