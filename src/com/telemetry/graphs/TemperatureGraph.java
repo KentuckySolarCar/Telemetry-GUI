@@ -3,6 +3,7 @@ package com.telemetry.graphs;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -24,12 +25,11 @@ public class TemperatureGraph extends JPanel {
 	private ChartPanel temperature_panel;
 //	private JPanel button_panel;
 	private XYSeriesCollection temperature_dataset;
-	private XYSeries motor;
-	private XYSeries motor_controller;
-	private XYSeries b_temp_max;
-	private XYSeries b_temp_min;
-	private XYSeries r_temp_max;
-	private XYSeries r_temp_min;
+//	private XYSeries motor;
+//	private XYSeries motor_controller;
+	private XYSeries batt_temp_avg;
+//	private XYSeries b_temp_max;
+//	private XYSeries b_temp_min;
 	
 	public TemperatureGraph(int width, int height) {
 		setSize(width, height);
@@ -73,40 +73,28 @@ public class TemperatureGraph extends JPanel {
 	}
 	
 	private XYSeriesCollection createTemperatureDataSet() {
-		motor = new XYSeries("Motor");
-		motor_controller = new XYSeries("Motor Controller");
-		b_temp_max = new XYSeries("Batman Max");
-		b_temp_min = new XYSeries("Batman Min");
-		r_temp_max = new XYSeries("Robin Max");
-		r_temp_min = new XYSeries("Robin Min");
+		//motor = new XYSeries("Motor");
+		//motor_controller = new XYSeries("Motor Controller");
+		batt_temp_avg = new XYSeries("Batman Ave");
+		//b_temp_max = new XYSeries("Batman Max");
+		//b_temp_min = new XYSeries("Batman Min");
 		
 		XYSeriesCollection temperature_dataset = new XYSeriesCollection();
-		temperature_dataset.addSeries(motor);
-		temperature_dataset.addSeries(motor_controller);
-		temperature_dataset.addSeries(b_temp_max);
-		temperature_dataset.addSeries(b_temp_min);
-		temperature_dataset.addSeries(r_temp_max);
-		temperature_dataset.addSeries(r_temp_min);
+		//temperature_dataset.addSeries(motor);
+		//temperature_dataset.addSeries(motor_controller);
+		temperature_dataset.addSeries(batt_temp_avg);
+		//temperature_dataset.addSeries(b_temp_max);
+		//temperature_dataset.addSeries(b_temp_min);
 		
 		return temperature_dataset;
 	}
 	
-	/* Double array of temperatures format (indexes):
-	 * 0: time in seconds
-	 * 1: temp of motor
-	 * 2: temp of motor_controller
-	 * 3: temp of b_temp_max
-	 * 4: temp of b_temp_min
-	 * 5: temp of r_temp_max
-	 * 6: temp of r_temp_min
-	 */
-	public void updateDataSet(double[] temps) {
-		motor.add(temps[0], temps[1]);
-		motor_controller.add(temps[0], temps[2]);
-		b_temp_max.add(temps[0], temps[3]);
-		b_temp_min.add(temps[0], temps[4]);
-		r_temp_max.add(temps[0], temps[5]);
-		r_temp_min.add(temps[0], temps[6]);
+	public void updateDataSet(HashMap<String, Double> calculation_data) {
+		//motor.add(calculation_data.get("time_elapsed"), calculation_data.get("motor_temp"));
+		//motor_controller.add(calculation_data.get("time_elapsed"), calculation_data.get("motor_c_temp"));
+		batt_temp_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_temp_avg"));
+		//b_temp_max.add(calculation_data.get("time_elapsed"), calculation_data.get("b_temp_max"));
+		//b_temp_min.add(calculation_data.get("time_elapsed"), calculation_data.get("b_temp_min"));
 		temperature_panel.removeAll();
 		temperature_panel.revalidate();
 		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (Min)", "Degree (C)", temperature_dataset);
