@@ -1,17 +1,14 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 import com.sun.glass.events.KeyEvent;
-import com.telemetry.actions.*;
 import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
 
@@ -22,8 +19,6 @@ import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -72,10 +67,10 @@ public class TelemetryFrame extends JFrame {
 	
 	private void insertComponents() {
 		tab_panel = new JTabbedPane();
-	    calculation_panel = new CalculationPanel(graph_panel);
 	    device_panel = new DevicePanel();
 	    graph_panel = new GraphPanel(calculation_panel);
 	    log_panel = new LogPanel();
+	    calculation_panel = new CalculationPanel(graph_panel);
 	    
 	    log = new JTextArea();
 	    log_pane = new JScrollPane(log);
@@ -88,7 +83,7 @@ public class TelemetryFrame extends JFrame {
 		tab_panel.add("Car Status", combined_panel);
 //		tab_panel.add("Calculation", calculation_panel);
 		tab_panel.add("Graphs", graph_panel);
-	    tab_panel.add("Log", log_panel);
+	    tab_panel.add("Log", log_pane);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 		// Position tab_panel and log_panel in main_frame with tab_panel WEST
@@ -304,7 +299,6 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			String s = JOptionPane.showInputDialog("Please enter the desired font", null);
-			Tools.FIELD_FONT = new Font(Tools.FIELD_FONT.getFontName(), Tools.FIELD_FONT.getStyle(), Tools.stringToInt(s));
 			changeFontHelper(Tools.FIELD_FONT);
 		}
 		
@@ -362,12 +356,10 @@ public class TelemetryFrame extends JFrame {
 				null, resolution_options, resolution_options[0]);
 		if(s == "1920 x 1080") {
 			setSize(1920, 1080);
-			Tools.FIELD_FONT = new Font("Consolas", Font.PLAIN, 24);
 			validate();
 		}
 		else if(s == "1280 x 720") {
 			setSize(1280, 720);
-			Tools.FIELD_FONT = new Font("Consolas", Font.PLAIN, 20);
 		}
 		validate();
 		repaint();
@@ -388,17 +380,21 @@ public class TelemetryFrame extends JFrame {
 			aux_frame.validate();
 			aux_frame.repaint();
 		}
-		device_panel.updatePanel(obj);
-		calculation_panel.updatePanel(device_panel.getDeviceData());
-		log.append(obj.toString()+"\n\n");
-		serial_bar.setText(obj.toString());
-		// GraphPanel is updated with calculation panel, for concurrency issues
+		if((String) obj.get("message_id") == "bps_error")
+			displayErrorDialog((String) obj.get("error_msg"));
+		else {
+			device_panel.updatePanel(obj);
+			calculation_panel.updatePanel(device_panel.getDeviceData());
+			log.append(obj.toString()+"\n\n");
+			serial_bar.setText(obj.toString());
+			// GraphPanel is updated with calculation panel, for concurrency issues
+		}
 	}
 	
 	public void updateStatus(String text) {
 		serial_bar.removeAll();
 		serial_bar.setText(text);
-		
+	
 		if(text == "Waiting on Serial Port")
 			if(aux_frame_on)
 				aux_frame.setInputIndicator(Color.RED);

@@ -107,7 +107,7 @@ public class EnergyModelFunctions {
 	 */
 	public static double getTotalBatteryVoltage(double avgBatmanVoltage, double avgRobinVoltage)
 	{
-		return 20 * (avgBatmanVoltage + avgRobinVoltage);
+		return 35 * (avgBatmanVoltage + avgRobinVoltage);
 	}
 	
 	/**
@@ -119,7 +119,7 @@ public class EnergyModelFunctions {
 	 */
 	public static double getArrayPower(double motorCurrent, double avgBatteryCurrent, double avgBatteryVoltage)
 	{
-		return 20 * (((motorCurrent - avgBatteryCurrent) * avgBatteryVoltage));
+		return 35 * (((motorCurrent - avgBatteryCurrent) * avgBatteryVoltage));
 	}
 	
 	/**
@@ -153,9 +153,9 @@ public class EnergyModelFunctions {
 	 * @param avgRobinCurrent
 	 * @return
 	 */
-	public static double getBatteryPower(double totalBatteryVoltage, double avgBatmanCurrent, double avgRobinCurrent)
+	public static double getBatteryPower(double totalBatteryVoltage, double avgCurrent)
 	{
-		return totalBatteryVoltage * (avgBatmanCurrent + avgRobinCurrent) / 2.0;
+		return totalBatteryVoltage * avgCurrent;
 	}
 	
 	/**

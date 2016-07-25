@@ -94,25 +94,4 @@ public class SerialPortHandler {
 	public void startLogging(String log_filename) throws IOException {
 		read_thread.enableLogging(log_filename);
 	}
-	
-//	public static void write_command(byte[] bs) throws IOException {
-//		writer.write(bs);
-//	}
-		
-/*	private void setSerialPortParameters() throws IOException {
-        int baudRate = 57600; // 57600bps
- 
-        try {
-            serial_port.setSerialPortParams(
-                    baudRate,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE);
- 
-            serial_port.setFlowControlMode(
-                    SerialPort.FLOWCONTROL_NONE);
-        } catch (UnsupportedCommOperationException ex) {
-            throw new IOException("Unsupported serial port parameter");
-        }
-    } */
 }

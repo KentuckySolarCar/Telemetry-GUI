@@ -19,7 +19,7 @@ public class DevicePanel extends JPanel{
 	private MpptPanel mppt_panel = new MpptPanel();
 	private TimePanel time_panel = new TimePanel();
 	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
-	private BatteryPanel battery_panel = new BatteryPanel();
+	private BatteryPanel battery_panel = new BatteryPanel(motor_panel);
 	
 	public DevicePanel() {
 		super();

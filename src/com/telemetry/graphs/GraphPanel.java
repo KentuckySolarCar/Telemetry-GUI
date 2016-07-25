@@ -33,10 +33,12 @@ public class GraphPanel extends JPanel {
 		energy_graph = new EnergyGraph(getWidth()/2, getHeight()/3*2);
 		text_field = new TextFields(getWidth()/2, getHeight()/3*2);
 		
+
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		gbc.insets = new Insets(1, 1, 1, 1);
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -105,5 +107,8 @@ public class GraphPanel extends JPanel {
 		temperature_graph	.updateDataSet(calculation_data);
 		voltage_graph		.updateDataSet(calculation_data);
 		text_field			.updateDataSet(calculation_data);
+
+		validate();
+		repaint();
 	}
 }

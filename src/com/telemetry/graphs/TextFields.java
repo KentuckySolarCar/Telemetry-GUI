@@ -86,24 +86,40 @@ public class TextFields extends JPanel {
 		gbc.insets = new Insets(3, 3, 3, 3);
 		
 		// Major Components
-		gbc.gridx = 0; 
-		gbc.gridy = 0;
-		gbc.gridheight = 2;
-		add(text_panel_volt, gbc);
-		gbc.gridheight = 1;
+//		gbc.gridx = 0; 
+//		gbc.gridy = 0;
+//		gbc.gridheight = 2;
+//		add(text_panel_volt, gbc);
+//		gbc.gridheight = 1;
+//		
+//		gbc.gridx = 1;
+//		add(text_panel_powr, gbc);
+//		
+//		gbc.gridy = 1;
+//		add(text_panel_speed, gbc);
+//		
+//		gbc.gridx = 2;
+//		gbc.gridy = 0;
+//		add(text_panel_misc, gbc);
+//		
+//		gbc.gridy = 1;
+//		add(text_panel_strat, gbc);
 		
-		gbc.gridx = 1;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
 		add(text_panel_powr, gbc);
 		
+		gbc.gridx = 0;
 		gbc.gridy = 1;
 		add(text_panel_speed, gbc);
 		
-		gbc.gridx = 2;
+		gbc.gridx = 1;
 		gbc.gridy = 0;
-		add(text_panel_misc, gbc);
-		
+		add(text_panel_volt, gbc);
+
+		gbc.gridx = 1;
 		gbc.gridy = 1;
-		add(text_panel_strat, gbc);
+		add(text_panel_misc, gbc);
 
 		//---------------------------------Power Fields-------------------------------------//
 		gbc.gridx = 0;

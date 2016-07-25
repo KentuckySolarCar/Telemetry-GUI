@@ -28,9 +28,7 @@ public class BatteryPanel extends JPanel {
 	private double ave_temp = 0;
 	private double v_average = 0;
 	private double v_max = 0;
-	private double v_global_max = 0;
 	private double v_min = 0;
-	private double v_global_min = 999999;
 	private double current_average = 0;
 	
 	// Threshold for fields
@@ -42,10 +40,13 @@ public class BatteryPanel extends JPanel {
 	private double t_avg_threshold = 9999999;
 	private double current_threshold = 9999999;
 	
-	public BatteryPanel() {
+	private MotorPanel motor_panel;
+	
+	public BatteryPanel(MotorPanel motor_panel) {
 		setLayout(new GridBagLayout());
-
 		insertComponents();
+		
+		this.motor_panel = motor_panel;
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
@@ -110,6 +111,7 @@ public class BatteryPanel extends JPanel {
 		output_data.put("ave_temp", new Double(ave_temp));
 		output_data.put("v_average", new Double(v_average));
 		output_data.put("v_min", new Double(v_min));
+		output_data.put("v_max", new Double(v_max));
 		output_data.put("current_average", new Double(current_average));
 		
 		return output_data;

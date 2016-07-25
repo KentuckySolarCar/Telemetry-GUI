@@ -24,9 +24,9 @@ public class VoltageGraph extends JPanel {
 	private JFreeChart voltage_chart;
 	private ChartPanel voltage_panel;
 	private XYDataset voltage_dataset;
-	private XYSeries batt_v_max;
-	private XYSeries batt_v_min;
-	private XYSeries batt_v_avg;
+	private XYSeries v_max;
+	private XYSeries v_min;
+	private XYSeries v_avg;
 	//private XYSeries b_std_dev;
 	
 	public VoltageGraph(int width, int height) {
@@ -54,25 +54,23 @@ public class VoltageGraph extends JPanel {
 	}
 	
 	private XYDataset createVoltageDataSet() {
-		batt_v_max = new XYSeries("Batman Max");
-		batt_v_min = new XYSeries("Batman Min");
-		batt_v_avg = new XYSeries("Batman Mean");
-		//b_std_dev = new XYSeries("Batman Std. Dev");
+		v_max = new XYSeries("Battery Max");
+		v_min = new XYSeries("Battery Min");
+		v_avg = new XYSeries("Battery Mean");
 		
 		XYSeriesCollection voltage_dataset = new XYSeriesCollection();
-		voltage_dataset.addSeries(batt_v_max);
-		voltage_dataset.addSeries(batt_v_min);
-		voltage_dataset.addSeries(batt_v_avg);
-		//voltage_dataset.addSeries(b_std_dev);
+		voltage_dataset.addSeries(v_max);
+		voltage_dataset.addSeries(v_min);
+		voltage_dataset.addSeries(v_avg);
 		
 		return voltage_dataset;
 	}
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
 		//double batt_v_max = calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg");
-		batt_v_max.add(calculation_data.get("time_elapsed"), (Number) (calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg")));
-		batt_v_min.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_min"));
-		batt_v_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_avg"));
+		v_max.add(calculation_data.get("time_elapsed"), (Number) (calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg")));
+		v_min.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_min"));
+		v_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_avg"));
 		//b_std_dev.add(calculation_data.get("time_elapsed"), calculation_data[4]);
 		voltage_panel.removeAll();
 		voltage_panel.revalidate();

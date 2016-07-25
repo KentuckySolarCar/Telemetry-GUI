@@ -14,6 +14,7 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import org.json.simple.JSONObject;
 
@@ -24,22 +25,27 @@ public class AuxFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -8271261737440319731L;
-	private static final double speed_conversion = 0.223693629;
-	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 20); // 60
-	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 20); // 140
+	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 40); // 60
+	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 120); // 140
 	
 	private JPanel text_fields;
 
 	private JLabel time_f            = new JLabel("00:00:00");
 	private JLabel speed_f           = new JLabel("00.000");
-	private JLabel motor_current_f   = new JLabel("00.000");
-	private JLabel battery_current_f = new JLabel("00.000");
 	private JLabel bat_volt_min_f    = new JLabel("00.000");
 	private JLabel bat_volt_max_f    = new JLabel("00.000");
 	private JLabel bat_temp_max_f    = new JLabel("00.000");
+	private JLabel motor_power_f     = new JLabel("00.000");
+	private JLabel bat_power_f       = new JLabel("00.000");
+	private JLabel array_power_f     = new JLabel("00.000");
 	private JLabel input_indicator   = new JLabel("Continuous Input");
 	private JLabel zero_batt_indicator = new JLabel("Non-zero Values");
+	private JTextArea notification_area = new JTextArea();
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
+	
+	// Temp until Motor BC is transmitted
+	private Double bat_v_avg = 0D;
+	private Double motor_current = 0D;
 	
 	public AuxFrame(GraphicsConfiguration target_screen_id) {
 		super(target_screen_id);
@@ -75,8 +81,9 @@ public class AuxFrame extends JFrame {
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.WEST;
 		String[] labels = {"Car Speed", 
-						   "Bat Current", 
-						   "Motor Current", 
+						   "Bat Power", 
+						   "Motor Power", 
+						   "Array Power",
 						   "Min Bat Volt", 
 						   "Max Bat Temp",
 						   "Max Bat Volt"};
@@ -106,12 +113,16 @@ public class AuxFrame extends JFrame {
 		text_fields.add(speed_f, gbc);
 
 		gbc.gridy++;
-		battery_current_f = initFieldLabel(battery_current_f);
-		text_fields.add(battery_current_f, gbc);
+		bat_power_f = initFieldLabel(bat_power_f);
+		text_fields.add(bat_power_f, gbc);
 
 		gbc.gridy++;
-		motor_current_f = initFieldLabel(motor_current_f);
-		text_fields.add(motor_current_f, gbc);
+		motor_power_f = initFieldLabel(motor_power_f);
+		text_fields.add(motor_power_f, gbc);
+		
+		gbc.gridy++;
+		array_power_f = initFieldLabel(array_power_f);
+		text_fields.add(array_power_f, gbc);
 
 		gbc.gridy++;
 		bat_volt_min_f = initFieldLabel(bat_volt_min_f);
@@ -126,14 +137,20 @@ public class AuxFrame extends JFrame {
 		text_fields.add(bat_volt_max_f, gbc);
 
 		// Time field needs to be on different line
-		gbc.gridy+= 2;
+		gbc.gridy += 2;
 		gbc.gridwidth = 2;
 		gbc.anchor = GridBagConstraints.CENTER;
 		time_f = initFieldLabel(time_f);
 		text_fields.add(time_f, gbc);
 		gbc.gridwidth = 1;
 		
+		// Notification area
+		gbc.gridy += 2;
+		gbc.gridwidth = 2;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
 		add(text_fields, BorderLayout.NORTH);
+		
 	}
 	
 	private JLabel initFieldLabel(JLabel label) {
@@ -148,12 +165,13 @@ public class AuxFrame extends JFrame {
 		String type = (String) obj.get("message_id");
 		switch(type) {
 		case "motor": {
-			Double speed = Double.parseDouble((String) obj.get("S")) * speed_conversion;
-			Double motor_current = Double.parseDouble((String) obj.get("I")) / 1000;
+			Double speed = Double.parseDouble((String) obj.get("S"));
+			motor_current = Double.parseDouble((String) obj.get("I"));
+			Double motor_power = motor_current * bat_v_avg * 35;
 			
 			speed_f.setText(Tools.roundDouble(speed));
-			motor_current_f.setText(Tools.roundDouble(motor_current));
-			Tools.thresholdCheck(motor_current_f, motor_current, 0D, Tools.RED, Tools.GREEN);
+			motor_power_f.setText(Tools.roundDouble(motor_power));
+			Tools.thresholdCheck(motor_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
 			break;
 		}
 		case "bat_volt": {
@@ -166,11 +184,17 @@ public class AuxFrame extends JFrame {
 				zero_batt_indicator.setBackground(Tools.RED);
 				return;
 			}
-			else
-				zero_batt_indicator.setBackground(Tools.GREEN);
+
+			zero_batt_indicator.setBackground(Tools.GREEN);
+			bat_v_avg = v_avg;
+			Double bat_power = bus_current * bat_v_avg * 35;
+			Double array_power = 35 * (motor_current - bus_current) * v_avg;
+			if(array_power < 0D)
+				array_power = 0D;
 			
-			battery_current_f.setText(Tools.roundDouble(bus_current));
-			Tools.thresholdCheck(battery_current_f, bus_current, 0D, Tools.RED, Tools.GREEN);
+			array_power_f.setText(Tools.roundDouble(array_power));
+			bat_power_f.setText(Tools.roundDouble(bat_power));
+			Tools.thresholdCheck(bat_power_f, bus_current, 0D, Tools.RED, Tools.GREEN);
 			bat_volt_min_f.setText(Tools.roundDouble(v_min));
 			bat_volt_max_f.setText(Tools.roundDouble(v_max));
 			break;

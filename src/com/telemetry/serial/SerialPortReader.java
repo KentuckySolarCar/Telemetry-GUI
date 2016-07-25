@@ -1,5 +1,6 @@
 package com.telemetry.serial;
 
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.ContentHandler;
+import java.util.Arrays;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -58,15 +59,15 @@ public class SerialPortReader extends Thread {
 			try {
 				if((line = input_stream.readLine()) != null) {
 					telem_frame.updateStatus(line);
-					try {
+					if(isValidMessage(line)) {
 						JSONObject obj = (JSONObject) parser.parse(line);
-						if(logging)
-							writer.write(line + "\n");
-					} catch(Exception e) {}
+						telem_frame.updateAllPanels(obj);
+					}
+					if(logging)
+						writer.write(line + "\n");
 				}
-				else {
+				else
 					input_stream.wait(3*60*1000);
-				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -77,7 +78,46 @@ public class SerialPortReader extends Thread {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			} catch (ParseException e) {
+				// Do Nothing...
+				System.out.println("Parse Error");
 			}
 		}
+	}
+	
+	private boolean isValidMessage(String line) {
+		try {
+			JSONObject obj = (JSONObject) parser.parse(line);
+			String time = (String) obj.get("Time");
+			List<String> parsed_string = Arrays.asList(time.split(":"));
+			if(parsed_string.size() != 3)
+				throw new ParseException(0);
+			String type = (String) obj.get("message_id");
+			switch(type) {
+			case "motor":
+				String speed_instant = (String) obj.get("S");
+				String current_instant = (String) obj.get("I");
+				break;
+			case "bat_volt":
+				String v_average       = (String) obj.get("Vavg");
+				String v_max           = (String) obj.get("Vmax");
+				String v_min           = (String) obj.get("Vmin");
+				String current_average = (String) obj.get("BC");
+				break;
+			case "bat_temp":
+				String ave_temp = (String) obj.get("Tavg");
+				String max_temp = (String) obj.get("Tmax");
+				String min_temp = (String) obj.get("Tmin");
+				break;
+			}
+			return true;
+		} catch (ParseException e) {
+			telem_frame.updateStatus("Parse Error");
+			return false;
+		} catch (NullPointerException e) {
+			telem_frame.updateStatus("Parse Error");
+			return false;
+		}
+		
 	}
 }

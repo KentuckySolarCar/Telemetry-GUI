@@ -38,8 +38,6 @@ public class MotorPanel extends JPanel {
 	private double current_threshold = 0;
 	private double watt_sec_threshold = 0;
 	
-	private static final double speed_conversion = 0.223693629;
-	
 	public MotorPanel() {
 		speed = new SizedQueue<Double>(60);
 		current = new SizedQueue<Double>(60);
@@ -147,7 +145,7 @@ public class MotorPanel extends JPanel {
 	
 	public void updatePanel(JSONObject obj) {
 		try {
-			double speed_instant = Double.parseDouble((String) obj.get("S")) * speed_conversion;
+			double speed_instant = Double.parseDouble((String) obj.get("S"));
 			double current_instant = Double.parseDouble((String) obj.get("I"));
 			
 			if(speed_instant + current_instant == 0) {

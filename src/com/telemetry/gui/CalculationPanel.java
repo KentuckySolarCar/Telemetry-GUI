@@ -71,7 +71,7 @@ public class CalculationPanel extends JPanel{
 	
 	public HashMap<String, Double> getData() {
 		HashMap<String, Double> dataset = new HashMap<String, Double>();
-		
+
 		dataset.put("array_power",                      Tools.getLabelDouble(array_power));
 		dataset.put("average_speed",                    Tools.getLabelDouble(average_speed));
 		dataset.put("battery_and_solar_range",          Tools.getLabelDouble(battery_and_solar_range));
@@ -117,6 +117,7 @@ public class CalculationPanel extends JPanel{
 		double batt_temp_avg        = (Double) battery_data.get("ave_temp");
 		double batt_v_avg           = (Double) battery_data.get("v_average");
 		double batt_v_min           = (Double) battery_data.get("v_min");
+		double batt_v_max           = (Double) battery_data.get("v_max");
 		double batt_current_average = (Double) battery_data.get("current_average");
 		
 		double battery_runtime_current = EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, batt_v_avg, batt_current_average);
@@ -188,8 +189,9 @@ public class CalculationPanel extends JPanel{
 		dataset.put("batt_temp_avg", batt_temp_avg);
 		dataset.put("batt_v_avg", batt_v_avg);
 		dataset.put("batt_v_min", batt_v_min);
+		dataset.put("batt_v_max", batt_v_max);
 		
-//		graph_panel.updatePanel(this.getData());
+//		graph_panel.updatePanel(dataset);
 	}
 
 	private void insertFields() {
