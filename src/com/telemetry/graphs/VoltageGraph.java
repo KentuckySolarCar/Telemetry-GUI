@@ -3,6 +3,7 @@
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
@@ -23,14 +24,10 @@ public class VoltageGraph extends JPanel {
 	private JFreeChart voltage_chart;
 	private ChartPanel voltage_panel;
 	private XYDataset voltage_dataset;
-	private XYSeries b_cell_max;
-	private XYSeries b_cell_min;
-	private XYSeries b_cell_mean;
-	private XYSeries b_std_dev;
-	private XYSeries r_cell_max;
-	private XYSeries r_cell_min;
-	private XYSeries r_cell_mean;
-	private XYSeries r_std_dev;
+	private XYSeries batt_v_max;
+	private XYSeries batt_v_min;
+	private XYSeries batt_v_avg;
+	//private XYSeries b_std_dev;
 	
 	public VoltageGraph(int width, int height) {
 		setSize(width, height);
@@ -57,48 +54,26 @@ public class VoltageGraph extends JPanel {
 	}
 	
 	private XYDataset createVoltageDataSet() {
-		b_cell_max = new XYSeries("Batman Max");
-		b_cell_min = new XYSeries("Batman Min");
-		b_cell_mean = new XYSeries("Batman Mean");
-		b_std_dev = new XYSeries("Batman Std. Dev");
-		r_cell_max = new XYSeries("Robin Max");
-		r_cell_min = new XYSeries("Robin Min");
-		r_cell_mean = new XYSeries("Robin Mean");
-		r_std_dev = new XYSeries("Robin Std. Dev");
+		batt_v_max = new XYSeries("Batman Max");
+		batt_v_min = new XYSeries("Batman Min");
+		batt_v_avg = new XYSeries("Batman Mean");
+		//b_std_dev = new XYSeries("Batman Std. Dev");
 		
 		XYSeriesCollection voltage_dataset = new XYSeriesCollection();
-		voltage_dataset.addSeries(b_cell_max);
-		voltage_dataset.addSeries(b_cell_min);
-		voltage_dataset.addSeries(b_cell_mean);
-		voltage_dataset.addSeries(b_std_dev);
-		voltage_dataset.addSeries(r_cell_max);
-		voltage_dataset.addSeries(r_cell_min);
-		voltage_dataset.addSeries(r_cell_mean);
-		voltage_dataset.addSeries(r_std_dev);
+		voltage_dataset.addSeries(batt_v_max);
+		voltage_dataset.addSeries(batt_v_min);
+		voltage_dataset.addSeries(batt_v_avg);
+		//voltage_dataset.addSeries(b_std_dev);
 		
 		return voltage_dataset;
 	}
 	
-	/* Double array of voltages format (indexes):
-	 * 0: time in seconds
-	 * 1: b_cell_max
-	 * 2: b_cell_min
-	 * 3: b_cell_mean
-	 * 4: b_std_dev
-	 * 5: r_cell_max
-	 * 6: r_cell_min
-	 * 7: r_cell_mean
-	 * 8: r_std_dev
-	 */
-	public void updateDataSet(double[] volts) {
-		b_cell_max.add(volts[0], volts[1]);
-		b_cell_min.add(volts[0], volts[2]);
-		b_cell_mean.add(volts[0], volts[3]);
-		b_std_dev.add(volts[0], volts[4]);
-		r_cell_max.add(volts[0], volts[5]);
-		r_cell_min.add(volts[0], volts[6]);
-		r_cell_mean.add(volts[0], volts[7]);
-		r_std_dev.add(volts[0], volts[8]);
+	public void updateDataSet(HashMap<String, Double> calculation_data) {
+		//double batt_v_max = calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg");
+		batt_v_max.add(calculation_data.get("time_elapsed"), (Number) (calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg")));
+		batt_v_min.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_min"));
+		batt_v_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_avg"));
+		//b_std_dev.add(calculation_data.get("time_elapsed"), calculation_data[4]);
 		voltage_panel.removeAll();
 		voltage_panel.revalidate();
 		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);

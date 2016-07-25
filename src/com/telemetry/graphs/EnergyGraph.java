@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -83,17 +84,10 @@ public class EnergyGraph extends JPanel {
 		return energy_dataset;
 	}
 	
-	/* Double array of energy format (indexes):
-	 * 0: time in seconds
-	 * 1: energy of lap_1
-	 * 2: energy of lap_2
-	 * ... (N = lap_counts)
-	 * N: energy of lap_N
-	 */
-	public void updateDataSet(double[] energy) {
-		for (int i = 0; i < lap_counts; i++) {
-			laps.get(i).add(energy[0], energy[i]);
-		}
+	public void updateDataSet(HashMap<String, Double> calculation_data) {
+		/*for (int i = 0; i < lap_counts; i++) {
+			laps.get(i).add(calculation_data.get("time_elapsed"), calculation_data[i]);
+		}*/
 		energy_panel.removeAll();
 		energy_panel.revalidate();
 		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);

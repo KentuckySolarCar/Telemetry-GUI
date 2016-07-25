@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -55,26 +56,26 @@ public class TextFields extends JPanel {
 		insertComponents();
 	}
 	
-	public void updateDataSet(double[] data) {
+	public void updateDataSet(HashMap<String, Double> calculation_data) {
 //		average_motor_power_day				.setText(String.valueOf(data[0]));
-		average_speed_day					.setText(String.valueOf(data[1]));
-		battery_and_solar_range				.setText(String.valueOf(data[2]));
-		battery_and_solar_runtime_60_sec	.setText(String.valueOf(data[3]));
-		battery_charge_remaining			.setText(String.valueOf(data[4]));
-		battery_only_range_60_sec			.setText(String.valueOf(data[5]));
-		battery_only_runtime_60_sec			.setText(String.valueOf(data[6]));
-		battery_watt_hours					.setText(String.valueOf(data[7]));
-		distance_left_in_day				.setText(String.valueOf(data[8]));
-		motor_power_60_sec					.setText(String.valueOf(data[9]));
-		motor_watt_hours					.setText(String.valueOf(data[10]));
-		odometer							.setText(String.valueOf(data[11]));
-		solar_energy_remaining				.setText(String.valueOf(data[12]));
-		speed_60_sec						.setText(String.valueOf(data[13]));
-		target_speed						.setText(String.valueOf(data[14]));
-		target_watt_hour_per_mile			.setText(String.valueOf(data[15]));
-		target_watt_hour_per_mile_60_sec	.setText(String.valueOf(data[16]));
-		target_watt_hour_per_mile_day		.setText(String.valueOf(data[17]));
-		time_left_in_day					.setText(String.valueOf(data[18]));
+		average_speed_day					.setText(String.valueOf(calculation_data.get("average_speed_day")));
+		battery_and_solar_range				.setText(String.valueOf(calculation_data.get("battery_and_solar_range")));
+		battery_and_solar_runtime_60_sec	.setText(String.valueOf(calculation_data.get("battery_and_solar_runtime_60_sec")));
+		battery_charge_remaining			.setText(String.valueOf(calculation_data.get("battery_charge_remaining")));
+		battery_only_range_60_sec			.setText(String.valueOf(calculation_data.get("battery_only_range_60_sec")));
+		battery_only_runtime_60_sec			.setText(String.valueOf(calculation_data.get("battery_only_runtime_60_sec")));
+		battery_watt_hours					.setText(String.valueOf(calculation_data.get("battery_watt_hours")));
+		distance_left_in_day				.setText(String.valueOf(calculation_data.get("distance_left_in_day")));
+		motor_power_60_sec					.setText(String.valueOf(calculation_data.get("motor_power_60_sec")));
+		motor_watt_hours					.setText(String.valueOf(calculation_data.get("motor_watt_hours")));
+		odometer							.setText(String.valueOf(calculation_data.get("odometer")));
+		solar_energy_remaining				.setText(String.valueOf(calculation_data.get("solar_energy_remaining")));
+		speed_60_sec						.setText(String.valueOf(calculation_data.get("speed_60_sec")));
+		target_speed						.setText(String.valueOf(calculation_data.get("target_speed")));
+		target_watt_hour_per_mile			.setText(String.valueOf(calculation_data.get("target_watt_hour_per_mile")));
+		target_watt_hour_per_mile_60_sec	.setText(String.valueOf(calculation_data.get("target_watt_hour_per_mile_60_sec")));
+		target_watt_hour_per_mile_day		.setText(String.valueOf(calculation_data.get("target_watt_hour_per_mile_day")));
+		time_left_in_day					.setText(String.valueOf(calculation_data.get("time_left_in_day")));
 	}
 
 	private void insertComponents() {

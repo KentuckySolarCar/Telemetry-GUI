@@ -3,6 +3,7 @@ package com.telemetry.graphs;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 
@@ -72,22 +73,13 @@ public class PowerGraph extends JPanel {
 		return power_dataset;
 	}
 	
-	/* Double array of power format (indexes):
-	 * 0: time in seconds
-	 * 1: power of motor
-	 * 2: power of array
-	 * 3: power of tracker_1
-	 * 4: power of tracker_2
-	 * 5: power of tracker_3
-	 * 6: power of tracker_4
-	 */
-	public void updateDataSet(double[] power) {
-		motor.add(power[0], power[1]);
-		array.add(power[0], power[2]);
-		tracker_1.add(power[0], power[3]);
-		tracker_2.add(power[0], power[4]);
-		tracker_3.add(power[0], power[5]);
-		tracker_4.add(power[0], power[6]);
+	public void updateDataSet(HashMap<String, Double> calculation_data) {
+		//motor.add(calculation_data.get("time_elapsed"), calculation_data[1]);
+		//array.add(calculation_data.get("time_elapsed"), calculation_data[2]);
+		//tracker_1.add(calculation_data.get("time_elapsed"), calculation_data[3]);
+		//tracker_2.add(calculation_data.get("time_elapsed"), calculation_data[4]);
+		//tracker_3.add(calculation_data.get("time_elapsed"), calculation_data[5]);
+		//tracker_4.add(calculation_data.get("time_elapsed"), calculation_data[6]);
 		power_panel.removeAll();
 		power_panel.revalidate();
 		power_chart = ChartFactory.createXYLineChart("Power", "Time (min)", "Power (Watts)", power_dataset);
