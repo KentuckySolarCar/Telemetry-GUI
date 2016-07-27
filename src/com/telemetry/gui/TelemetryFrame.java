@@ -1,6 +1,7 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -22,6 +23,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
@@ -38,6 +42,7 @@ public class TelemetryFrame extends JFrame {
 	private SerialPortHandler serial_port;
 	private AuxFrame aux_frame;
 	private boolean aux_frame_on = false;
+	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	// Temp
 	JScrollPane log_pane;
@@ -321,15 +326,15 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	public void testMonitor() throws IOException, ParseException {
-//		JFileChooser chooser = new JFileChooser();
-//		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-//		chooser.setFileFilter(filter);
-//		int returnVal = chooser.showOpenDialog(this);
-//		if(returnVal == JFileChooser.APPROVE_OPTION) {
-//			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
-//			text_input.start();
-//		}
-		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
+			text_input.start();
+		}
+//		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
 		text_input.start();
 	}
 	
@@ -386,9 +391,10 @@ public class TelemetryFrame extends JFrame {
 		if((String) obj.get("message_id") == "messages")
 			processMessages((String[]) obj.get("Messages"));
 		else {
+			Date date = new Date();
 			device_panel.updatePanel(obj);
 			calculation_panel.updatePanel(device_panel.getDeviceData());
-			log.append("\n" + obj.toString() + "\n");
+			log.append("\n" + obj.toString() + date_format.format(date) + "\n");
 			serial_bar.setText(obj.toString());
 			// GraphPanel is updated with calculation panel, for concurrency issues
 		}

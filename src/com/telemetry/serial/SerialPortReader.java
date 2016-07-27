@@ -9,12 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.sun.jmx.snmp.Timestamp;
 import com.telemetry.custom.Tools;
 import com.telemetry.gui.TelemetryFrame;
 
@@ -27,6 +31,7 @@ public class SerialPortReader extends Thread {
 	private boolean logging = false;
 	private File log_file;
 	private BufferedWriter writer;
+	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	public SerialPortReader (InputStream input_stream, TelemetryFrame telem_frame) throws UnsupportedEncodingException {
 		status = false;
@@ -69,8 +74,10 @@ public class SerialPortReader extends Thread {
 						telem_frame.processInvalidData(line);
 						line = "*ERROR* " + line;
 					}
-					if(logging)
-						writer.write(line + "\n");
+					if(logging) {
+						Date date = new Date();
+						writer.write(line + date_format.format(date) + "\n");
+					}
 				}
 				else
 					input_stream.wait(3*60*1000);
