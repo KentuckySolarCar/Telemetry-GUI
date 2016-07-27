@@ -13,7 +13,6 @@ import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
@@ -26,8 +25,8 @@ import java.io.IOException;
 
 public class TelemetryFrame extends JFrame {
 	private static final long serialVersionUID = 3028986629905272450L;
-	private static final int WIDTH = 1280; //1280
-	private static final int HEIGHT = 720; //720
+	private static final int WIDTH = 1600; //1280
+	private static final int HEIGHT = 900; //720
 	
 	private JTabbedPane tab_panel;
 	private static TextFileInput text_input;
@@ -215,6 +214,8 @@ public class TelemetryFrame extends JFrame {
 	
 	public void updateRunTime() {
 		device_panel.updateRunTime();
+		if(aux_frame_on)
+			aux_frame.updateRunTime();
 	}
 	
 	class StartLoggingListener implements ActionListener {
@@ -311,8 +312,10 @@ public class TelemetryFrame extends JFrame {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String root_dir = chooser.getSelectedFile().toString();
 //		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
-			String current_time = device_panel.getSystemTime();
-			String log_filename = root_dir + "/" + current_time + "_log.txt";
+			int[] current_time = device_panel.getSystemTime();
+			String log_filename = root_dir + "\\" + current_time[0] + ":"
+										   + current_time[1] + ":" + current_time[2] 
+										   + "_log.txt";
 			serial_port.startLogging(log_filename);
 		}
 	}
@@ -380,24 +383,31 @@ public class TelemetryFrame extends JFrame {
 			aux_frame.validate();
 			aux_frame.repaint();
 		}
-		if((String) obj.get("message_id") == "bps_error")
-			displayErrorDialog((String) obj.get("error_msg"));
+		if((String) obj.get("message_id") == "messages")
+			processMessages((String[]) obj.get("Messages"));
 		else {
 			device_panel.updatePanel(obj);
 			calculation_panel.updatePanel(device_panel.getDeviceData());
-			log.append(obj.toString()+"\n\n");
+			log.append("\n" + obj.toString() + "\n");
 			serial_bar.setText(obj.toString());
 			// GraphPanel is updated with calculation panel, for concurrency issues
 		}
 	}
 	
+	public void processMessages(String[] messages) {
+		if(aux_frame_on)
+			aux_frame.processMessages(messages);
+	}
+	
 	public void updateStatus(String text) {
 		serial_bar.removeAll();
 		serial_bar.setText(text);
+	}
 	
-		if(text == "Waiting on Serial Port")
-			if(aux_frame_on)
-				aux_frame.setInputIndicator(Color.RED);
+	public void processInvalidData(String json_str) {
+		log.append("\n-----------------------------------------------------\n" 
+					+ "*INVALID* " + json_str
+					+ "\n-----------------------------------------------------\n");
 	}
 	
 	public void changeFontHelper(Font font) {

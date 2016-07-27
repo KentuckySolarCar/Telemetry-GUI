@@ -1,4 +1,4 @@
-package com.telemetry.equations;
+package com.telemetry.strategy;
 
 import java.time.LocalDateTime;
 

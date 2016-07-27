@@ -38,6 +38,9 @@ public class TextFileInput extends Thread {
 					JSONObject obj = (JSONObject) parser.parse(line);
 					telem_frame.updateAllPanels(obj);
 				}
+				else {
+					telem_frame.processInvalidData(line);
+				}
 				Thread.sleep(100);
 			}
 		} catch (IOException | ParseException | InterruptedException e) {
@@ -60,26 +63,25 @@ public class TextFileInput extends Thread {
 			JSONObject obj = (JSONObject) parser.parse(line);
 			String time = (String) obj.get("Time");
 			List<String> parsed_string = Arrays.asList(time.split(":"));
-			if(parsed_string.size() != 3) {
-				System.out.println("Wrong Time");
+			if(parsed_string.size() != 3)
 				throw new ParseException(0);
-			}
 			String type = (String) obj.get("message_id");
 			switch(type) {
 			case "motor":
-				String speed_instant = (String) obj.get("S");
-				String current_instant = (String) obj.get("I");
+				Double speed_instant = Double.parseDouble((String) obj.get("S"));
+				Double current_instant = Double.parseDouble((String) obj.get("I"));
+				Double voltage_instant = Double.parseDouble((String) obj.get("V"));
 				break;
 			case "bat_volt":
-				String v_average       = (String) obj.get("Vavg");
-				String v_max           = (String) obj.get("Vmax");
-				String v_min           = (String) obj.get("Vmin");
-				String current_average = (String) obj.get("BC");
+				Double v_average       = Double.parseDouble((String) obj.get("Vavg"));
+				Double v_max           = Double.parseDouble((String) obj.get("Vmax"));
+				Double v_min           = Double.parseDouble((String) obj.get("Vmin"));
+				Double current_average = Double.parseDouble((String) obj.get("BC"));
 				break;
 			case "bat_temp":
-				String ave_temp = (String) obj.get("Tavg");
-				String max_temp = (String) obj.get("Tmax");
-				String min_temp = (String) obj.get("Tmin");
+				Double ave_temp = Double.parseDouble((String) obj.get("Tavg"));
+				Double max_temp = Double.parseDouble((String) obj.get("Tmax"));
+				Double min_temp = Double.parseDouble((String) obj.get("Tmin"));
 				break;
 			}
 			return true;

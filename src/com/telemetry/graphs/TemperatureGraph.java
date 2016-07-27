@@ -31,25 +31,15 @@ public class TemperatureGraph extends JPanel {
 //	private XYSeries b_temp_max;
 //	private XYSeries b_temp_min;
 	
-	public TemperatureGraph(int width, int height) {
-		setSize(width, height);
+	public TemperatureGraph() {
 		
 		temperature_dataset = createTemperatureDataSet();
 		
-		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (min)", "Degree (C)", temperature_dataset);
+		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (sec)", "Degree (C)", temperature_dataset);
 		LegendTitle legend = temperature_chart.getLegend();
 		legend.setPosition(RectangleEdge.RIGHT);
 		
 		temperature_panel = new ChartPanel(temperature_chart);
-		
-		// Testing layouts
-		/*button_panel = new JPanel();
-		button_panel.setLayout(new GridLayout(5, 2));
-		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));
-		button_panel.add(new JButton("Bla"));*/
 		
 		// Use GridBagConstraints to be able to change size of grid elements
 		this.setLayout(new GridBagLayout());
@@ -73,32 +63,24 @@ public class TemperatureGraph extends JPanel {
 	}
 	
 	private XYSeriesCollection createTemperatureDataSet() {
-		//motor = new XYSeries("Motor");
-		//motor_controller = new XYSeries("Motor Controller");
-		batt_temp_avg = new XYSeries("Batman Ave");
-		//b_temp_max = new XYSeries("Batman Max");
-		//b_temp_min = new XYSeries("Batman Min");
+		batt_temp_avg = new XYSeries("Battery Ave");
 		
 		XYSeriesCollection temperature_dataset = new XYSeriesCollection();
-		//temperature_dataset.addSeries(motor);
-		//temperature_dataset.addSeries(motor_controller);
 		temperature_dataset.addSeries(batt_temp_avg);
-		//temperature_dataset.addSeries(b_temp_max);
-		//temperature_dataset.addSeries(b_temp_min);
 		
 		return temperature_dataset;
 	}
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
-		//motor.add(calculation_data.get("time_elapsed"), calculation_data.get("motor_temp"));
-		//motor_controller.add(calculation_data.get("time_elapsed"), calculation_data.get("motor_c_temp"));
-		batt_temp_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_temp_avg"));
-		//b_temp_max.add(calculation_data.get("time_elapsed"), calculation_data.get("b_temp_max"));
-		//b_temp_min.add(calculation_data.get("time_elapsed"), calculation_data.get("b_temp_min"));
-		temperature_panel.removeAll();
-		temperature_panel.revalidate();
-		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (Min)", "Degree (C)", temperature_dataset);
-		temperature_panel = new ChartPanel(temperature_chart);
+		double seconds_elapsed = calculation_data.get("time_seconds");
+		double batt_temp   = calculation_data.get("batt_temp_avg");
+		if(batt_temp == 0D)
+			return;
+		batt_temp_avg.add(seconds_elapsed, batt_temp);
+//		temperature_panel.removeAll();
+//		temperature_panel.revalidate();
+//		temperature_chart = ChartFactory.createXYLineChart("Temperature", "Time (Min)", "Degree (C)", temperature_dataset);
+//		temperature_panel = new ChartPanel(temperature_chart);
 		validate();
 		repaint();
 	}

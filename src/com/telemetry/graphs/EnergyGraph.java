@@ -30,9 +30,7 @@ public class EnergyGraph extends JPanel {
 	private ArrayList<XYSeries> laps;
 	private int lap_counts = 0;
 	
-	public EnergyGraph(int width, int height ) {
-		setSize(width, height);
-
+	public EnergyGraph() {
 		energy_dataset = createEnergyDataSet();
 
 		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);

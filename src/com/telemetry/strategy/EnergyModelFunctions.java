@@ -1,4 +1,4 @@
-package com.telemetry.equations;
+package com.telemetry.strategy;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -114,24 +114,26 @@ public class EnergyModelFunctions {
 	 * Returns the array power
 	 * @param motorCurrent
 	 * @param avgBatteryCurrent
-	 * @param avgBatteryVoltage
+	 * @param individualBatteryVoltage
 	 * @return
 	 */
-	public static double getArrayPower(double motorCurrent, double avgBatteryCurrent, double avgBatteryVoltage)
+	public static double getArrayPower(double motorCurrent, double avgBatteryCurrent, double individualBatteryVoltage)
 	{
-		return 35 * (((motorCurrent - avgBatteryCurrent) * avgBatteryVoltage));
+		double array_power = 35 * (motorCurrent - avgBatteryCurrent) * individualBatteryVoltage;
+		if(array_power < 0)
+			array_power = 0D;
+		return array_power;
 	}
 	
 	/**
 	 * Returns the motor power
 	 * @param motorCurrent
-	 * @param avgBatmanVoltage
-	 * @param avgRobinVoltage
+	 * @param motorVoltage
 	 * @return
 	 */
-	public static double getMotorPower(double motorCurrent, double totalBatteryVoltage)
+	public static double getMotorPower(double motorCurrent, double motorVoltage)
 	{
-		return motorCurrent * totalBatteryVoltage;
+		return motorCurrent * motorVoltage;
 	}
 	
 	/**
@@ -148,14 +150,13 @@ public class EnergyModelFunctions {
 	
 	/**
 	 * Returns the battery power
-	 * @param totalBatteryVoltage
-	 * @param avgBatmanCurrent
-	 * @param avgRobinCurrent
+	 * @param individualBatteryVoltage
+	 * @param avgCurrent
 	 * @return
 	 */
-	public static double getBatteryPower(double totalBatteryVoltage, double avgCurrent)
+	public static double getBatteryPower(double individualBatteryVoltage, double avgCurrent)
 	{
-		return totalBatteryVoltage * avgCurrent;
+		return individualBatteryVoltage * avgCurrent * 35;
 	}
 	
 	/**

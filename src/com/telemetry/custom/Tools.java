@@ -13,8 +13,8 @@ import org.json.simple.JSONObject;
 public class Tools {
 	public static final Color GREEN = new Color(198, 224, 180);
 	public static final Color RED = new Color(224, 176, 132);
-	public static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 18);
-	public static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 16);
+	public static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 22);
+	public static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 20);
 
 	public static int stringToInt(String str_num) {
 		String delimit = "[.]";

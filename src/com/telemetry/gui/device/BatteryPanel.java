@@ -42,11 +42,9 @@ public class BatteryPanel extends JPanel {
 	
 	private MotorPanel motor_panel;
 	
-	public BatteryPanel(MotorPanel motor_panel) {
+	public BatteryPanel() {
 		setLayout(new GridBagLayout());
 		insertComponents();
-		
-		this.motor_panel = motor_panel;
 	}
 	
 	public void updatePanel(JSONObject obj, String type) {
@@ -227,5 +225,9 @@ public class BatteryPanel extends JPanel {
 		t_min_l.setOpaque(true);
 		t_min_l.setBackground(Color.ORANGE);
 		add(t_min_l, gbc);
+	}
+	
+	public void setDependentPanel(MotorPanel motor_panel) {
+		this.motor_panel = motor_panel;
 	}
 }

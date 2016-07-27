@@ -25,17 +25,16 @@ public class PowerGraph extends JPanel {
 	private XYSeriesCollection power_dataset;
 	private XYSeries motor;
 	private XYSeries array;
-	private XYSeries tracker_1;
-	private XYSeries tracker_2;
-	private XYSeries tracker_3;
-	private XYSeries tracker_4;
+	private XYSeries battery;
+//	private XYSeries tracker_1;
+//	private XYSeries tracker_2;
+//	private XYSeries tracker_3;
+//	private XYSeries tracker_4;
 	
-	public PowerGraph(int width, int height) {
-		setSize(width, height);
-
+	public PowerGraph() {
 		power_dataset = createPowerDataSet();
 		
-		power_chart = ChartFactory.createXYLineChart("Power", "Time (min)", "Power (Watts)", power_dataset);
+		power_chart = ChartFactory.createXYLineChart("Power", "Time (sec)", "Power (Watts)", power_dataset);
 		LegendTitle legend = power_chart.getLegend();
 		legend.setPosition(RectangleEdge.RIGHT);
 		
@@ -57,33 +56,36 @@ public class PowerGraph extends JPanel {
 	private XYSeriesCollection createPowerDataSet() {
 		motor = new XYSeries("Motor");
 		array = new XYSeries("Array");
-		tracker_1 = new XYSeries("Tracker 1");
-		tracker_2 = new XYSeries("Tracker 2");
-		tracker_3 = new XYSeries("Tracker 3");
-		tracker_4 = new XYSeries("Tracker 4");
+		battery = new XYSeries("Battery");
+//		tracker_1 = new XYSeries("Tracker 1");
+//		tracker_2 = new XYSeries("Tracker 2");
+//		tracker_3 = new XYSeries("Tracker 3");
+//		tracker_4 = new XYSeries("Tracker 4");
 		
 		XYSeriesCollection power_dataset = new XYSeriesCollection();
 		power_dataset.addSeries(motor);
 		power_dataset.addSeries(array);
-		power_dataset.addSeries(tracker_1);
-		power_dataset.addSeries(tracker_2);
-		power_dataset.addSeries(tracker_3);
-		power_dataset.addSeries(tracker_4);
+		power_dataset.addSeries(battery);
+//		power_dataset.addSeries(tracker_1);
+//		power_dataset.addSeries(tracker_2);
+//		power_dataset.addSeries(tracker_3);
+//		power_dataset.addSeries(tracker_4);
 		
 		return power_dataset;
 	}
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
-		//motor.add(calculation_data.get("time_elapsed"), calculation_data[1]);
-		//array.add(calculation_data.get("time_elapsed"), calculation_data[2]);
-		//tracker_1.add(calculation_data.get("time_elapsed"), calculation_data[3]);
-		//tracker_2.add(calculation_data.get("time_elapsed"), calculation_data[4]);
-		//tracker_3.add(calculation_data.get("time_elapsed"), calculation_data[5]);
-		//tracker_4.add(calculation_data.get("time_elapsed"), calculation_data[6]);
-		power_panel.removeAll();
-		power_panel.revalidate();
-		power_chart = ChartFactory.createXYLineChart("Power", "Time (min)", "Power (Watts)", power_dataset);
-		power_panel = new ChartPanel(power_chart);
+		double time_seconds = calculation_data.get("time_seconds");
+		double motor_power  = calculation_data.get("motor_power");
+		double array_power  = calculation_data.get("array_power");
+		double batt_power  = calculation_data.get("batt_power");
+	
+		motor.add(time_seconds, motor_power);
+		if(array_power != 0)
+			array.add(time_seconds, array_power);
+		if(batt_power != 0)
+			battery.add(time_seconds, batt_power);
+
 		validate();
 		repaint();
 	}

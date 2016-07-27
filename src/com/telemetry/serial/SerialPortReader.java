@@ -15,6 +15,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.telemetry.custom.Tools;
 import com.telemetry.gui.TelemetryFrame;
 
 public class SerialPortReader extends Thread {
@@ -38,7 +39,6 @@ public class SerialPortReader extends Thread {
 		status = false;
 		logging = false;
 		input_stream.close();
-		writer.close();
 	}
 	
 	public boolean getThreadStatus() {
@@ -47,6 +47,8 @@ public class SerialPortReader extends Thread {
 	
 	public void enableLogging(String log_filename) throws IOException {
 		log_file = new File(log_filename);
+		if(!log_file.exists())
+			log_file.createNewFile();
 		writer = new BufferedWriter(new FileWriter(log_file));
 		logging = true;
 	}
@@ -62,6 +64,10 @@ public class SerialPortReader extends Thread {
 					if(isValidMessage(line)) {
 						JSONObject obj = (JSONObject) parser.parse(line);
 						telem_frame.updateAllPanels(obj);
+					}
+					else {
+						telem_frame.processInvalidData(line);
+						line = "*ERROR* " + line;
 					}
 					if(logging)
 						writer.write(line + "\n");
@@ -95,20 +101,23 @@ public class SerialPortReader extends Thread {
 			String type = (String) obj.get("message_id");
 			switch(type) {
 			case "motor":
-				String speed_instant = (String) obj.get("S");
-				String current_instant = (String) obj.get("I");
+				Double speed_instant = Double.parseDouble((String) obj.get("S"));
+				Double current_instant = Double.parseDouble((String) obj.get("I"));
+				Double voltage_instant = Double.parseDouble((String) obj.get("V"));
 				break;
 			case "bat_volt":
-				String v_average       = (String) obj.get("Vavg");
-				String v_max           = (String) obj.get("Vmax");
-				String v_min           = (String) obj.get("Vmin");
-				String current_average = (String) obj.get("BC");
+				Double v_average       = Double.parseDouble((String) obj.get("Vavg"));
+				Double v_max           = Double.parseDouble((String) obj.get("Vmax"));
+				Double v_min           = Double.parseDouble((String) obj.get("Vmin"));
+				Double current_average = Double.parseDouble((String) obj.get("BC"));
 				break;
 			case "bat_temp":
-				String ave_temp = (String) obj.get("Tavg");
-				String max_temp = (String) obj.get("Tmax");
-				String min_temp = (String) obj.get("Tmin");
+				Double ave_temp = Double.parseDouble((String) obj.get("Tavg"));
+				Double max_temp = Double.parseDouble((String) obj.get("Tmax"));
+				Double min_temp = Double.parseDouble((String) obj.get("Tmin"));
 				break;
+			case "messages":
+				String[] messages = (String[]) obj.get("Messages");
 			}
 			return true;
 		} catch (ParseException e) {
@@ -117,7 +126,9 @@ public class SerialPortReader extends Thread {
 		} catch (NullPointerException e) {
 			telem_frame.updateStatus("Parse Error");
 			return false;
+		} catch (Exception e) {
+			telem_frame.updateStatus("Unknown Error");
+			return false;
 		}
-		
 	}
 }

@@ -27,11 +27,11 @@ public class GraphPanel extends JPanel {
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		temperature_graph = new TemperatureGraph(getWidth()/2, getHeight()/3*2);
-		voltage_graph = new VoltageGraph(getWidth()/2, getHeight()/3*2);
-		power_graph = new PowerGraph(getWidth()/2, getHeight()/3*2);
-		energy_graph = new EnergyGraph(getWidth()/2, getHeight()/3*2);
-		text_field = new TextFields(getWidth()/2, getHeight()/3*2);
+		temperature_graph = new TemperatureGraph();
+		voltage_graph = new VoltageGraph();
+		power_graph = new PowerGraph();
+		energy_graph = new EnergyGraph();
+//		text_field = new TextFields();
 		
 
 		gbc.fill = GridBagConstraints.BOTH;
@@ -48,19 +48,19 @@ public class GraphPanel extends JPanel {
 		gbc.gridy = 1;
 		add(voltage_graph, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy = 2;
+		gbc.gridx = 1;
+		gbc.gridy = 0;
 		add(temperature_graph, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		add(energy_graph, gbc);
 		
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		gbc.gridheight = 2;
-		add(text_field, gbc);
-		gbc.gridheight = 1;
+//		gbc.gridx = 1;
+//		gbc.gridy = 1;
+//		gbc.gridheight = 2;
+//		add(text_field, gbc);
+//		gbc.gridheight = 1;
 	}
 	
 	/**
@@ -106,7 +106,7 @@ public class GraphPanel extends JPanel {
 		power_graph			.updateDataSet(calculation_data);
 		temperature_graph	.updateDataSet(calculation_data);
 		voltage_graph		.updateDataSet(calculation_data);
-		text_field			.updateDataSet(calculation_data);
+//		text_field			.updateDataSet(calculation_data);
 
 		validate();
 		repaint();

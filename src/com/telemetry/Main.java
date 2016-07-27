@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.TelemetryFrame;
+import com.telemetry.strategy.StateOfCharge;
 
 public class Main implements Runnable {
 	

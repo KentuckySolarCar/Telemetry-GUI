@@ -29,12 +29,10 @@ public class VoltageGraph extends JPanel {
 	private XYSeries v_avg;
 	//private XYSeries b_std_dev;
 	
-	public VoltageGraph(int width, int height) {
-		setSize(width, height);
-
+	public VoltageGraph() {
 		voltage_dataset = createVoltageDataSet();
 		
-		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
+		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (sec)", "Volts (V)", voltage_dataset);
 		LegendTitle legend = voltage_chart.getLegend();
 		legend.setPosition(RectangleEdge.RIGHT);
 		
@@ -67,15 +65,19 @@ public class VoltageGraph extends JPanel {
 	}
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
-		//double batt_v_max = calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg");
-		v_max.add(calculation_data.get("time_elapsed"), (Number) (calculation_data.get("batt_v_avg") - calculation_data.get("batt_v_min") + calculation_data.get("batt_v_avg")));
-		v_min.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_min"));
-		v_avg.add(calculation_data.get("time_elapsed"), calculation_data.get("batt_v_avg"));
-		//b_std_dev.add(calculation_data.get("time_elapsed"), calculation_data[4]);
-		voltage_panel.removeAll();
-		voltage_panel.revalidate();
-		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
-		voltage_panel = new ChartPanel(voltage_chart);
+		double time_seconds = calculation_data.get("time_seconds");
+		double batt_v_avg   = calculation_data.get("batt_v_avg");
+		double batt_v_max   = calculation_data.get("batt_v_max");
+		double batt_v_min   = calculation_data.get("batt_v_min");
+		if(batt_v_avg + batt_v_max + batt_v_min == 0)
+			return;
+		v_max.add(time_seconds, batt_v_max);
+		v_min.add(time_seconds, batt_v_min);
+		v_avg.add(time_seconds, batt_v_avg);
+//		voltage_panel.removeAll();
+//		voltage_panel.revalidate();
+//		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
+//		voltage_panel = new ChartPanel(voltage_chart);
 		validate();
 		repaint();
 	}

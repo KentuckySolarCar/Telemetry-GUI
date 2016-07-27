@@ -14,19 +14,21 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.Tools;
+import com.telemetry.strategy.EnergyModelFunctions;
 
 public class AuxFrame extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8271261737440319731L;
-	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 40); // 60
-	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 120); // 140
+	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 40); // 40
+	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 120); // 120
 	
 	private JPanel text_fields;
 
@@ -38,14 +40,15 @@ public class AuxFrame extends JFrame {
 	private JLabel motor_power_f     = new JLabel("00.000");
 	private JLabel bat_power_f       = new JLabel("00.000");
 	private JLabel array_power_f     = new JLabel("00.000");
-	private JLabel input_indicator   = new JLabel("Continuous Input");
+	private JLabel runtime_indicator   = new JLabel("Program Operation");
 	private JLabel zero_batt_indicator = new JLabel("Non-zero Values");
 	private JTextArea notification_area = new JTextArea();
+	private JScrollPane scroll_pane;
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	// Temp until Motor BC is transmitted
-	private Double bat_v_avg = 0D;
 	private Double motor_current = 0D;
+	private boolean flip_flop = true;
 	
 	public AuxFrame(GraphicsConfiguration target_screen_id) {
 		super(target_screen_id);
@@ -60,15 +63,15 @@ public class AuxFrame extends JFrame {
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		// GBC static properties
-		gbc.insets = new Insets(9, 5, 9, 5);
+		gbc.insets = new Insets(0, 5, 0, 5);
 		gbc.anchor = GridBagConstraints.CENTER;
 		
 		// Status Lights
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		input_indicator.setOpaque(true);
-		input_indicator.setBackground(Color.ORANGE);
-		text_fields.add(input_indicator, gbc);
+		runtime_indicator.setOpaque(true);
+		runtime_indicator.setBackground(Color.ORANGE);
+		text_fields.add(runtime_indicator, gbc);
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -147,10 +150,15 @@ public class AuxFrame extends JFrame {
 		// Notification area
 		gbc.gridy += 2;
 		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.fill   = GridBagConstraints.BOTH;
+		notification_area.setFont(Tools.FIELD_FONT);
+		notification_area.setEditable(false);
+		notification_area.setOpaque(true);
+		notification_area.setMaximumSize(notification_area.getMinimumSize());
+		scroll_pane = new JScrollPane(notification_area);
+		text_fields.add(scroll_pane, gbc);
 		
 		add(text_fields, BorderLayout.NORTH);
-		
 	}
 	
 	private JLabel initFieldLabel(JLabel label) {
@@ -160,14 +168,22 @@ public class AuxFrame extends JFrame {
 	}
 	
 	public void updatePanel(JSONObject obj) {
-		Date date = new Date();
-		time_f.setText(date_format.format(date));
+		if(flip_flop) {
+			runtime_indicator.setBackground(Color.RED);
+			flip_flop = false;
+		}
+		else {
+			runtime_indicator.setBackground(Color.GREEN);
+			flip_flop = true;
+		}
 		String type = (String) obj.get("message_id");
 		switch(type) {
 		case "motor": {
 			Double speed = Double.parseDouble((String) obj.get("S"));
 			motor_current = Double.parseDouble((String) obj.get("I"));
-			Double motor_power = motor_current * bat_v_avg * 35;
+			Double voltage = Double.parseDouble((String) obj.get("V"));
+//			Double motor_power = motor_current * voltage;
+			Double motor_power = EnergyModelFunctions.getMotorPower(motor_current, voltage);
 			
 			speed_f.setText(Tools.roundDouble(speed));
 			motor_power_f.setText(Tools.roundDouble(motor_power));
@@ -186,9 +202,10 @@ public class AuxFrame extends JFrame {
 			}
 
 			zero_batt_indicator.setBackground(Tools.GREEN);
-			bat_v_avg = v_avg;
-			Double bat_power = bus_current * bat_v_avg * 35;
-			Double array_power = 35 * (motor_current - bus_current) * v_avg;
+//			Double bat_power = bus_current * v_avg * 35;
+			Double bat_power = EnergyModelFunctions.getBatteryPower(v_avg, bus_current);
+			Double array_power = EnergyModelFunctions.getArrayPower(motor_current, bus_current, v_avg);
+//			Double array_power = 35 * (motor_current - bus_current) * v_avg;
 			if(array_power < 0D)
 				array_power = 0D;
 			
@@ -213,13 +230,23 @@ public class AuxFrame extends JFrame {
 			Tools.thresholdCheck(bat_temp_max_f, max_temp, 45D, Tools.RED, Tools.GREEN);
 			break;
 		}
+		case "messages": {
+			String[] messages = (String[]) obj.get("Messages");
+			for(String message : messages)
+				notification_area.append(message + "\n");
+		}
 		default:
 			break;
 		}
 		
 	}
 	
-	public void setInputIndicator(Color color) {
-		input_indicator.setBackground(color);
+	public void processMessages(String[] messages) {
+		
+	}
+	
+	public void updateRunTime() {
+		Date date = new Date();
+		time_f.setText(date_format.format(date));
 	}
 }

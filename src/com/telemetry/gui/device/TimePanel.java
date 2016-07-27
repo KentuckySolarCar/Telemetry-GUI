@@ -131,7 +131,11 @@ public class TimePanel extends JPanel {
 		return time;
 	}
 	
-	public String getSystemTime() {
-		return time_computer.getText();
+	public int[] getSystemTime() {
+		String system_time = time_computer.getText();
+		String[] split = system_time.split(":");
+		int time[] = {Integer.parseInt(split[0]), Integer.parseInt(split[1]), 
+					  Integer.parseInt(split[2])};
+		return time;
 	}
 }

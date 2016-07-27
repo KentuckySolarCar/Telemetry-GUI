@@ -21,6 +21,7 @@ public class MotorPanel extends JPanel {
 	private static final long serialVersionUID = -4958513623339300406L;
 	private JLabel speed_label          = new JLabel("VALUE");
 	private JLabel current_label        = new JLabel("VALUE");
+	private JLabel voltage_label        = new JLabel("VALUE");
 	private JLabel energy_label         = new JLabel("VALUE");
 	private JLabel average_speed_label  = new JLabel("VALUE");
 	private JButton energy_reset        = new JButton("Energy Reset");
@@ -32,11 +33,14 @@ public class MotorPanel extends JPanel {
 	private double watt_sec;
 	private double odometer;
 	private double energy;
+	private double voltage;
 	
 	// Threshold for fields
 	private double speed_threshold = 50;
 	private double current_threshold = 0;
 	private double watt_sec_threshold = 0;
+	
+	private BatteryPanel battery_panel;
 	
 	public MotorPanel() {
 		speed = new SizedQueue<Double>(60);
@@ -53,6 +57,7 @@ public class MotorPanel extends JPanel {
 		data.put("amp_sec", new Double(amp_sec));
 		data.put("watt_sec", new Double(watt_sec));
 		data.put("odometer", new Double(odometer));
+		data.put("voltage", new Double(voltage));
 		return data;
 	}
 	
@@ -83,15 +88,21 @@ public class MotorPanel extends JPanel {
 		JLabel current = new JLabel("Current:");
 		current.setFont(Tools.FIELD_FONT);
 		add(current, gbc);
-
+		
 		gbc.gridx = 0;
 		gbc.gridy = 3;
+		JLabel voltage_l = new JLabel("Voltage:");
+		voltage_l.setFont(Tools.FIELD_FONT);
+		add(voltage_l, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridy = 4;
 		JLabel energy = new JLabel("Energy:");
 		energy.setFont(Tools.FIELD_FONT);
 		add(energy, gbc);
 
 		gbc.gridx = 0;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		JLabel av_speed = new JLabel("Av. Speed:");
 		av_speed.setFont(Tools.FIELD_FONT);
 		add(av_speed, gbc);
@@ -110,16 +121,23 @@ public class MotorPanel extends JPanel {
 		current_label.setOpaque(true);
 		current_label.setBackground(Color.ORANGE);
 		add(current_label, gbc);
-
+		
 		gbc.gridx = 1;
 		gbc.gridy = 3;
+		voltage_label.setFont(Tools.FIELD_FONT);
+		voltage_label.setOpaque(true);
+		voltage_label.setBackground(Color.ORANGE);
+		add(voltage_label, gbc);
+
+		gbc.gridx = 1;
+		gbc.gridy = 4;
 		energy_label.setFont(Tools.FIELD_FONT);
 		energy_label.setOpaque(true);
 		energy_label.setBackground(Color.ORANGE);
 		add(energy_label, gbc);
 
 		gbc.gridx = 1;
-		gbc.gridy = 4;
+		gbc.gridy = 5;
 		average_speed_label.setFont(Tools.FIELD_FONT);
 		average_speed_label.setOpaque(true);
 		average_speed_label.setBackground(Color.ORANGE);
@@ -144,27 +162,28 @@ public class MotorPanel extends JPanel {
 	}
 	
 	public void updatePanel(JSONObject obj) {
-		try {
-			double speed_instant = Double.parseDouble((String) obj.get("S"));
-			double current_instant = Double.parseDouble((String) obj.get("I"));
-			
-			if(speed_instant + current_instant == 0) {
-				speed_label.setBackground(Color.CYAN);
-				current_label.setBackground(Color.CYAN);
-				return;
-			}
-			
-			speed.add(speed_instant);
-			current.add(current_instant);
+		double speed_instant = Double.parseDouble((String) obj.get("S"));
+		double current_instant = Double.parseDouble((String) obj.get("I"));
+		double voltage_instant = Double.parseDouble((String) obj.get("V"));
+		
+//		if(speed_instant + current_instant == 0) {
+		if(speed_instant + current_instant + voltage_instant == 0) {
+			speed_label.setBackground(Color.CYAN);
+			current_label.setBackground(Color.CYAN);
+			return;
+		}
+		
+		speed.add(speed_instant);
+		current.add(current_instant);
 
-			Tools.thresholdCheck(speed_label, speed_instant, speed_threshold, Tools.RED, Tools.GREEN);
-			Tools.thresholdCheck(current_label, current_instant, current_threshold, Tools.RED, Tools.GREEN);
-			
-			speed_label.setText(Tools.roundDouble(speed_instant));
-			current_label.setText(Tools.roundDouble(current_instant));
-			
-			average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
-		} catch(Exception e) {}
+		Tools.thresholdCheck(speed_label, speed_instant, speed_threshold, Tools.RED, Tools.GREEN);
+		Tools.thresholdCheck(current_label, current_instant, current_threshold, Tools.RED, Tools.GREEN);
+		
+		speed_label.setText(Tools.roundDouble(speed_instant));
+		current_label.setText(Tools.roundDouble(current_instant));
+		voltage_label.setText(Tools.roundDouble(voltage_instant));
+		
+		average_speed_label.setText(Tools.roundDouble(Double.toString(calculateAveSpeed())));
 
 		validate();
 		repaint();
@@ -182,6 +201,10 @@ public class MotorPanel extends JPanel {
 		for(Double d : current)
 			sum += d;
 		return sum/current.size();
+	}
+	
+	public void setDependentPanel(BatteryPanel battery_panel) {
+		this.battery_panel = battery_panel;
 	}
 	
 	class EnergyReset implements ActionListener {

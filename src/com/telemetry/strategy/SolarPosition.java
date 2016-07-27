@@ -1,4 +1,4 @@
-package com.telemetry.equations;
+package com.telemetry.strategy;
 
 public class SolarPosition {
 	public double azimuth;

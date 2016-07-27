@@ -17,13 +17,10 @@ public class LogPanel extends JPanel {
 	private JScrollPane scroll_pane;
 	
 	public LogPanel() {
-//		setSize(tab_panel_x, tab_panel_y);
 		setLayout(new BorderLayout());
 		
 		text_area = new JTextArea();
 		text_area.setEditable(false);
-		text_area.setLineWrap(true);
-//		text_area.setAutoscrolls(true);
 		
 		scroll_pane = new JScrollPane(text_area);
 	

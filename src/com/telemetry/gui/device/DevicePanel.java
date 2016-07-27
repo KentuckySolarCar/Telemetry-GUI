@@ -15,11 +15,11 @@ import org.json.simple.JSONObject;
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
 	
-	private MotorPanel motor_panel = new MotorPanel();
 	private MpptPanel mppt_panel = new MpptPanel();
 	private TimePanel time_panel = new TimePanel();
 	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
-	private BatteryPanel battery_panel = new BatteryPanel(motor_panel);
+	private BatteryPanel battery_panel = new BatteryPanel();
+	private MotorPanel motor_panel = new MotorPanel();
 	
 	public DevicePanel() {
 		super();
@@ -80,7 +80,7 @@ public class DevicePanel extends JPanel{
 		return time_panel.getRunTime();
 	}
 	
-	public String getSystemTime() {
+	public int[] getSystemTime() {
 		return time_panel.getSystemTime();
 	}
 	
@@ -89,8 +89,10 @@ public class DevicePanel extends JPanel{
 		JSONObject device_data = new JSONObject();
 		JSONObject battery_data = battery_panel.getData();
 		JSONObject motor_data = motor_panel.getData();
+		int[] system_time = time_panel.getSystemTime();
 		device_data.put("battery_data", battery_data);
 		device_data.put("motor_data", motor_data);
+		device_data.put("system_time", system_time);
 		return device_data;
 	}
 

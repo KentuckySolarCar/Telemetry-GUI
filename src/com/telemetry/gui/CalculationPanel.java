@@ -15,8 +15,8 @@ import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
 import com.telemetry.custom.Tools;
-import com.telemetry.equations.EnergyModelFunctions;
-import com.telemetry.graphs.GraphPanel; 
+import com.telemetry.graphs.GraphPanel;
+import com.telemetry.strategy.EnergyModelFunctions; 
 
 public class CalculationPanel extends JPanel{
 	private static final long serialVersionUID = -2305051374349231050L;
@@ -52,9 +52,6 @@ public class CalculationPanel extends JPanel{
 	
 	private GraphPanel graph_panel;
 
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 14);
-	
-	
 	public CalculationPanel(GraphPanel graph_panel) {
 		this.graph_panel = graph_panel;
 		
@@ -99,20 +96,24 @@ public class CalculationPanel extends JPanel{
 		return dataset;
 	}
 	
+	/**
+	 * TODO Rename all labels to have "_l" at end
+	 * @param device_data
+	 */
 	public void updatePanel(JSONObject device_data) {
 		// Motor data includes:
-		//	ave_speed, ave_current, amp_sec, watt_sec, odometer
 		JSONObject motor_data   = (JSONObject) device_data.get("motor_data");
-		// Battery data includes:
-		//	batman: ave_temp, v_average, v_min, current_average
-		//	robin : ave_temo, v_average, v_min, current_average
 		JSONObject battery_data = (JSONObject) device_data.get("battery_data");
 		
+		int[] system_time  = (int[]) device_data.get("system_time");
+		double time_seconds  = system_time[0] * 3600 + system_time[1] * 60 + system_time[2];
+
 		double ave_speed   = (Double) motor_data.get("ave_speed");
 		double motor_current_average = (Double) motor_data.get("ave_current");
 		double amp_sec     = (Double) motor_data.get("amp_sec");
 		double watt_sec    = (Double) motor_data.get("watt_sec");
 		double odometer    = (Double) motor_data.get("odometer");
+		double motor_volt  = (Double) motor_data.get("voltage");
 		
 		double batt_temp_avg        = (Double) battery_data.get("ave_temp");
 		double batt_v_avg           = (Double) battery_data.get("v_average");
@@ -130,7 +131,7 @@ public class CalculationPanel extends JPanel{
 		double longitude        	= -84.506800;
 		int dayTypeCode 			= 0;
 		double startChargeInMorning = 7;
-		double startRacingInMorning = 9;
+		double startRacingInMorning = 10;
 		double chargeInEveTime 		= 17;
 		double stopChargingInEve 	= 20;
 		
@@ -157,8 +158,12 @@ public class CalculationPanel extends JPanel{
 			double ave_speed_60_sec = getAverage(speed_q);
 			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
 		}
+		
+		double array_power_value = EnergyModelFunctions.getArrayPower(motor_current_average, batt_current_average, batt_v_avg);
+		double batt_power_value  = EnergyModelFunctions.getBatteryPower(batt_v_avg, batt_current_average);
+		double motor_power_value = EnergyModelFunctions.getMotorPower(motor_current_average, motor_volt);
 	
-		array_power                      .setText(Tools.roundDouble(EnergyModelFunctions.getArrayPower(motor_current_average, batt_current_average, batt_v_avg)));
+		array_power                      .setText(Tools.roundDouble(array_power_value));
 		average_speed                    .setText(Tools.roundDouble(ave_speed));
 		solar_energy_remaining           .setText(Tools.roundDouble(EnergyModelFunctions.getEnergyLeftInDay(localTime, GMTOffset, latitude, longitude, dayTypeCode, startChargeInMorning, startRacingInMorning, chargeInEveTime, stopChargingInEve)));
 		time_left_in_day                 .setText(EnergyModelFunctions.getTimeLeftInDay());
@@ -190,8 +195,12 @@ public class CalculationPanel extends JPanel{
 		dataset.put("batt_v_avg", batt_v_avg);
 		dataset.put("batt_v_min", batt_v_min);
 		dataset.put("batt_v_max", batt_v_max);
+		dataset.put("time_seconds", time_seconds);
+		dataset.put("motor_power", motor_power_value);
+		dataset.put("batt_power", batt_power_value);
+		dataset.put("array_power", array_power_value);
 		
-//		graph_panel.updatePanel(dataset);
+		graph_panel.updatePanel(dataset);
 	}
 
 	private void insertFields() {
@@ -231,14 +240,14 @@ public class CalculationPanel extends JPanel{
 		int i = 0;
 		
 		while(i < labels.size()) {
-			labels.get(i).setFont(FIELD_FONT);
+			labels.get(i).setFont(Tools.FIELD_FONT);
 			add(labels.get(i), gbc);
 			
 			i++; 
 			gbc.gridx = 2;
 			
 			if(i < labels.size()) {
-				labels.get(i).setFont(FIELD_FONT);
+				labels.get(i).setFont(Tools.FIELD_FONT);
 				add(labels.get(i), gbc);
 				gbc.gridx = 0;
 				gbc.gridy++;
@@ -276,7 +285,7 @@ public class CalculationPanel extends JPanel{
 		int j = 0;
 		
 		while(j < fields.size()) {
-			fields.get(j).setFont(FIELD_FONT);
+			fields.get(j).setFont(Tools.FIELD_FONT);
 			fields.get(j).setOpaque(true);
 			fields.get(j).setBackground(Color.ORANGE);
 			fields.get(j).setMinimumSize(getPreferredSize());
@@ -286,7 +295,7 @@ public class CalculationPanel extends JPanel{
 			gbc.gridx = 3;
 			
 			if(j < fields.size()) {
-				fields.get(j).setFont(FIELD_FONT);
+				fields.get(j).setFont(Tools.FIELD_FONT);
 				fields.get(j).setOpaque(true);
 				fields.get(j).setBackground(Color.ORANGE);
 				fields.get(j).setMinimumSize(getPreferredSize());
