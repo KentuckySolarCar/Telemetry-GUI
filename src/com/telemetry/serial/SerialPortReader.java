@@ -39,6 +39,7 @@ public class SerialPortReader extends Thread {
 		status = false;
 		logging = false;
 		input_stream.close();
+		writer.close();
 	}
 	
 	public boolean getThreadStatus() {
@@ -78,6 +79,13 @@ public class SerialPortReader extends Thread {
 				e.printStackTrace();
 			} catch (IOException e) {
 				telem_frame.updateStatus("Waiting on Serial Port");
+				if(logging)
+					try {
+						writer.write("No Data\n");
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e1) {

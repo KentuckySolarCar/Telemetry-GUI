@@ -91,6 +91,9 @@ public class TextFileInput extends Thread {
 		} catch (NullPointerException e) {
 			telem_frame.updateStatus("Parse Error");
 			return false;
+		} catch (Exception e) {
+			telem_frame.updateStatus("Unknown Error");
+			return false;
 		}
 	}
 }

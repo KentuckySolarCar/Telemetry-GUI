@@ -1,6 +1,7 @@
 package com.telemetry.gui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -139,6 +140,8 @@ public class TelemetryFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				serial_port.stopSerialPort();
+				updateStatus("");
+				
 			}
 		});
 		change_port.addActionListener(new ChangePortListener());
@@ -269,10 +272,12 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-				serial_port.stopSerialPort();
-			} catch(Exception e1) {}
-
-			System.exit(0);
+				if(serial_port.getPortReadStatus())
+					serial_port.stopSerialPort();
+				System.exit(0);
+			} catch(Exception e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 	
@@ -313,24 +318,24 @@ public class TelemetryFrame extends JFrame {
 			String root_dir = chooser.getSelectedFile().toString();
 //		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
 			int[] current_time = device_panel.getSystemTime();
-			String log_filename = root_dir + "\\" + current_time[0] + ":"
-										   + current_time[1] + ":" + current_time[2] 
+			String log_filename = root_dir + "\\" + current_time[0] + "_"
+										   + current_time[1] + "_" + current_time[2] 
 										   + "_log.txt";
 			serial_port.startLogging(log_filename);
 		}
 	}
 	
 	public void testMonitor() throws IOException, ParseException {
-//		JFileChooser chooser = new JFileChooser();
-//		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-//		chooser.setFileFilter(filter);
-//		int returnVal = chooser.showOpenDialog(this);
-//		if(returnVal == JFileChooser.APPROVE_OPTION) {
-//			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
-//			text_input.start();
-//		}
-		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
-		text_input.start();
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
+			text_input.start();
+		}
+//		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
+//		text_input.start();
 	}
 	
 	public void startAuxFrame() {

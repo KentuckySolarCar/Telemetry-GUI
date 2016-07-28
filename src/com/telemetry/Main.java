@@ -18,6 +18,8 @@ public class Main implements Runnable {
 		Thread thread = new Thread(new Main());
 		window = new TelemetryFrame();
 		thread.start();
+		StateOfCharge soc = new StateOfCharge();
+		soc.initializeData();
 	}
 
 	@Override

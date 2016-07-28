@@ -1,13 +1,13 @@
 package com.telemetry.gui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.*;
 
@@ -16,7 +16,8 @@ import org.json.simple.JSONObject;
 import com.telemetry.custom.SizedQueue;
 import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
-import com.telemetry.strategy.EnergyModelFunctions; 
+import com.telemetry.strategy.EnergyModelFunctions;
+import com.telemetry.strategy.StateOfCharge; 
 
 public class CalculationPanel extends JPanel{
 	private static final long serialVersionUID = -2305051374349231050L;
@@ -49,11 +50,15 @@ public class CalculationPanel extends JPanel{
 	private SizedQueue<Double> battery_solar_runtime_q;
 	private SizedQueue<Double> motor_power_q;
 	private SizedQueue<Double> speed_q;
+	private List<Double> race_voltages;
 	
 	private GraphPanel graph_panel;
+	private StateOfCharge soc;
 
 	public CalculationPanel(GraphPanel graph_panel) {
 		this.graph_panel = graph_panel;
+		soc = new StateOfCharge();
+		soc.initializeData();
 		
 	    setLayout(new GridBagLayout());
 	    
@@ -62,6 +67,7 @@ public class CalculationPanel extends JPanel{
 	    battery_solar_runtime_q  = new SizedQueue<Double>(60);
 	    motor_power_q            = new SizedQueue<Double>(60);
 	    speed_q                  = new SizedQueue<Double>(60);
+	    race_voltages            = new ArrayList<Double>();
 		
 		insertFields();
 	}
@@ -158,6 +164,12 @@ public class CalculationPanel extends JPanel{
 			double ave_speed_60_sec = getAverage(speed_q);
 			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
 		}
+
+		double state_of_charge = 0D;
+		if(batt_v_min != 0) {
+			race_voltages.add(batt_v_min);
+			state_of_charge   = soc.calculateSOC(batt_v_min);
+		}
 		
 		double array_power_value = EnergyModelFunctions.getArrayPower(motor_current_average, batt_current_average, batt_v_avg);
 		double batt_power_value  = EnergyModelFunctions.getBatteryPower(batt_v_avg, batt_current_average);
@@ -187,6 +199,8 @@ public class CalculationPanel extends JPanel{
 		
 		validate();
 		repaint();
+		
+		System.out.println("SOC: " + state_of_charge);
 
 		HashMap<String, Double> dataset = this.getData();
 		dataset.put("motor_current", motor_current_average);
