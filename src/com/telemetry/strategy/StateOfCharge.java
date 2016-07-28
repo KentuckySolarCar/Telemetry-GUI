@@ -23,7 +23,7 @@ public class StateOfCharge {
 	public StateOfCharge() {
 		initializeData();
 		for(int i = 0; i < M; i++) {
-			
+			System.out.print(calculateSOC(voltage[i]));
 		}
 	}
 	
