@@ -132,8 +132,7 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem start_monitor      = new JMenuItem("Start Monitor");	
 		JMenuItem stop_monitor       = new JMenuItem("Stop Monitor");
 		JMenuItem restart_monitor    = new JMenuItem("Reconnect");
-		JMenuItem start_calculations = new JMenuItem("Start Calculations");
-		JMenuItem start_logging      = new JMenuItem("Start Logging");
+//		JMenuItem start_logging      = new JMenuItem("Start Logging");
 		JMenuItem main_resolution = new JMenuItem("Main Resolution");
 		JMenuItem test_monitor = new JMenuItem("Test Monitor");
 		JMenuItem start_aux_frame = new JMenuItem("Start Aux Frame");
@@ -175,17 +174,17 @@ public class TelemetryFrame extends JFrame {
 		});
 		main_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
-		start_logging.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				try {
-					logFileSaver();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+//		start_logging.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				try {
+//					logFileSaver();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 		start_aux_frame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -213,8 +212,7 @@ public class TelemetryFrame extends JFrame {
 		control_menu.add(start_monitor);
 		control_menu.add(restart_monitor);
 		control_menu.add(stop_monitor);
-		control_menu.add(start_calculations);
-		control_menu.add(start_logging);
+//		control_menu.add(start_logging);
 		
 		
 		// add about menu
@@ -304,8 +302,8 @@ public class TelemetryFrame extends JFrame {
 				if(serial_port.getPortNum() == "")
 					displayErrorDialog("Port is Empty!");
 				else {
-					logFileSaver();
 					serial_port.startReadThread();
+					logFileSaver();
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -336,7 +334,7 @@ public class TelemetryFrame extends JFrame {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String root_dir = chooser.getSelectedFile().toString();
 			int[] current_time = device_panel.getSystemTime();
-			String log_filename = root_dir + File.pathSeparator + current_time[0] + "_"
+			String log_filename = root_dir + File.separator + current_time[0] + "_"
 										   + current_time[1] + "_" + current_time[2] 
 										   + "_log.txt";
 			serial_port.startLogging(log_filename);
@@ -405,6 +403,9 @@ public class TelemetryFrame extends JFrame {
 		calculation_panel.updatePanel(data, 0);
 		obj.put("actual_time", date_format.format(date));
 		log.append("\n" + obj.toString() + "\n");
+		serial_bar.setText(obj.toString());
+		if(aux_frame_on)
+			aux_frame.updatePanel(data);
 	}
 	
 	public void updateAllPanels(JSONObject obj) {

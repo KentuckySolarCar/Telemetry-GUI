@@ -86,6 +86,7 @@ public class DevicePanel extends JPanel{
 		motor_panel.updatePanel(motor_data, 0);
 		battery_panel.updatePanel(batt_data, 0);
 		time_panel.updatePanel(time_data, 0);
+		speed_dial_panel.updateDial(motor_data);
 	}
 	
 	public int[] getRunTime() {

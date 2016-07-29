@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Point;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
@@ -85,6 +86,14 @@ public class SpeedDialPanel extends JPanel {
 		}
 	}
 	
+	public void updateDial(HashMap<String, Double> motor_data) {
+		double new_speed = motor_data.get("motor_speed");
+		if(new_speed != 0D) {
+			speed_dataset.setValue(new_speed);
+			validate();
+			repaint();
+		}
+	}
 	private double abs(Double decimal) {
 		if(decimal > 0)
 			return decimal;

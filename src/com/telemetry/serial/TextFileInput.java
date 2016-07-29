@@ -34,13 +34,12 @@ public class TextFileInput extends Thread {
 		try {
 			String line;
 			while((line = buffer_reader.readLine()) != null) {
-				String msg = line.split(" ")[0];
-				if(isValidMessage(msg)) {
-					JSONObject obj = (JSONObject) parser.parse(msg);
+				if(isValidMessage(line)) {
+					JSONObject obj = (JSONObject) parser.parse(line);
 					telem_frame.updateAllPanels(obj);
 				}
 				else {
-					telem_frame.processInvalidData(msg);
+					telem_frame.processInvalidData(line);
 				}
 				Thread.sleep(100);
 			}

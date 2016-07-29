@@ -1,5 +1,6 @@
 package com.telemetry;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,8 +19,6 @@ public class Main implements Runnable {
 		Thread thread = new Thread(new Main());
 		window = new TelemetryFrame();
 		thread.start();
-		StateOfCharge soc = new StateOfCharge();
-		soc.initializeData();
 	}
 
 	@Override

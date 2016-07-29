@@ -33,7 +33,7 @@ public class EnergyGraph extends JPanel {
 	public EnergyGraph() {
 		energy_dataset = createEnergyDataSet();
 
-		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);
+		energy_chart = ChartFactory.createXYLineChart("Energy", "Time (Seconds)", "Energy This Interval (watt*hours)", energy_dataset);
 		LegendTitle legend = energy_chart.getLegend();
 		legend.setPosition(RectangleEdge.RIGHT);
 		
