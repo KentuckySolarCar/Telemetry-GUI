@@ -81,7 +81,8 @@ public class SerialPortHandler {
 	
 	public void restartReadThread() throws Exception {
 		stopSerialPort();
-		connect(port_num);
+		if(port_num != "")
+			connect(port_num);
 		startReadThread();
 	}
 	
