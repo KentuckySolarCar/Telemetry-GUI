@@ -34,12 +34,13 @@ public class TextFileInput extends Thread {
 		try {
 			String line;
 			while((line = buffer_reader.readLine()) != null) {
-				if(isValidMessage(line)) {
-					JSONObject obj = (JSONObject) parser.parse(line);
+				String msg = line.split(" ")[0];
+				if(isValidMessage(msg)) {
+					JSONObject obj = (JSONObject) parser.parse(msg);
 					telem_frame.updateAllPanels(obj);
 				}
 				else {
-					telem_frame.processInvalidData(line);
+					telem_frame.processInvalidData(msg);
 				}
 				Thread.sleep(100);
 			}
@@ -94,6 +95,14 @@ public class TextFileInput extends Thread {
 		} catch (Exception e) {
 			telem_frame.updateStatus("Unknown Error");
 			return false;
+		}
+	}
+	
+	private void processLogLine(String line) {
+		String[] splits = line.split(" ");
+		String processed = "";
+		if(splits[0] != "*ERROR*") {
+			
 		}
 	}
 }

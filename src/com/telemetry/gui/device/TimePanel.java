@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.*;
@@ -15,10 +16,9 @@ import com.telemetry.custom.Tools;
 
 public class TimePanel extends JPanel {
 	private static final long serialVersionUID = -8596634937772865283L;
-	private JLabel time_counter = new JLabel();
-	private JLabel time_computer = new JLabel();
-	private JLabel time_pi = new JLabel("VALUE");
-	private JLabel time_stop_watch = new JLabel();
+	private JLabel time_counter_l = new JLabel();
+	private JLabel time_computer_l = new JLabel();
+	private JLabel time_pi_l = new JLabel("VALUE");
 	private long initial_time;
 	private int hour = 0;
 	private int minute = 0;
@@ -35,12 +35,9 @@ public class TimePanel extends JPanel {
 		// Initialize time data
 		Date date = new Date();
 		initial_time = System.currentTimeMillis()/1000;
-		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
-		time_stop_watch.setText(stop_watch_hour + " H " 
-								+ stop_watch_minute + " M " 
-								+ stop_watch_second + " S ");
-		time_computer.setText(date_format.format(date));
-		time_pi.setText("VALUE");
+		time_counter_l.setText(hour + " H " + minute + " M " + second + " S ");
+		time_computer_l.setText(date_format.format(date));
+		time_pi_l.setText("VALUE");
 
 		setLayout(new GridBagLayout());
 		insertComponents();
@@ -86,18 +83,18 @@ public class TimePanel extends JPanel {
 		//-----------------------Fields-------------------------//
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		time_counter.setFont(Tools.FIELD_FONT);
-		add(time_counter, gbc);
+		time_counter_l.setFont(Tools.FIELD_FONT);
+		add(time_counter_l, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 2;
-		time_computer.setFont(Tools.FIELD_FONT);
-		add(time_computer, gbc);
+		time_computer_l.setFont(Tools.FIELD_FONT);
+		add(time_computer_l, gbc);
 
 		gbc.gridx = 1;
 		gbc.gridy = 3;
-		time_pi.setFont(Tools.FIELD_FONT);
-		add(time_pi, gbc);
+		time_pi_l.setFont(Tools.FIELD_FONT);
+		add(time_pi_l, gbc);
 	}
 	
 	public void updateRunTime() {
@@ -108,8 +105,8 @@ public class TimePanel extends JPanel {
 		minute = (int) ((elapsed_time % 3600) / 60);
 		second = (int) ((elapsed_time) % 60);
 		
-		time_computer.setText(date_format.format(date));
-		time_counter.setText(hour + " H " + minute + " M " + second + " S ");
+		time_computer_l.setText(date_format.format(date));
+		time_counter_l.setText(hour + " H " + minute + " M " + second + " S ");
 
 		validate();
 		repaint();
@@ -118,10 +115,17 @@ public class TimePanel extends JPanel {
 	public void updatePanel(String pi_time) {
 		List<String> parsed_string = Arrays.asList(pi_time.split(":"));
 
-		time_pi.setText(parsed_string.get(0) + ":" 
+		time_pi_l.setText(parsed_string.get(0) + ":" 
 							+ parsed_string.get(1) + ":" 
 							+ Tools.stringToInt(parsed_string.get(2)));
 		
+		validate();
+		repaint();
+	}
+	
+	public void updatePanel(HashMap<String, Integer[]> time_data, int dummy) {
+		Integer[] pi_time = time_data.get("pi_time");
+		time_pi_l.setText(pi_time[0] + ":" + pi_time[1] + ":" + pi_time[2]);
 		validate();
 		repaint();
 	}
@@ -132,7 +136,7 @@ public class TimePanel extends JPanel {
 	}
 	
 	public int[] getSystemTime() {
-		String system_time = time_computer.getText();
+		String system_time = time_computer_l.getText();
 		String[] split = system_time.split(":");
 		int time[] = {Integer.parseInt(split[0]), Integer.parseInt(split[1]), 
 					  Integer.parseInt(split[2])};

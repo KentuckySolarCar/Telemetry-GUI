@@ -25,10 +25,10 @@ public class EnergyGraph extends JPanel {
 	private static final long serialVersionUID = 8698643579672784275L;
 	private JFreeChart energy_chart;
 	private ChartPanel energy_panel;
-//	private JPanel button_panel;
 	private XYSeriesCollection energy_dataset;
-	private ArrayList<XYSeries> laps;
-	private int lap_counts = 0;
+	private XYSeries soc_series;
+//	private ArrayList<XYSeries> laps;
+//	private int lap_counts = 0;
 	
 	public EnergyGraph() {
 		energy_dataset = createEnergyDataSet();
@@ -70,26 +70,23 @@ public class EnergyGraph extends JPanel {
 	}
 	
 	private XYSeriesCollection createEnergyDataSet() {
-		lap_counts++;
-		laps = new ArrayList<XYSeries>();
-		laps.add(new XYSeries("Lap " + lap_counts));
+//		lap_counts++;
+//		laps = new ArrayList<XYSeries>();
+//		laps.add(new XYSeries("Lap " + lap_counts));
+		soc_series = new XYSeries("State of Charge");
 		
 		XYSeriesCollection energy_dataset = new XYSeriesCollection();
+		energy_dataset.addSeries(soc_series);
 		
-		for(XYSeries lap : laps) 
-			energy_dataset.addSeries(lap);
+//		for(XYSeries lap : laps) energy_dataset.addSeries(lap);
 		
 		return energy_dataset;
 	}
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
-		/*for (int i = 0; i < lap_counts; i++) {
-			laps.get(i).add(calculation_data.get("time_elapsed"), calculation_data[i]);
-		}*/
-		energy_panel.removeAll();
-		energy_panel.revalidate();
-		energy_chart = ChartFactory.createXYLineChart("Energy", "Distance (miles)", "Energy This Interval (watt*hours)", energy_dataset);
-		energy_panel = new ChartPanel(energy_chart);
+		double seconds_elapsed = calculation_data.get("time_seconds");
+		double soc = calculation_data.get("state_of_charge");
+		soc_series.add(seconds_elapsed, soc);
 		validate();
 		repaint();
 	}

@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import com.telemetry.custom.SizedQueue;
 import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
+import com.telemetry.strategy.DataContainer;
 import com.telemetry.strategy.EnergyModelFunctions;
 import com.telemetry.strategy.StateOfCharge; 
 
@@ -24,7 +25,7 @@ public class CalculationPanel extends JPanel{
 	private JLabel array_power                     = new JLabel("000.000"); // Implemented
 	private JLabel average_speed                   = new JLabel("000.000"); // Implemented
 	private JLabel solar_energy_remaining          = new JLabel("000.000"); // Implemented
-//	private JLabel motor_power                     = new JLabel("000.000"); // Implemented
+	private JLabel motor_power                     = new JLabel("000.000"); // Implemented
 	private JLabel time_left_in_day                = new JLabel("000.000"); // Implemented
 	private JLabel battery_only_runtime_60_sec     = new JLabel("000.000"); // Pretty much implemented
 	private JLabel battery_only_range_60_sec       = new JLabel("000.000"); // Pretty much implemented
@@ -45,12 +46,28 @@ public class CalculationPanel extends JPanel{
 	private JLabel target_battery_state_of_charge  = new JLabel("000.000"); // Standby
 	private JLabel predicted_array_power           = new JLabel("000.000"); // Standby
 	private JLabel time_elapsed                    = new JLabel("000.000"); // Standby
+
 	private SizedQueue<Double> battery_runtime_q;
 	private SizedQueue<Double> battery_range_q; 
 	private SizedQueue<Double> battery_solar_runtime_q;
 	private SizedQueue<Double> motor_power_q;
 	private SizedQueue<Double> speed_q;
 	private List<Double> race_voltages;
+
+	private double ave_speed = 0D;
+	private double motor_current_average = 0D;
+	private double batt_current_average = 0D;
+	private double batt_temp_avg = 0D;
+	private double batt_temp_max = 0D;
+	private double batt_temp_min = 0D;
+	private double batt_v_avg = 0D;
+	private double batt_v_min = 0D;
+	private double batt_v_max = 0D;
+	private double time_seconds = 0D;
+	private double motor_power_value = 0D;
+	private double batt_power_value = 0D;
+	private double array_power_value = 0D;
+	private double state_of_charge = 0D;
 	
 	private GraphPanel graph_panel;
 	private StateOfCharge soc;
@@ -76,7 +93,7 @@ public class CalculationPanel extends JPanel{
 		HashMap<String, Double> dataset = new HashMap<String, Double>();
 
 		dataset.put("array_power",                      Tools.getLabelDouble(array_power));
-		dataset.put("average_speed",                    Tools.getLabelDouble(average_speed));
+		dataset.put("average_speed",                    ave_speed);
 		dataset.put("battery_and_solar_range",          Tools.getLabelDouble(battery_and_solar_range));
 		dataset.put("battery_and_solar_runtime_60_sec", Tools.getLabelDouble(battery_and_solar_runtime_60_sec));
 		dataset.put("battery_charge_remaining",         Tools.getLabelDouble(battery_charge_remaining));
@@ -98,8 +115,25 @@ public class CalculationPanel extends JPanel{
 		dataset.put("target_watt_hour_per_mile_day",    Tools.getLabelDouble(target_watt_hour_per_mile_day));
 		dataset.put("time_elapsed",                     Tools.getLabelDouble(time_elapsed));
 		dataset.put("time_left_in_day",                 Tools.getLabelDouble(time_left_in_day));
+		dataset.put("motor_current_average", motor_current_average);
+		dataset.put("batt_current_average", batt_current_average);
+		dataset.put("batt_temp_avg", batt_temp_avg);
+		dataset.put("batt_temp_max", batt_temp_max);
+		dataset.put("batt_temp_min", batt_temp_min);
+		dataset.put("batt_v_avg", batt_v_avg);
+		dataset.put("batt_v_min", batt_v_min);
+		dataset.put("batt_v_max", batt_v_max);
+		dataset.put("time_seconds", time_seconds);
+		dataset.put("motor_power", motor_power_value);
+		dataset.put("batt_power", batt_power_value);
+		dataset.put("array_power", array_power_value);
+		dataset.put("state_of_charge", state_of_charge);
 		
 		return dataset;
+	}
+	
+	public void updatePanel(DataContainer data, int dummy) {
+		HashMap<String, Double> calculation_data = data.getCalculationData();
 	}
 	
 	/**
@@ -112,24 +146,25 @@ public class CalculationPanel extends JPanel{
 		JSONObject battery_data = (JSONObject) device_data.get("battery_data");
 		
 		int[] system_time  = (int[]) device_data.get("system_time");
-		double time_seconds  = system_time[0] * 3600 + system_time[1] * 60 + system_time[2];
+		time_seconds  = system_time[0] * 3600 + system_time[1] * 60 + system_time[2];
 
-		double ave_speed   = (Double) motor_data.get("ave_speed");
-		double motor_current_average = (Double) motor_data.get("ave_current");
+		ave_speed   = (Double) motor_data.get("instant_speed");
+		double motor_current = (Double) motor_data.get("instant_current");
 		double amp_sec     = (Double) motor_data.get("amp_sec");
 		double watt_sec    = (Double) motor_data.get("watt_sec");
 		double odometer    = (Double) motor_data.get("odometer");
 		double motor_volt  = (Double) motor_data.get("voltage");
 		
-		double batt_temp_avg        = (Double) battery_data.get("ave_temp");
-		double batt_v_avg           = (Double) battery_data.get("v_average");
-		double batt_v_min           = (Double) battery_data.get("v_min");
-		double batt_v_max           = (Double) battery_data.get("v_max");
+		batt_temp_avg        = (Double) battery_data.get("ave_temp");
+		batt_temp_max        = (Double) battery_data.get("max_temp");
+		batt_v_avg           = (Double) battery_data.get("v_average");
+		batt_v_min           = (Double) battery_data.get("v_min");
+		batt_v_max           = (Double) battery_data.get("v_max");
 		double batt_current_average = (Double) battery_data.get("current_average");
 		
 		double battery_runtime_current = EnergyModelFunctions.getInstantaneousBatteryRuntime(0.0, batt_v_avg, batt_current_average);
 		double battery_range_current = EnergyModelFunctions.getBatteryRange(battery_runtime_current, ave_speed);
-		double motor_power_current = EnergyModelFunctions.getMotorPower(motor_current_average, batt_v_avg);
+		double motor_power_current = EnergyModelFunctions.getMotorPower(motor_current, batt_v_avg);
 		
 		LocalDateTime localTime 	= LocalDateTime.now();
 		int GMTOffset           	= -5;
@@ -165,15 +200,14 @@ public class CalculationPanel extends JPanel{
 			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
 		}
 
-		double state_of_charge = 0D;
 		if(batt_v_min != 0) {
 			race_voltages.add(batt_v_min);
-			state_of_charge   = soc.calculateSOC(batt_v_min);
+			state_of_charge   = 100D - 100*soc.calculateSOC(batt_v_min);
 		}
 		
-		double array_power_value = EnergyModelFunctions.getArrayPower(motor_current_average, batt_current_average, batt_v_avg);
-		double batt_power_value  = EnergyModelFunctions.getBatteryPower(batt_v_avg, batt_current_average);
-		double motor_power_value = EnergyModelFunctions.getMotorPower(motor_current_average, motor_volt);
+		array_power_value = EnergyModelFunctions.getArrayPower(motor_current, batt_current_average, batt_v_avg);
+		batt_power_value  = EnergyModelFunctions.getBatteryPower(batt_v_avg, batt_current_average);
+		motor_power_value = EnergyModelFunctions.getMotorPower(motor_current, motor_volt);
 	
 		array_power                      .setText(Tools.roundDouble(array_power_value));
 		average_speed                    .setText(Tools.roundDouble(ave_speed));
@@ -199,22 +233,8 @@ public class CalculationPanel extends JPanel{
 		
 		validate();
 		repaint();
-		
-		System.out.println("SOC: " + state_of_charge);
 
-		HashMap<String, Double> dataset = this.getData();
-		dataset.put("motor_current", motor_current_average);
-		dataset.put("batt_current", batt_current_average);
-		dataset.put("batt_temp_avg", batt_temp_avg);
-		dataset.put("batt_v_avg", batt_v_avg);
-		dataset.put("batt_v_min", batt_v_min);
-		dataset.put("batt_v_max", batt_v_max);
-		dataset.put("time_seconds", time_seconds);
-		dataset.put("motor_power", motor_power_value);
-		dataset.put("batt_power", batt_power_value);
-		dataset.put("array_power", array_power_value);
-		
-		graph_panel.updatePanel(dataset);
+		graph_panel.updatePanel(this.getData());
 	}
 
 	private void insertFields() {

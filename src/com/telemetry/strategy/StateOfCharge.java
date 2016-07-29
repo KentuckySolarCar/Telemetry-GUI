@@ -22,9 +22,6 @@ public class StateOfCharge {
 	
 	public StateOfCharge() {
 		initializeData();
-		for(int i = 0; i < M; i++) {
-			System.out.print(calculateSOC(voltage[i]));
-		}
 	}
 	
 //	1x10 struct array with fields: 
@@ -104,7 +101,7 @@ public class StateOfCharge {
 //		t_amp /= bounds;
 		List<Double> race_voltages = new ArrayList<Double>();
 		for(int i = 0; i < M; i++) {
-			if(voltage[i] > t_voltage)
+			if(voltage[i] >= t_voltage)
 				race_voltages.add(voltage[i]);
 			else
 				break;

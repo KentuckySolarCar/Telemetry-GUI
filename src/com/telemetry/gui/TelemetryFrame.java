@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
+import com.telemetry.strategy.DataContainer;
 import com.sun.glass.events.KeyEvent;
 import com.telemetry.custom.Tools;
 import com.telemetry.graphs.GraphPanel;
@@ -22,6 +23,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,6 +45,7 @@ public class TelemetryFrame extends JFrame {
 	private AuxFrame aux_frame;
 	private boolean aux_frame_on = false;
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
+	private DataContainer data;
 	
 	// Temp
 	JScrollPane log_pane;
@@ -60,6 +63,7 @@ public class TelemetryFrame extends JFrame {
 		insertComponents();
 		
 		serial_port = new SerialPortHandler(this);
+		data = new DataContainer();
 		
 		// Reveals main_frame
 		setVisible(true);
@@ -144,8 +148,7 @@ public class TelemetryFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				serial_port.stopSerialPort();
-				updateStatus("");
-				
+				updateStatus("Serial Port Stopped");
 			}
 		});
 		change_port.addActionListener(new ChangePortListener());
@@ -159,6 +162,15 @@ public class TelemetryFrame extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				if(serial_port.getPortReadStatus())
+					try {
+						serial_port.restartReadThread();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				else
+					updateStatus("No serial port running");
 			}
 		});
 		main_resolution.addActionListener(new ChangeResolutionListener());
@@ -195,6 +207,7 @@ public class TelemetryFrame extends JFrame {
 		
 		// add menu items file menu);
 		file_menu.add(exit_menu_item);
+
 		// add control items to control menu
 		control_menu.add(change_port);
 		control_menu.add(start_monitor);
@@ -290,8 +303,10 @@ public class TelemetryFrame extends JFrame {
 			try {
 				if(serial_port.getPortNum() == "")
 					displayErrorDialog("Port is Empty!");
-				else   
+				else {
+					logFileSaver();
 					serial_port.startReadThread();
+				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -320,9 +335,8 @@ public class TelemetryFrame extends JFrame {
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String root_dir = chooser.getSelectedFile().toString();
-//		String root_dir = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI";
 			int[] current_time = device_panel.getSystemTime();
-			String log_filename = root_dir + "\\" + current_time[0] + "_"
+			String log_filename = root_dir + File.pathSeparator + current_time[0] + "_"
 										   + current_time[1] + "_" + current_time[2] 
 										   + "_log.txt";
 			serial_port.startLogging(log_filename);
@@ -338,8 +352,6 @@ public class TelemetryFrame extends JFrame {
 			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
 			text_input.start();
 		}
-//		text_input = new TextFileInput("C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\0_0_14_log.txt", this);
-		text_input.start();
 	}
 	
 	public void startAuxFrame() {
@@ -386,12 +398,16 @@ public class TelemetryFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
+	public void updateAllPanels(JSONObject obj, int dummy) {
+		Date date = new Date();
+		data.updateData(obj);
+		device_panel.updatePanel(data);
+		calculation_panel.updatePanel(data, 0);
+		obj.put("actual_time", date_format.format(date));
+		log.append("\n" + obj.toString() + "\n");
+	}
+	
 	public void updateAllPanels(JSONObject obj) {
-		if(aux_frame_on) {
-			aux_frame.updatePanel(obj);
-			aux_frame.validate();
-			aux_frame.repaint();
-		}
 		if((String) obj.get("message_id") == "messages")
 			processMessages((String[]) obj.get("Messages"));
 		else {
@@ -401,6 +417,9 @@ public class TelemetryFrame extends JFrame {
 			log.append("\n" + obj.toString() + " " + date_format.format(date) + "\n");
 			serial_bar.setText(obj.toString());
 			// GraphPanel is updated with calculation panel, for concurrency issues
+
+			if(aux_frame_on) 
+				aux_frame.updatePanel(calculation_panel.getData());
 		}
 	}
 	

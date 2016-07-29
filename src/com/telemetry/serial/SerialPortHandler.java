@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
-import javax.swing.JOptionPane;
-
 import com.telemetry.gui.TelemetryFrame;
 
 import gnu.io.*;
@@ -15,12 +13,12 @@ public class SerialPortHandler {
 	private SerialPort serial_port;
 	private OutputStream output_stream;
 	private InputStream input_stream;
-	private String port_num;
+	private String port_num = "";
 	private SerialPortReader read_thread;
 	private TelemetryFrame telem_frame;
+	private boolean port_connected = false;
 	
 	public SerialPortHandler(TelemetryFrame telem_frame) {
-		port_num = "";
 		this.telem_frame = telem_frame;
 	}
 	
@@ -33,7 +31,7 @@ public class SerialPortHandler {
 	}
 	
 	public boolean getPortReadStatus() {
-		if(read_thread != null) {
+		if(port_connected) {
 			return read_thread.getThreadStatus();
 		}
 		else
@@ -58,6 +56,7 @@ public class SerialPortHandler {
                 
                 input_stream = serial_port.getInputStream();
                 output_stream = serial_port.getOutputStream();
+                port_connected = true;
             }
             else
             	System.out.println("Error: This is not a serial port!");
@@ -65,14 +64,19 @@ public class SerialPortHandler {
 	}
 	
 	public void stopSerialPort() {
-		try {
-			read_thread.stopThread();
-			input_stream.close();
-			output_stream.close();
-			serial_port.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(port_connected) {
+			try {
+				read_thread.stopThread();
+				input_stream.close();
+				output_stream.close();
+				serial_port.close();
+				port_connected = false;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		else
+			telem_frame.updateStatus("No Serial Port Connected");
 	}
 	
 	public void restartReadThread() throws Exception {

@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import org.json.simple.JSONObject;
 
@@ -34,6 +35,8 @@ public class MotorPanel extends JPanel {
 	private double odometer;
 	private double energy;
 	private double voltage;
+	private double instant_current;
+	private double instant_speed;
 	
 	// Threshold for fields
 	private double speed_threshold = 50;
@@ -53,11 +56,12 @@ public class MotorPanel extends JPanel {
 	public JSONObject getData() {
 		JSONObject data = new JSONObject();
 		data.put("ave_speed", new Double(calculateAveSpeed()));
-		data.put("ave_current", new Double(calculateAveCurrent()));
-		data.put("amp_sec", new Double(amp_sec));
-		data.put("watt_sec", new Double(watt_sec));
-		data.put("odometer", new Double(odometer));
-		data.put("voltage", new Double(voltage));
+		data.put("instant_current", instant_current);
+		data.put("instant_speed", instant_speed);
+		data.put("amp_sec", amp_sec);
+		data.put("watt_sec", watt_sec);
+		data.put("odometer", odometer);
+		data.put("voltage", voltage);
 		return data;
 	}
 	
@@ -166,7 +170,6 @@ public class MotorPanel extends JPanel {
 		double current_instant = Double.parseDouble((String) obj.get("I"));
 		double voltage_instant = Double.parseDouble((String) obj.get("V"));
 		
-//		if(speed_instant + current_instant == 0) {
 		if(speed_instant + current_instant + voltage_instant == 0) {
 			speed_label.setBackground(Color.CYAN);
 			current_label.setBackground(Color.CYAN);
@@ -174,7 +177,10 @@ public class MotorPanel extends JPanel {
 		}
 		
 		speed.add(speed_instant);
+		instant_speed = speed_instant;
 		current.add(current_instant);
+		instant_current = current_instant;
+		voltage = voltage_instant;
 
 		Tools.thresholdCheck(speed_label, speed_instant, speed_threshold, Tools.RED, Tools.GREEN);
 		Tools.thresholdCheck(current_label, current_instant, current_threshold, Tools.RED, Tools.GREEN);
@@ -187,6 +193,12 @@ public class MotorPanel extends JPanel {
 
 		validate();
 		repaint();
+	}
+	
+	public void updatePanel(HashMap<String, Double> data, int dummy) {
+		speed_label.setText(Tools.roundDouble(data.get("motor_speed")));
+		current_label.setText(Tools.roundDouble(data.get("motor_current")));
+		voltage_label.setText(Tools.roundDouble(data.get("motor_voltage")));
 	}
 	
 	private double calculateAveSpeed() {

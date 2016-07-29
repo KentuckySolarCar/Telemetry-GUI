@@ -7,10 +7,13 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.*;
 
 import org.json.simple.JSONObject;
+
+import com.telemetry.strategy.DataContainer;
 
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
@@ -74,6 +77,15 @@ public class DevicePanel extends JPanel{
 		
 		validate();
 		repaint();
+	}
+	
+	public void updatePanel(DataContainer data) {
+		HashMap<String, Double> motor_data = data.getMotorData();
+		HashMap<String, Double> batt_data = data.getBatteryData();
+		HashMap<String, Integer[]> time_data = data.getTimeData();
+		motor_panel.updatePanel(motor_data, 0);
+		battery_panel.updatePanel(batt_data, 0);
+		time_panel.updatePanel(time_data, 0);
 	}
 	
 	public int[] getRunTime() {

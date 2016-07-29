@@ -18,8 +18,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.sun.jmx.snmp.Timestamp;
-import com.telemetry.custom.Tools;
 import com.telemetry.gui.TelemetryFrame;
 
 public class SerialPortReader extends Thread {
@@ -42,9 +40,11 @@ public class SerialPortReader extends Thread {
 	
 	public void stopThread() throws IOException {
 		status = false;
-		logging = false;
 		input_stream.close();
-		writer.close();
+		if(logging) {
+			logging = false;
+			writer.close();
+		}
 	}
 	
 	public boolean getThreadStatus() {
@@ -65,36 +65,29 @@ public class SerialPortReader extends Thread {
 		while(status) {
 			String line;
 			try {
-				if((line = input_stream.readLine()) != null) {
-					telem_frame.updateStatus(line);
-					if(isValidMessage(line)) {
-						JSONObject obj = (JSONObject) parser.parse(line);
-						telem_frame.updateAllPanels(obj);
-					}
-					else {
-						telem_frame.processInvalidData(line);
-						line = "*ERROR* " + line;
-					}
-					if(logging) {
-						Date date = new Date();
-						writer.write(line + " " + date_format.format(date) + "\n");
-					}
+				line = input_stream.readLine();
+				telem_frame.updateStatus(line);
+				if(isValidMessage(line)) {
+					JSONObject obj = (JSONObject) parser.parse(line);
+					telem_frame.updateAllPanels(obj);
 				}
-				else
-					input_stream.wait(3*60*1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				else {
+					telem_frame.processInvalidData(line);
+					line = "*ERROR* " + line;
+				}
+				if(logging) {
+					Date date = new Date();
+					writer.write(line + "|" + date_format.format(date) + "\n");
+				}
 			} catch (IOException e) {
 				telem_frame.updateStatus("Waiting on Serial Port");
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} catch (ParseException e) {
 				// Do Nothing...
-				System.out.println("Parse Error");
 			}
 		}
 	}
