@@ -1,30 +1,21 @@
 package com.telemetry.gui;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-
 import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
-import com.telemetry.serial.SerialPortHandler;
-
-public class LogPanel extends JPanel {
+public class LogPanel extends JScrollPane {
 
 	private static final long serialVersionUID = 4467077703107588725L;
 	private JTextArea text_area;
-	private JScrollPane scroll_pane;
 	
 	public LogPanel() {
-		setLayout(new BorderLayout());
+		super();
 		
 		text_area = new JTextArea();
 		text_area.setEditable(false);
 		
-		scroll_pane = new JScrollPane(text_area);
-	
-		add(scroll_pane, BorderLayout.CENTER);
+		this.add(text_area);
 	}
 	
 	public void updatePanel(JSONObject obj) {

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import javax.swing.*;
 import org.json.simple.JSONObject;
 
+import com.telemetry.data.CarData;
 import com.telemetry.gui.CalculationPanel;
 
 public class GraphPanel extends JPanel {
@@ -22,7 +23,7 @@ public class GraphPanel extends JPanel {
 	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 16);
 	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 14);
 	
-	public GraphPanel(CalculationPanel calculation_panel) {
+	public GraphPanel() {
 		setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -101,11 +102,14 @@ public class GraphPanel extends JPanel {
 	 *  	
 	 * @param calculation_data
 	 */
-	public void updatePanel(HashMap<String, Double> calculation_data) {
+	public void updatePanel(CarData data) {
+		HashMap<String, Double> calculation_data = data.getCalculationData();
+		HashMap<String, Double> motor_data = data.getMotorData();
+		HashMap<String, Double> battery_data = data.getBatteryData();
 		energy_graph		.updateDataSet(calculation_data);
 		power_graph			.updateDataSet(calculation_data);
-		temperature_graph	.updateDataSet(calculation_data);
-		voltage_graph		.updateDataSet(calculation_data);
+		temperature_graph	.updateDataSet(battery_data);
+		voltage_graph		.updateDataSet(battery_data);
 //		text_field			.updateDataSet(calculation_data);
 
 		validate();

@@ -27,7 +27,6 @@ public class VoltageGraph extends JPanel {
 	private XYSeries v_max;
 	private XYSeries v_min;
 	private XYSeries v_avg;
-	//private XYSeries b_std_dev;
 	
 	public VoltageGraph() {
 		voltage_dataset = createVoltageDataSet();
@@ -66,9 +65,9 @@ public class VoltageGraph extends JPanel {
 	
 	public void updateDataSet(HashMap<String, Double> calculation_data) {
 		double time_seconds = calculation_data.get("time_seconds");
-		double batt_v_avg   = calculation_data.get("batt_v_avg");
-		double batt_v_max   = calculation_data.get("batt_v_max");
-		double batt_v_min   = calculation_data.get("batt_v_min");
+		double batt_v_avg   = calculation_data.get("batt_volt_avg");
+		double batt_v_max   = calculation_data.get("batt_volt_max");
+		double batt_v_min   = calculation_data.get("batt_volt_min");
 		if(batt_v_avg + batt_v_max + batt_v_min == 0)
 			return;
 		v_max.add(time_seconds, batt_v_max);

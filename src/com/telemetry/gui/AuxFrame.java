@@ -21,16 +21,16 @@ import javax.swing.JTextArea;
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.Tools;
+import com.telemetry.data.CarData;
 import com.telemetry.strategy.EnergyModelFunctions;
-import com.telemetry.strategy.DataContainer;
 
 public class AuxFrame extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8271261737440319731L;
-	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 35); // 40
-	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 115); // 120
+	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 35); // 35
+	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 115); // 115
 	
 	private JPanel text_fields;
 
@@ -52,8 +52,7 @@ public class AuxFrame extends JFrame {
 	// Temp until Motor BC is transmitted
 	private boolean flip_flop = true;
 	
-	public AuxFrame(GraphicsConfiguration target_screen_id) {
-		super(target_screen_id);
+	public AuxFrame() {
 		setLayout(new BorderLayout());
 		
 		insertComponents();
@@ -174,7 +173,7 @@ public class AuxFrame extends JFrame {
 		return label;
 	}
 	
-	public void updatePanel(DataContainer data) {
+	public void updatePanel(CarData data) {
 		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> battery_data = data.getBatteryData();
 		HashMap<String, Double> calculation_data = data.getCalculationData();

@@ -15,8 +15,8 @@ import org.json.simple.JSONObject;
 
 import com.telemetry.custom.SizedQueue;
 import com.telemetry.custom.Tools;
+import com.telemetry.data.CarData;
 import com.telemetry.graphs.GraphPanel;
-import com.telemetry.strategy.DataContainer;
 import com.telemetry.strategy.EnergyModelFunctions;
 import com.telemetry.strategy.StateOfCharge; 
 
@@ -69,14 +69,7 @@ public class CalculationPanel extends JPanel{
 	private double array_power_value = 0D;
 	private double state_of_charge = 0D;
 	
-	private GraphPanel graph_panel;
-	private StateOfCharge soc;
-
-	public CalculationPanel(GraphPanel graph_panel) {
-		this.graph_panel = graph_panel;
-		soc = new StateOfCharge();
-		soc.initializeData();
-		
+	public CalculationPanel() {
 	    setLayout(new GridBagLayout());
 	    
 	    battery_runtime_q        = new SizedQueue<Double>(60);
@@ -132,7 +125,7 @@ public class CalculationPanel extends JPanel{
 		return dataset;
 	}
 	
-	public void updatePanel(DataContainer data, int dummy) {
+	public void updatePanel(CarData data, int dummy) {
 		HashMap<String, Double> calculation_data = data.getCalculationData();
 	}
 	
@@ -199,11 +192,6 @@ public class CalculationPanel extends JPanel{
 			double ave_speed_60_sec = getAverage(speed_q);
 			speed_60_sec.setText(Tools.roundDouble(ave_speed_60_sec));
 		}
-
-		if(batt_v_min != 0) {
-			race_voltages.add(batt_v_min);
-			state_of_charge   = 100D - 100*soc.calculateSOC(batt_v_min);
-		}
 		
 		array_power_value = EnergyModelFunctions.getArrayPower(motor_current, batt_current_average, batt_v_avg);
 		batt_power_value  = EnergyModelFunctions.getBatteryPower(batt_v_avg, batt_current_average);
@@ -233,8 +221,6 @@ public class CalculationPanel extends JPanel{
 		
 		validate();
 		repaint();
-
-		graph_panel.updatePanel(this.getData());
 	}
 
 	private void insertFields() {

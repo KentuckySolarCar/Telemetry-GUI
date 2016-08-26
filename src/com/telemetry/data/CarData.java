@@ -1,4 +1,4 @@
-package com.telemetry.strategy;
+package com.telemetry.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,8 +10,10 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 import com.telemetry.custom.Tools;
+import com.telemetry.strategy.EnergyModelFunctions;
+import com.telemetry.strategy.StateOfCharge;
 
-public class DataContainer {
+public class CarData {
 	// Battery Data
 	private double batt_temp_avg = 0D;
 	private double batt_temp_max = 0D;
@@ -33,7 +35,30 @@ public class DataContainer {
 	private double array_power = 0D;
 	private double motor_power = 0D;
 	private double battery_power = 0D;
+	private double time_seconds = 0D;
 	private double state_of_charge = 0D;
+	private double average_speed;
+	private double solar_energy_remaining;
+	private double time_left_in_day = 0D;
+	private double battery_only_runtime_60_sec = 0D;
+	private double battery_only_range_60_sec = 0D;
+	private double motor_power_60_sec = 0D;
+	private double speed_60_sec = 0D;
+	private double battery_and_solar_runtime_60_sec = 0D;
+	private double battery_charge_remaining = 0D;
+	private double motor_watt_hours = 0D;
+	private double battery_watt_hours = 0D;
+	private double battery_and_solar_range = 0D;
+	private double distance_left_in_day = 0D;
+	private double target_speed = 0D;
+	private double target_watt_hour_per_mile = 0D;
+	private double target_watt_hour_per_mile_60_sec = 0D;
+	private double target_watt_hour_per_mile_day = 0D;
+	private double target_average_motor_power = 0D;
+	private double target_motor_energy = 0D;
+	private double target_battery_state_of_charge = 0D;
+	private double predicted_array_power = 0D;
+	private double time_elapsed = 0D;
 	
 	// Battery Messages
 	private List<String> batt_msg = new ArrayList<String>();
@@ -50,7 +75,7 @@ public class DataContainer {
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	private long initial_time = 0;
 	
-	public DataContainer() {
+	public CarData() {
 		soc = new StateOfCharge();
 		initial_time = System.currentTimeMillis()/1000;
 	}
@@ -71,6 +96,7 @@ public class DataContainer {
 		motor_data.put("motor_voltage", motor_voltage);
 		motor_data.put("motor_current", motor_current);
 		motor_data.put("motor_speed", motor_speed);
+		motor_data.put("time_seconds", time_seconds);
 		return motor_data;
 	}
 	
@@ -83,6 +109,7 @@ public class DataContainer {
 		battery_data.put("batt_temp_min", batt_temp_min);
 		battery_data.put("batt_temp_avg", batt_temp_avg);
 		battery_data.put("batt_current", batt_current);
+		battery_data.put("time_seconds", time_seconds);
 		return battery_data;
 	}
 	
@@ -92,6 +119,7 @@ public class DataContainer {
 		calculation_data.put("motor_power", motor_power);
 		calculation_data.put("battery_power", battery_power);
 		calculation_data.put("state_of_charge", state_of_charge);
+		calculation_data.put("time_seconds", time_seconds);
 		return calculation_data;
 	}
 	
@@ -117,7 +145,7 @@ public class DataContainer {
 		String message_id = (String) obj.get("message_id");
 		switch(message_id) {
 		case "motor": {
-			motor_amp_hour = Tools.getJSONDouble(obj, "amp_hour");
+			motor_amp_hour = Tools.getJSONDouble(obj, "amp_hours");
 			motor_odometer = Tools.getJSONDouble(obj, "odometer");
 			motor_voltage  = Tools.getJSONDouble(obj, "V");
 			motor_current  = Tools.getJSONDouble(obj, "I");
@@ -128,15 +156,18 @@ public class DataContainer {
 			batt_temp_avg = Tools.getJSONDouble(obj, "Tavg");
 			batt_temp_max = Tools.getJSONDouble(obj, "Tmax");
 			batt_temp_min = Tools.getJSONDouble(obj, "Tmin");
+			break;
 		}
 		case "bat_volt": {
-			batt_volt_max = Tools.getJSONDouble(obj, "Vmax");
-			batt_volt_min = Tools.getJSONDouble(obj, "Vmin");
-			batt_volt_avg = Tools.getJSONDouble(obj, "Vavg");
-			batt_current  = Tools.getJSONDouble(obj, "BC");
+			batt_volt_max = Tools.getJSONDouble(obj, "Vmax") / 10000;
+			batt_volt_min = Tools.getJSONDouble(obj, "Vmin") / 10000;
+			batt_volt_avg = Tools.getJSONDouble(obj, "Vavg") / 10000;
+			batt_current  = Tools.getJSONDouble(obj, "BC") / 1000;
+			break;
 		}
 		case "message": {
 			batt_msg.add((String) obj.get("Messages"));
+			break;
 		}
 		default:
 			break;
@@ -148,5 +179,6 @@ public class DataContainer {
 		motor_power = EnergyModelFunctions.getMotorPower(motor_current, motor_voltage);
 		battery_power  = EnergyModelFunctions.getBatteryPower(batt_volt_avg, batt_current);		
 		state_of_charge = soc.calculateSOC(batt_volt_min);
+		time_seconds = counter_time[0]*3600 + counter_time[1]*60 + counter_time[2];
 	}
 }

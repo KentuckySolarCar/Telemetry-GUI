@@ -78,7 +78,7 @@ public class PowerGraph extends JPanel {
 		double time_seconds = calculation_data.get("time_seconds");
 		double motor_power  = calculation_data.get("motor_power");
 		double array_power  = calculation_data.get("array_power");
-		double batt_power  = calculation_data.get("batt_power");
+		double batt_power  = calculation_data.get("battery_power");
 	
 		motor.add(time_seconds, motor_power);
 		if(array_power != 0)

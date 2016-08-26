@@ -13,7 +13,7 @@ import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
-import com.telemetry.strategy.DataContainer;
+import com.telemetry.data.CarData;
 
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
@@ -79,7 +79,7 @@ public class DevicePanel extends JPanel{
 		repaint();
 	}
 	
-	public void updatePanel(DataContainer data) {
+	public void updatePanel(CarData data) {
 		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> batt_data = data.getBatteryData();
 		HashMap<String, Integer[]> time_data = data.getTimeData();

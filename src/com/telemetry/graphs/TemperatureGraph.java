@@ -71,9 +71,9 @@ public class TemperatureGraph extends JPanel {
 		return temperature_dataset;
 	}
 	
-	public void updateDataSet(HashMap<String, Double> calculation_data) {
-		double seconds_elapsed = calculation_data.get("time_seconds");
-		double batt_temp   = calculation_data.get("batt_temp_avg");
+	public void updateDataSet(HashMap<String, Double> battery_data) {
+		double seconds_elapsed = battery_data.get("time_seconds");
+		double batt_temp   = battery_data.get("batt_temp_avg");
 		if(batt_temp == 0D)
 			return;
 		batt_temp_avg.add(seconds_elapsed, batt_temp);

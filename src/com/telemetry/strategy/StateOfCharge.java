@@ -112,7 +112,7 @@ public class StateOfCharge {
 			current_watt_hour += getTrapizoidArea(race_voltages.get(i)*t_amp,
 												  race_voltages.get(i)*t_amp, 1);
 		}
-		return current_watt_hour / calculateTotalWattHour();
+		return 100D - 100*current_watt_hour / calculateTotalWattHour();
 	}
 	
 	public static double getTrapizoidArea(double y_left, double y_right, double delta_x) {
