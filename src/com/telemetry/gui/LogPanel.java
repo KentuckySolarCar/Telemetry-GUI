@@ -10,12 +10,9 @@ public class LogPanel extends JScrollPane {
 	private JTextArea text_area;
 	
 	public LogPanel() {
-		super();
-		
 		text_area = new JTextArea();
 		text_area.setEditable(false);
-		
-		this.add(text_area);
+		add(text_area);
 	}
 	
 	public void updatePanel(JSONObject obj) {

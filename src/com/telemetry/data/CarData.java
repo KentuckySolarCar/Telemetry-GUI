@@ -9,9 +9,9 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
-import com.telemetry.custom.Tools;
 import com.telemetry.strategy.EnergyModelFunctions;
 import com.telemetry.strategy.StateOfCharge;
+import com.telemetry.util.Tools;
 
 public class CarData {
 	// Battery Data
@@ -123,7 +123,7 @@ public class CarData {
 		return calculation_data;
 	}
 	
-	public void updateData(JSONObject obj) {
+	public synchronized void updateData(JSONObject obj) {
 		// Time Update
 		Date date = new Date();
 		String date_str = date_format.format(date);
@@ -174,7 +174,6 @@ public class CarData {
 		}
 		
 		// Calculation Data Updating
-		// TODO Average or minimum battery voltage?
 		array_power = EnergyModelFunctions.getArrayPower(motor_current, batt_current, batt_volt_avg);
 		motor_power = EnergyModelFunctions.getMotorPower(motor_current, motor_voltage);
 		battery_power  = EnergyModelFunctions.getBatteryPower(batt_volt_avg, batt_current);		

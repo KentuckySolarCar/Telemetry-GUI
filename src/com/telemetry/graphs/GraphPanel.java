@@ -1,16 +1,12 @@
  package com.telemetry.graphs;
 
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.HashMap;
 
 import javax.swing.*;
-import org.json.simple.JSONObject;
 
 import com.telemetry.data.CarData;
-import com.telemetry.gui.CalculationPanel;
 
 public class GraphPanel extends JPanel {
 	private static final long serialVersionUID = 6054350621681751868L;
@@ -18,10 +14,6 @@ public class GraphPanel extends JPanel {
 	private VoltageGraph voltage_graph;
 	private PowerGraph power_graph;
 	private EnergyGraph energy_graph;
-	private TextFields text_field;
-	
-	static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 16);
-	static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 14);
 	
 	public GraphPanel() {
 		setLayout(new GridBagLayout());
@@ -32,7 +24,6 @@ public class GraphPanel extends JPanel {
 		voltage_graph = new VoltageGraph();
 		power_graph = new PowerGraph();
 		energy_graph = new EnergyGraph();
-//		text_field = new TextFields();
 		
 
 		gbc.fill = GridBagConstraints.BOTH;
@@ -56,61 +47,16 @@ public class GraphPanel extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		add(energy_graph, gbc);
-		
-//		gbc.gridx = 1;
-//		gbc.gridy = 1;
-//		gbc.gridheight = 2;
-//		add(text_field, gbc);
-//		gbc.gridheight = 1;
 	}
 	
-	/**
-	 * TODO @John This function will be automatically called when calculation receives
-	 * 		new data, just make use of the input hash table to update any values necessary.
-	 * 
-	 * Keys for the hash table:
-	 * 		array_power
-	 *  	average_speed
-	 *  	battery_and_solar_range
-	 *  	battery_and_solar_runtime_60_sec
-	 *  	battery_charge_remaining
-	 *  	battery_only_range_60_sec
-	 *  	battery_only_runtime_60_sec
-	 *  	battery_watt_hours
-	 *  	distance_left_in_day
-	 *  	motor_power_60_sec
-	 *  	motor_watt_hours
-	 *  	predicted_array_power
-	 *  	solar_energy_remaining
-	 *  	speed_60_sec
-	 *  	target_average_motor_power
-	 *  	target_battery_state_of_charge
-	 *  	target_motor_energy
-	 *  	target_speed
-	 *  	target_watt_hour_per_mile
-	 *  	target_watt_hour_per_mile_60_sec
-	 *  	target_watt_hour_per_mile_day
-	 *  	time_elapsed
-	 *  	time_left_in_day
-	 *   	motor_current
-	 *   	batt_current
-	 *   	batt_temp_avg
-	 *   	batt_v_avg
-	 *   	batt_v_min
-	 *  
-	 * @see CalculationPanel -> getData() for more info on input data
-	 *  	
-	 * @param calculation_data
-	 */
 	public void updatePanel(CarData data) {
 		HashMap<String, Double> calculation_data = data.getCalculationData();
-		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> battery_data = data.getBatteryData();
+
 		energy_graph		.updateDataSet(calculation_data);
 		power_graph			.updateDataSet(calculation_data);
 		temperature_graph	.updateDataSet(battery_data);
 		voltage_graph		.updateDataSet(battery_data);
-//		text_field			.updateDataSet(calculation_data);
 
 		validate();
 		repaint();

@@ -18,21 +18,29 @@ import com.telemetry.data.CarData;
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
 	
-	private MpptPanel mppt_panel = new MpptPanel();
-	private TimePanel time_panel = new TimePanel();
-	private SpeedDialPanel speed_dial_panel = new SpeedDialPanel();
-	private BatteryPanel battery_panel = new BatteryPanel();
-	private MotorPanel motor_panel = new MotorPanel();
+	// MPPT panel not used right now
+	private MpptPanel mppt_panel;
+	private TimePanel time_panel;
+	private SpeedDialPanel speed_dial_panel;
+	private BatteryPanel battery_panel;
+	private MotorPanel motor_panel;
 	
 	public DevicePanel() {
-		super();
-		
-		JPanel time_speed_panel = new JPanel(new GridLayout(1, 3));
+		setLayout(new GridBagLayout());
+
+		// Panel initialization
+		mppt_panel = new MpptPanel();
+		time_panel = new TimePanel();
+		speed_dial_panel = new SpeedDialPanel();
+		battery_panel = new BatteryPanel();
+		motor_panel = new MotorPanel();
+
+		// Speed dial and time panel will be within same sub-panel
+		JPanel time_speed_panel = new JPanel(new GridLayout(1, 2));
 		time_speed_panel.add(time_panel);
 		time_speed_panel.add(speed_dial_panel);
 		
-		setLayout(new GridBagLayout());
-		
+		// Insert panels
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 0, 10, 0);
 		
@@ -57,58 +65,16 @@ public class DevicePanel extends JPanel{
 		
 	}
 	
-	public void updatePanel(JSONObject obj) {
-		time_panel.updatePanel((String) obj.get("Time"));
-		String type = (String) obj.get("message_id");
-		switch(type) {
-		case "motor": {
-			speed_dial_panel.updateDial((String) obj.get("S"));
-			motor_panel.updatePanel(obj);
-			break;
-		}
-		case "bat_volt": 
-		case "bat_temp": {
-			battery_panel.updatePanel(obj, type);
-			break;
-		}
-		default:
-			break;
-		}
-		
-		validate();
-		repaint();
-	}
-	
 	public void updatePanel(CarData data) {
 		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> batt_data = data.getBatteryData();
 		HashMap<String, Integer[]> time_data = data.getTimeData();
-		motor_panel.updatePanel(motor_data, 0);
-		battery_panel.updatePanel(batt_data, 0);
+		motor_panel.updatePanel(motor_data);
+		battery_panel.updatePanel(batt_data);
 		time_panel.updatePanel(time_data, 0);
 		speed_dial_panel.updateDial(motor_data);
 	}
 	
-	public int[] getRunTime() {
-		return time_panel.getRunTime();
-	}
-	
-	public int[] getSystemTime() {
-		return time_panel.getSystemTime();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONObject getDeviceData() {
-		JSONObject device_data = new JSONObject();
-		JSONObject battery_data = battery_panel.getData();
-		JSONObject motor_data = motor_panel.getData();
-		int[] system_time = time_panel.getSystemTime();
-		device_data.put("battery_data", battery_data);
-		device_data.put("motor_data", motor_data);
-		device_data.put("system_time", system_time);
-		return device_data;
-	}
-
 	public void updateRunTime() {
 		time_panel.updateRunTime();
 	}

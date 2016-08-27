@@ -37,7 +37,7 @@ public class TextFileInput extends Thread {
 				String msg = line.split("\\|")[0];
 				if(isValidMessage(msg)) {
 					JSONObject obj = (JSONObject) parser.parse(msg);
-					telem_frame.updateAllPanels(obj, 0);
+					telem_frame.updateAllPanels(obj);
 				}
 				else {
 					telem_frame.processInvalidData(msg);

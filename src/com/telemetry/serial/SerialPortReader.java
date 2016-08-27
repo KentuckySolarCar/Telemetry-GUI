@@ -69,7 +69,7 @@ public class SerialPortReader extends Thread {
 				telem_frame.updateStatus(line);
 				if(isValidMessage(line)) {
 					JSONObject obj = (JSONObject) parser.parse(line);
-					telem_frame.updateAllPanels(obj, 0);
+					telem_frame.updateAllPanels(obj);
 				}
 				else {
 					telem_frame.processInvalidData(line);

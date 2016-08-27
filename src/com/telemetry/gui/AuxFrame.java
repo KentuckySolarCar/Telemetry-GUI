@@ -3,7 +3,6 @@ package com.telemetry.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -18,17 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.json.simple.JSONObject;
 
-import com.telemetry.custom.Tools;
 import com.telemetry.data.CarData;
-import com.telemetry.strategy.EnergyModelFunctions;
+import com.telemetry.util.Tools;
 
 public class AuxFrame extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8271261737440319731L;
+	// Special fonts for aux frame
 	private static final Font LABEL_FONT = new Font("Arial Black", Font.BOLD, 35); // 35
 	private static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 115); // 115
 	
@@ -199,68 +197,7 @@ public class AuxFrame extends JFrame {
 			runtime_indicator.setBackground(Color.GREEN);
 			flip_flop = true;
 		}
-//		String type = (String) obj.get("message_id");
-//		switch(type) {
-//		case "motor": {
-//			Double speed = Double.parseDouble((String) obj.get("S"));
-//			motor_current = Double.parseDouble((String) obj.get("I"));
-//			Double voltage = Double.parseDouble((String) obj.get("V"));
-////			Double motor_power = motor_current * voltage;
-//			Double motor_power = EnergyModelFunctions.getMotorPower(motor_current, voltage);
-//			
-//			speed_f.setText(Tools.roundDouble(speed));
-//			motor_power_f.setText(Tools.roundDouble(motor_power));
-//			Tools.thresholdCheck(motor_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
-//			break;
-//		}
-//		case "bat_volt": {
-//			Double bus_current = Tools.getJSONDouble(obj, "BC") / 1000;
-//			Double v_min = Tools.getJSONDouble(obj, "Vmin") / 10000;
-//			Double v_max = Tools.getJSONDouble(obj, "Vmax") / 10000;
-//			Double v_avg = Tools.getJSONDouble(obj, "Vavg") / 10000;
-//			
-//			if(bus_current + v_min + v_max == 0) {
-//				zero_batt_indicator.setBackground(Tools.RED);
-//				return;
-//			}
-//
-//			zero_batt_indicator.setBackground(Tools.GREEN);
-////			Double bat_power = bus_current * v_avg * 35;
-//			Double bat_power = EnergyModelFunctions.getBatteryPower(v_avg, bus_current);
-//			Double array_power = EnergyModelFunctions.getArrayPower(motor_current, bus_current, v_avg);
-////			Double array_power = 35 * (motor_current - bus_current) * v_avg;
-//			if(array_power < 0D)
-//				array_power = 0D;
-//			
-//			array_power_f.setText(Tools.roundDouble(array_power));
-//			bat_power_f.setText(Tools.roundDouble(bat_power));
-//			Tools.thresholdCheck(bat_power_f, bus_current, 0D, Tools.RED, Tools.GREEN);
-//			bat_volt_min_f.setText(Tools.roundDouble(v_min));
-//			bat_volt_max_f.setText(Tools.roundDouble(v_max));
-//			break;
-//		}
-//		case "bat_temp": {
-//			Double max_temp = Tools.getJSONDouble(obj, "Tmax");
-//			
-//			if(max_temp == 0) {
-//				zero_batt_indicator.setBackground(Tools.RED);
-//				return;
-//			}
-//			else
-//				zero_batt_indicator.setBackground(Tools.GREEN);
-//			
-//			bat_temp_max_f.setText(Tools.roundDouble(max_temp));
-//			Tools.thresholdCheck(bat_temp_max_f, max_temp, 45D, Tools.RED, Tools.GREEN);
-//			break;
-//		}
-//		case "messages": {
-//			String[] messages = (String[]) obj.get("Messages");
-//			for(String message : messages)
-//				notification_area.append(message + "\n");
-//		}
-//		default:
-//			break;
-//		}
+
 		double motor_power = dataset.get("motor_power");
 		double batt_power = dataset.get("batt_power");
 		double array_power = dataset.get("array_power");
@@ -282,10 +219,6 @@ public class AuxFrame extends JFrame {
 		Tools.thresholdCheck(motor_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
 		Tools.thresholdCheck(bat_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
 		Tools.thresholdCheck(array_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
-	}
-	
-	public void processMessages(String[] messages) {
-		
 	}
 	
 	public void updateRunTime() {

@@ -1,4 +1,4 @@
- package com.telemetry.gui.device;
+package com.telemetry.gui.device;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,42 +14,34 @@ import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
-import com.telemetry.custom.Tools;
+import com.telemetry.util.Tools;
 
 public class BatteryPanel extends JPanel {
 	private static final long serialVersionUID = 3458289157169322167L;
 	
 	private JLabel v_average_l = new JLabel("0000.000");
-	private JLabel v_max_l = new JLabel("0000.000");
-	private JLabel v_min_l = new JLabel("0000.000");
-	private JLabel current_l = new JLabel("0000.000");
+	private JLabel v_max_l     = new JLabel("0000.000");
+	private JLabel v_min_l     = new JLabel("0000.000");
+	private JLabel current_l   = new JLabel("0000.000");
 	private JLabel t_average_l = new JLabel("0000.000");
-	private JLabel t_max_l = new JLabel("0000.000");
-	private JLabel t_min_l = new JLabel("0000.000");
-	private double ave_temp = 0D;
-	private double max_temp = 0D;
-	private double v_average = 0D;
-	private double v_max = 0D;
-	private double v_min = 0D;
-	private double current_average = 0D;
+	private JLabel t_max_l     = new JLabel("0000.000");
+	private JLabel t_min_l     = new JLabel("0000.000");
 	
-	// Threshold for fields
-	private double v_max_threshold = 9999999;
-	private double v_min_threshold = 0;
-	private double v_avg_threshold = 9999999;
-	private double t_max_threshold = 9999999;
-	private double t_min_threshold = 0;
-	private double t_avg_threshold = 9999999;
+	// Temp. thresholds for fields
+	private double v_max_threshold   = 9999999;
+	private double v_min_threshold   = 0;
+	private double v_avg_threshold   = 9999999;
+	private double t_max_threshold   = 9999999;
+	private double t_min_threshold   = 0;
+	private double t_avg_threshold   = 9999999;
 	private double current_threshold = 9999999;
-	
-	private MotorPanel motor_panel;
 	
 	public BatteryPanel() {
 		setLayout(new GridBagLayout());
 		insertComponents();
 	}
 	
-	public void updatePanel(HashMap<String, Double> data, int dummy) {
+	public void updatePanel(HashMap<String, Double> data) {
 		v_average_l.setText(Tools.roundDouble(data.get("batt_volt_avg")));
 		v_max_l.setText(Tools.roundDouble(data.get("batt_volt_max")));
 		v_min_l.setText(Tools.roundDouble(data.get("batt_volt_min")));
@@ -57,73 +49,24 @@ public class BatteryPanel extends JPanel {
 		t_max_l.setText(Tools.roundDouble(data.get("batt_temp_max")));
 		t_min_l.setText(Tools.roundDouble(data.get("batt_temp_min")));
 		current_l.setText(Tools.roundDouble(data.get("batt_current")));
-	}
-	
-	public void updatePanel(JSONObject obj, String type) {
-		if(type.equals("bat_temp")) {
-			ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-			max_temp = Double.parseDouble((String) obj.get("Tmax"));
-			double min_temp = Double.parseDouble((String) obj.get("Tmin"));
-			
-			if(ave_temp + max_temp + min_temp == 0) {
-				t_average_l.setBackground(Color.CYAN);
-				t_max_l.setBackground(Color.CYAN);
-				t_min_l.setBackground(Color.CYAN);
-				return;
-			}
-
-			Tools.thresholdCheck(t_average_l, ave_temp, t_avg_threshold, Tools.RED, Tools.GREEN);
-			t_average_l.setText(Tools.roundDouble(ave_temp));
-			
-			Tools.thresholdCheck(t_max_l, max_temp, t_max_threshold, Tools.RED, Tools.GREEN);
-			t_max_l.setText(Tools.roundDouble(max_temp));
-			
-			Tools.thresholdCheck(t_min_l, min_temp, t_min_threshold, Tools.GREEN, Tools.RED);
-			t_min_l.setText(Tools.roundDouble(min_temp));
-		}
-		else if(type.equals("bat_volt")) {
-			v_average       = Double.parseDouble((String) obj.get("Vavg")) / 10000;
-			v_max           = Double.parseDouble((String) obj.get("Vmax")) / 10000;
-			v_min           = Double.parseDouble((String) obj.get("Vmin")) / 10000;
-			current_average = Double.parseDouble((String) obj.get("BC")) / 1000;
-			
-			if(v_average + v_max + v_min + current_average == 0) {
-				v_average_l.setBackground(Color.CYAN);
-				v_max_l.setBackground(Color.CYAN);
-				v_min_l.setBackground(Color.CYAN);
-				current_l.setBackground(Color.CYAN);
-				return;
-			}
 		
-			Tools.thresholdCheck(v_average_l, v_average, v_avg_threshold, Tools.RED, Tools.GREEN);
-			v_average_l.setText(Tools.roundDouble(v_average));
-
-			Tools.thresholdCheck(v_max_l, v_max, v_max_threshold, Tools.RED, Tools.GREEN);
-			v_max_l.setText(Tools.roundDouble(v_max));
-
-			Tools.thresholdCheck(v_min_l, v_min, v_min_threshold, Tools.GREEN, Tools.RED);
-			v_min_l.setText(Tools.roundDouble(v_min));
-
-			Tools.thresholdCheck(current_l, current_average, current_threshold, Tools.RED, Tools.GREEN);
-			current_l.setText(Tools.roundDouble(current_average));
-		}
-		
+		// Change label color if threshold reached
+		Tools.thresholdCheck(v_average_l, data.get("batt_volt_avg"), 
+							 v_avg_threshold, Tools.GREEN, Tools.RED);
+		Tools.thresholdCheck(v_max_l, data.get("batt_volt_max"), 
+							 v_max_threshold, Tools.GREEN, Tools.RED);
+		Tools.thresholdCheck(v_min_l, data.get("batt_volt_min"), 
+							 v_min_threshold, Tools.GREEN, Tools.RED);
+		Tools.thresholdCheck(t_average_l, data.get("batt_temp_avg"), 
+							 t_avg_threshold, Tools.RED, Tools.GREEN);
+		Tools.thresholdCheck(t_max_l, data.get("batt_temp_max"), 
+							 t_max_threshold, Tools.RED, Tools.GREEN);
+		Tools.thresholdCheck(t_min_l, data.get("batt_temp_min"), 
+							 t_min_threshold, Tools.RED, Tools.GREEN);
+		Tools.thresholdCheck(current_l, data.get("batt_current"), 
+							 current_threshold, Tools.RED, Tools.GREEN);
 		validate();
 		repaint();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONObject getData() {
-		JSONObject output_data = new JSONObject();
-		
-		output_data.put("ave_temp", new Double(ave_temp));
-		output_data.put("max_temp", max_temp);
-		output_data.put("v_average", new Double(v_average));
-		output_data.put("v_min", new Double(v_min));
-		output_data.put("v_max", new Double(v_max));
-		output_data.put("current_average", new Double(current_average));
-		
-		return output_data;
 	}
 	
 	private void insertComponents() {
@@ -236,9 +179,5 @@ public class BatteryPanel extends JPanel {
 		t_min_l.setOpaque(true);
 		t_min_l.setBackground(Color.ORANGE);
 		add(t_min_l, gbc);
-	}
-	
-	public void setDependentPanel(MotorPanel motor_panel) {
-		this.motor_panel = motor_panel;
 	}
 }

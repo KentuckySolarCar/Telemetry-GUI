@@ -9,8 +9,8 @@ import org.json.simple.parser.ParseException;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
+import com.telemetry.util.Tools;
 import com.sun.glass.events.KeyEvent;
-import com.telemetry.custom.Tools;
 import com.telemetry.data.CarData;
 import com.telemetry.data.DataContainer;
 import com.telemetry.graphs.GraphPanel;
@@ -35,6 +35,7 @@ public class TelemetryFrame extends JFrame {
 	private static final int WIDTH = 1600; //1280
 	private static final int HEIGHT = 900; //720
 	
+	// GUI Stuff
 	private JTabbedPane tab_panel;
 	private TextFileInput text_input;
 	private CalculationPanel calculation_panel;
@@ -42,12 +43,14 @@ public class TelemetryFrame extends JFrame {
 	private GraphPanel graph_panel;
 	private LogPanel log_panel;
 	private JTextArea status_bar;
-	private SerialPortHandler serial_port;
 	private AuxFrame aux_frame;
 	private boolean aux_frame_on = false;
+	
+	// Non-GUI Stuff
+	private SerialPortHandler serial_port;
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	private DataContainer all_data;
-	
+
 	// Temp
 	JScrollPane log_pane;
 	JTextArea log;
@@ -69,21 +72,25 @@ public class TelemetryFrame extends JFrame {
 		// Reveals main_frame
 		setVisible(true);
 		setLocationRelativeTo(null);
-
 		validate();
 		repaint();
 	}
 	
 	private void insertComponents() {
+		// Add the menu bar first
+		createMenuBar();
+
 		tab_panel = new JTabbedPane();
 	    device_panel = new DevicePanel();
 	    graph_panel = new GraphPanel();
 	    log_panel = new LogPanel();
 	    calculation_panel = new CalculationPanel();
 	    
+	    // Temp, need to make dedicated log class
 	    log = new JTextArea();
 	    log_pane = new JScrollPane(log);
 	    
+	    // Combining device and calculation panel into one
 	    JPanel combined_panel = new JPanel();
 	    combined_panel.setLayout(new GridLayout(1,2));
 	    combined_panel.add(device_panel);
@@ -105,8 +112,6 @@ public class TelemetryFrame extends JFrame {
 	    					 WIDTH-10, 
 	    					 status_bar.getHeight());
 	    add(status_bar, BorderLayout.SOUTH);
-		
-		createMenuBar();
 	}
 	
 	private void createMenuBar(){
@@ -122,19 +127,19 @@ public class TelemetryFrame extends JFrame {
 		control_menu.setMnemonic(KeyEvent.VK_ALT);
 		
 		// create menu items
-		JMenuItem exit_menu_item = new JMenuItem("Exit");
+		JMenuItem exit               = new JMenuItem("Exit");
 		JMenuItem change_port        = new JMenuItem("Change Port");		
 		JMenuItem start_monitor      = new JMenuItem("Start Monitor");	
 		JMenuItem stop_monitor       = new JMenuItem("Stop Monitor");
 		JMenuItem restart_monitor    = new JMenuItem("Reconnect");
-		JMenuItem main_resolution = new JMenuItem("Main Resolution");
-		JMenuItem test_monitor = new JMenuItem("Test Monitor");
-		JMenuItem start_aux_frame = new JMenuItem("Start Aux Frame");
-		JMenuItem aux_resolution = new JMenuItem("Aux Resolution");
-		JMenuItem main_font = new JMenuItem("Change Main Font");
+		JMenuItem main_resolution    = new JMenuItem("Main Resolution");
+		JMenuItem test_monitor       = new JMenuItem("Test Monitor");
+		JMenuItem start_aux_frame    = new JMenuItem("Start Aux Frame");
+		JMenuItem aux_resolution     = new JMenuItem("Aux Resolution");
+		JMenuItem main_font          = new JMenuItem("Change Main Font");
 
 		// Add menu button listeners
-		exit_menu_item.addActionListener(new ExitMenuListener());
+		exit.addActionListener(new ExitMenuListener());
 		start_monitor.addActionListener(new StartMonitorListener());
 		stop_monitor.addActionListener(new StopMonitorListener());
 		change_port.addActionListener(new ChangePortListener());
@@ -154,8 +159,8 @@ public class TelemetryFrame extends JFrame {
 		aux_menu.add(start_aux_frame);
 		aux_menu.add(aux_resolution);
 		
-		// add menu items file menu);
-		file_menu.add(exit_menu_item);
+		// add menu items file menu
+		file_menu.add(exit);
 
 		// add control items to control menu
 		control_menu.add(change_port);
@@ -273,6 +278,7 @@ public class TelemetryFrame extends JFrame {
 		}
 	}
 	
+	// TODO Remove logging from here, use dedicated class object LogWriter
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
@@ -301,19 +307,19 @@ public class TelemetryFrame extends JFrame {
 	class ChangeResolutionListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			changeMainResolution();
+			// Placeholder for when needing to change resolution
 		}
 	}
 	
 	class ChangeMainFontListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			String s = JOptionPane.showInputDialog("Please enter the desired font", null);
-			changeFontHelper(Tools.FIELD_FONT);
+			// Placeholder for when needing to change font
 		}
 		
 	}
 	
+	// Remove logging from here, use dedicated log writer
 	public void logFileSaver() throws IOException {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -352,7 +358,7 @@ public class TelemetryFrame extends JFrame {
 		Date date = new Date();
 		all_data.updateCarData(obj);
 		device_panel.updatePanel(all_data.getCarData());
-		calculation_panel.updatePanel(all_data.getCarData(), 0);
+		calculation_panel.updatePanel(all_data.getCarData());
 		graph_panel.updatePanel(all_data.getCarData());
 		obj.put("actual_time", date_format.format(date));
 		log.append("\n" + obj.toString() + "\n");

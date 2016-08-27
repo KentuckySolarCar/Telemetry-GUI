@@ -26,10 +26,6 @@ public class PowerGraph extends JPanel {
 	private XYSeries motor;
 	private XYSeries array;
 	private XYSeries battery;
-//	private XYSeries tracker_1;
-//	private XYSeries tracker_2;
-//	private XYSeries tracker_3;
-//	private XYSeries tracker_4;
 	
 	public PowerGraph() {
 		power_dataset = createPowerDataSet();
@@ -48,7 +44,6 @@ public class PowerGraph extends JPanel {
 		c.weighty = 0.5;
 		c.gridx = 0;
 		c.gridy = 0;
-		//c.ipadx = 200;
 		c.ipady = 300;
 		this.add(power_panel, c);
 	}
@@ -57,19 +52,11 @@ public class PowerGraph extends JPanel {
 		motor = new XYSeries("Motor");
 		array = new XYSeries("Array");
 		battery = new XYSeries("Battery");
-//		tracker_1 = new XYSeries("Tracker 1");
-//		tracker_2 = new XYSeries("Tracker 2");
-//		tracker_3 = new XYSeries("Tracker 3");
-//		tracker_4 = new XYSeries("Tracker 4");
 		
 		XYSeriesCollection power_dataset = new XYSeriesCollection();
 		power_dataset.addSeries(motor);
 		power_dataset.addSeries(array);
 		power_dataset.addSeries(battery);
-//		power_dataset.addSeries(tracker_1);
-//		power_dataset.addSeries(tracker_2);
-//		power_dataset.addSeries(tracker_3);
-//		power_dataset.addSeries(tracker_4);
 		
 		return power_dataset;
 	}
@@ -81,10 +68,8 @@ public class PowerGraph extends JPanel {
 		double batt_power  = calculation_data.get("battery_power");
 	
 		motor.add(time_seconds, motor_power);
-		if(array_power != 0)
-			array.add(time_seconds, array_power);
-		if(batt_power != 0)
-			battery.add(time_seconds, batt_power);
+		array.add(time_seconds, array_power);
+		battery.add(time_seconds, batt_power);
 
 		validate();
 		repaint();

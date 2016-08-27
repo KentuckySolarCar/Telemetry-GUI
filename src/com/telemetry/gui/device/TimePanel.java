@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.swing.*;
 
-import com.telemetry.custom.Tools;
+import com.telemetry.util.Tools;
 
 public class TimePanel extends JPanel {
 	private static final long serialVersionUID = -8596634937772865283L;

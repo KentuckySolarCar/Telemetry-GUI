@@ -1,4 +1,4 @@
-package com.telemetry.custom;
+package com.telemetry.util;
 
 import com.telemetry.strategy.StateOfCharge;
 

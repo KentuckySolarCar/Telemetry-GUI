@@ -45,7 +45,6 @@ public class VoltageGraph extends JPanel {
 		c.weighty = 0.5;
 		c.gridx = 0;
 		c.gridy = 0;
-		//c.ipadx = 200;
 		c.ipady = 300;
 		this.add(voltage_panel, c);
 	}
@@ -68,15 +67,9 @@ public class VoltageGraph extends JPanel {
 		double batt_v_avg   = calculation_data.get("batt_volt_avg");
 		double batt_v_max   = calculation_data.get("batt_volt_max");
 		double batt_v_min   = calculation_data.get("batt_volt_min");
-		if(batt_v_avg + batt_v_max + batt_v_min == 0)
-			return;
 		v_max.add(time_seconds, batt_v_max);
 		v_min.add(time_seconds, batt_v_min);
 		v_avg.add(time_seconds, batt_v_avg);
-//		voltage_panel.removeAll();
-//		voltage_panel.revalidate();
-//		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (min)", "Volts (V)", voltage_dataset);
-//		voltage_panel = new ChartPanel(voltage_chart);
 		validate();
 		repaint();
 	}
