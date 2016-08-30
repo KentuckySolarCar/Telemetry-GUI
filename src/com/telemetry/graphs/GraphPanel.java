@@ -20,18 +20,20 @@ public class GraphPanel extends JPanel {
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		// Create new graphs to be added
 		temperature_graph = new TemperatureGraph();
 		voltage_graph = new VoltageGraph();
 		power_graph = new PowerGraph();
 		energy_graph = new EnergyGraph();
 		
-
+		// Some GBC constants needing to be set before start adding
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		gbc.gridwidth = 1;
 		gbc.gridheight = 1;
 		
+		// Add graphs to panel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(power_graph, gbc);

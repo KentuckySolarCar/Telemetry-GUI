@@ -3,6 +3,11 @@ package com.telemetry.serial;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Unused as of right now
+ * @author Weilian Song
+ *
+ */
 public class SerialPortWriter implements Runnable {
 	
 	OutputStream output_stream;

@@ -1,10 +1,8 @@
 package com.telemetry.graphs;
 
 import java.awt.Color;
-//import java.awt.LayoutManager;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-//import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +12,11 @@ import javax.swing.*;
 
 import com.telemetry.util.Tools;
 
+/**
+ * This class is currently unused, but might be brought back into GraphPanel if necessary
+ * @author wsong
+ *
+ */
 public class TextFields extends JPanel {
 	private static final long serialVersionUID = 800851946880569758L;				
 	private JPanel text_panel_powr  = new JPanel();

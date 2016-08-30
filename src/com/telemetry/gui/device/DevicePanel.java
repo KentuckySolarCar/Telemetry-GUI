@@ -1,17 +1,12 @@
 package com.telemetry.gui.device;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.*;
-
-import org.json.simple.JSONObject;
 
 import com.telemetry.data.CarData;
 
@@ -19,7 +14,6 @@ public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
 	
 	// MPPT panel not used right now
-	private MpptPanel mppt_panel;
 	private TimePanel time_panel;
 	private SpeedDialPanel speed_dial_panel;
 	private BatteryPanel battery_panel;
@@ -29,7 +23,6 @@ public class DevicePanel extends JPanel{
 		setLayout(new GridBagLayout());
 
 		// Panel initialization
-		mppt_panel = new MpptPanel();
 		time_panel = new TimePanel();
 		speed_dial_panel = new SpeedDialPanel();
 		battery_panel = new BatteryPanel();
@@ -65,16 +58,24 @@ public class DevicePanel extends JPanel{
 		
 	}
 	
+	/**
+	 * Update each panel with input car data. Currently only passing necessary data
+	 * to each panel.
+	 * @param data Most recent car data
+	 */
 	public void updatePanel(CarData data) {
 		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> batt_data = data.getBatteryData();
 		HashMap<String, Integer[]> time_data = data.getTimeData();
 		motor_panel.updatePanel(motor_data);
 		battery_panel.updatePanel(batt_data);
-		time_panel.updatePanel(time_data, 0);
+		time_panel.updatePanel(time_data);
 		speed_dial_panel.updateDial(motor_data);
 	}
 	
+	/**
+	 * Updates the run time of time_panel, call interval controlled by main thread
+	 */
 	public void updateRunTime() {
 		time_panel.updateRunTime();
 	}

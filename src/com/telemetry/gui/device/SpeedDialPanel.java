@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.util.HashMap;
 
 import javax.swing.JPanel;
-import javax.swing.event.ChangeListener;
 
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -26,7 +25,7 @@ import org.jfree.ui.StandardGradientPaintTransformer;
 
 public class SpeedDialPanel extends JPanel {
 	/**
-	 * 
+	 * This class creates a speed dial that can be added to any panel
 	 */
 	private static final long serialVersionUID = -4277454858501952039L;
 	DefaultValueDataset speed_dataset;
@@ -35,6 +34,7 @@ public class SpeedDialPanel extends JPanel {
 	public SpeedDialPanel() {
 		super(new BorderLayout());
 		
+		// Currently the way to create a dial is tedious...
 		speed_dataset = new DefaultValueDataset(0D);
 		
 		speed_dial.setView(0.0D, 0.0D, 1.0D, 1.0D);
@@ -77,15 +77,6 @@ public class SpeedDialPanel extends JPanel {
 		add(speed_panel);
 	}
 	
-	public void updateDial(String speed) {
-		double new_speed = Double.parseDouble(speed);
-		if(new_speed != 0D) {
-			speed_dataset.setValue(new_speed);
-			validate();
-			repaint();
-		}
-	}
-	
 	public void updateDial(HashMap<String, Double> motor_data) {
 		double new_speed = motor_data.get("motor_speed");
 		if(new_speed != 0D) {
@@ -93,13 +84,5 @@ public class SpeedDialPanel extends JPanel {
 			validate();
 			repaint();
 		}
-	}
-	private double abs(Double decimal) {
-		if(decimal > 0)
-			return decimal;
-		else if(decimal < 0)
-			return -decimal;
-		else
-			return decimal;
 	}
 }

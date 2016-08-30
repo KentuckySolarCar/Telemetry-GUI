@@ -2,17 +2,11 @@ package com.telemetry.serial;
 
 import java.util.List;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,10 +20,6 @@ public class SerialPortReader extends Thread {
 	private JSONParser parser;
 	private boolean status;
 	private TelemetryFrame telem_frame;
-	private boolean logging = false;
-	private File log_file;
-	private BufferedWriter writer;
-	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
 	public SerialPortReader (InputStream input_stream, TelemetryFrame telem_frame) throws UnsupportedEncodingException {
 		status = false;
@@ -39,24 +29,12 @@ public class SerialPortReader extends Thread {
 	}
 	
 	public void stopThread() throws IOException {
-		status = false;
 		input_stream.close();
-		if(logging) {
-			logging = false;
-			writer.close();
-		}
+		status = false;
 	}
 	
 	public boolean getThreadStatus() {
 		return status;
-	}
-	
-	public void enableLogging(String log_filename) throws IOException {
-		log_file = new File(log_filename);
-		if(!log_file.exists())
-			log_file.createNewFile();
-		writer = new BufferedWriter(new FileWriter(log_file));
-		logging = true;
 	}
 
 	@Override
@@ -66,20 +44,26 @@ public class SerialPortReader extends Thread {
 			String line;
 			try {
 				line = input_stream.readLine();
+				// Always print out the latest telemetry msg to telemetry frame's status bar
 				telem_frame.updateStatus(line);
+				// Check to see if message is valid
 				if(isValidMessage(line)) {
 					JSONObject obj = (JSONObject) parser.parse(line);
 					telem_frame.updateAllPanels(obj);
 				}
+				// Do something speical if message is invalid, as in don't update panel and just add
+				// received message to the log panel, with an ERROR prefix
 				else {
 					telem_frame.processInvalidData(line);
 					line = "*ERROR* " + line;
 				}
-				if(logging) {
-					Date date = new Date();
-					writer.write(line + "|" + date_format.format(date) + "\n");
+				// Let telem_frame's logger handle the logging of raw telemetry message to a file
+				if(telem_frame.getLogger().getState() == true) {
+					telem_frame.getLogger().writeJSON(line);
 				}
 			} catch (IOException e) {
+				// If this catch is reached, that means we are getting no bytes through telemetry,
+				// which the thread will wait indefinitely until new data is sent over.
 				telem_frame.updateStatus("Waiting on Serial Port");
 				try {
 					Thread.sleep(50);
@@ -87,11 +71,18 @@ public class SerialPortReader extends Thread {
 					e1.printStackTrace();
 				}
 			} catch (ParseException e) {
-				// Do Nothing...
+				// This does nothing, since we already manually validated the JSON string
 			}
 		}
 	}
 	
+	/**
+	 * This function literally tries to read every possible field for each type of message, and only 
+	 * returns true if all fields can be read for that certain message type
+	 * @param line
+	 * @return
+	 */
+	@SuppressWarnings("unused")
 	private boolean isValidMessage(String line) {
 		try {
 			JSONObject obj = (JSONObject) parser.parse(line);

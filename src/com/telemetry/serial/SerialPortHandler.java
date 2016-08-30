@@ -4,12 +4,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Enumeration;
 
 import com.telemetry.gui.TelemetryFrame;
 
 import gnu.io.*;
 
+/**
+ * Class that handles the connection of the specified serial port and controls both
+ * the read and write port
+ * 
+ * TODO Use a cross-platform serial reader
+ * @author Weilian Song
+ *
+ */
 public class SerialPortHandler {
 	private SerialPort serial_port;
 	private OutputStream output_stream;
@@ -18,19 +25,23 @@ public class SerialPortHandler {
 	private SerialPortReader read_thread;
 	private TelemetryFrame telem_frame;
 	private boolean port_connected = false;
-	
+
 	public SerialPortHandler(TelemetryFrame telem_frame) {
 		this.telem_frame = telem_frame;
 	}
 	
-	public void changePortNum(String port_num) {
-		this.port_num = port_num;
-	}
-	
+	/**
+	 * Get the current port name
+	 * @return the current port
+	 */
 	public String getPortNum() {
 		return port_num;
 	}
 	
+	/**
+	 * Get teh status of the read thread
+	 * @return whether the read thread is active or not
+	 */
 	public boolean getPortReadStatus() {
 		if(port_connected) {
 			return read_thread.getThreadStatus();
@@ -39,6 +50,11 @@ public class SerialPortHandler {
 			return false;
 	}
 	
+	/**
+	 * Connect to the specified port. If successful, create both a read and write stream from it
+	 * @param port_num
+	 * @throws Exception Thrown if any part of connection has failed
+	 */
 	public void connect(String port_num) throws Exception {
 		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
         if ( portIdentifier.isCurrentlyOwned() )
@@ -64,6 +80,9 @@ public class SerialPortHandler {
         }
 	}
 	
+	/**
+	 * Stops all connections to the serial port if one is connected
+	 */
 	public void stopSerialPort() {
 		if(port_connected) {
 			try {
@@ -73,18 +92,23 @@ public class SerialPortHandler {
 				serial_port.close();
 				port_connected = false;
 			} catch (IOException e) {
-				e.printStackTrace();
+				telem_frame.updateStatus("Failed to stop serial port. Try again?");
 			}
 		}
 		else
 			telem_frame.updateStatus("No Serial Port Connected");
 	}
 	
+	/**
+	 * Restarts all connections to the last serial port connected
+	 * @throws Exception
+	 */
 	public void restartReadThread() throws Exception {
 		stopSerialPort();
-		if(port_num != "")
+		if(port_num != "") {
 			connect(port_num);
-		startReadThread();
+			startReadThread();
+		}
 	}
 	
 	public void startReadThread() {
@@ -92,12 +116,7 @@ public class SerialPortHandler {
 			read_thread = new SerialPortReader(input_stream, telem_frame);
 			read_thread.start();
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			telem_frame.updateStatus("Failed to start read thread. Try again?");
 		}
-	}
-	
-	public void startLogging(String log_filename) throws IOException {
-		read_thread.enableLogging(log_filename);
 	}
 }

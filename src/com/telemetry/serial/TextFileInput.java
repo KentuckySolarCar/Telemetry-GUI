@@ -6,18 +6,20 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.TelemetryFrame;
-import com.telemetry.gui.device.MotorPanel;
 
 import org.json.simple.parser.JSONParser;
 
+/**
+ * Tester to ensure telemetry gui updates correctly
+ * @author Weilian Song
+ *
+ */
 public class TextFileInput extends Thread {
 	private JSONParser parser;
 	private BufferedReader buffer_reader;
@@ -59,6 +61,7 @@ public class TextFileInput extends Thread {
 		
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isValidMessage(String line) {
 		try {
 			JSONObject obj = (JSONObject) parser.parse(line);
@@ -97,13 +100,4 @@ public class TextFileInput extends Thread {
 			return false;
 		}
 	}
-	
-	private void processLogLine(String line) {
-		String[] splits = line.split(" ");
-		String processed = "";
-		if(splits[0] != "*ERROR*") {
-			
-		}
-	}
 }
-

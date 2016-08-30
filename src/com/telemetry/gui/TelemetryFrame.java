@@ -4,27 +4,21 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
+import com.telemetry.util.LogWriter;
 import com.telemetry.util.Tools;
 import com.sun.glass.events.KeyEvent;
-import com.telemetry.data.CarData;
 import com.telemetry.data.DataContainer;
 import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +44,7 @@ public class TelemetryFrame extends JFrame {
 	private SerialPortHandler serial_port;
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	private DataContainer all_data;
+	private LogWriter logger;
 
 	// Temp
 	JScrollPane log_pane;
@@ -68,6 +63,16 @@ public class TelemetryFrame extends JFrame {
 		
 		serial_port = new SerialPortHandler(this);
 		all_data = new DataContainer();
+		logger = new LogWriter();
+
+		// Let user pick which folder to store logs in
+		JFileChooser chooser = new JFileChooser();
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnVal = chooser.showOpenDialog(this);
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			String dest_dir = chooser.getSelectedFile().toString();
+			logger.initializeWriter(dest_dir);
+		}
 		
 		// Reveals main_frame
 		setVisible(true);
@@ -185,6 +190,24 @@ public class TelemetryFrame extends JFrame {
 			aux_frame.updateRunTime();
 	}
 	
+	// Let the user change which folder to store logs in, after the GUI is started
+	class reinitializeLogger implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				try {
+					logger.closeWriter();
+					logger.initializeWriter(chooser.getSelectedFile().toString());
+				} catch (IOException e1) {
+					updateStatus("Failed to re-initialize logger... Try again?");
+				}
+			}
+		}
+	}
+	
 	class StartAuxFrameListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -259,7 +282,6 @@ public class TelemetryFrame extends JFrame {
 					text_input.start();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -278,7 +300,6 @@ public class TelemetryFrame extends JFrame {
 		}
 	}
 	
-	// TODO Remove logging from here, use dedicated class object LogWriter
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
@@ -286,17 +307,6 @@ public class TelemetryFrame extends JFrame {
 					displayErrorDialog("Port is Empty!");
 				else {
 					serial_port.startReadThread();
-					JFileChooser chooser = new JFileChooser();
-					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-					int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
-					if(returnVal == JFileChooser.APPROVE_OPTION) {
-						String root_dir = chooser.getSelectedFile().toString();
-						int[] current_time = device_panel.getSystemTime();
-						String log_filename = root_dir + File.separator + current_time[0] + "_"
-													   + current_time[1] + "_" + current_time[2] 
-													   + "_log.txt";
-						serial_port.startLogging(log_filename);
-					}
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -319,32 +329,6 @@ public class TelemetryFrame extends JFrame {
 		
 	}
 	
-	// Remove logging from here, use dedicated log writer
-	public void logFileSaver() throws IOException {
-		JFileChooser chooser = new JFileChooser();
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		int returnVal = chooser.showOpenDialog(this);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			String root_dir = chooser.getSelectedFile().toString();
-			int[] current_time = device_panel.getSystemTime();
-			String log_filename = root_dir + File.separator + current_time[0] + "_"
-										   + current_time[1] + "_" + current_time[2] 
-										   + "_log.txt";
-			serial_port.startLogging(log_filename);
-		}
-	}
-	
-	public void testMonitor() throws IOException, ParseException {
-		JFileChooser chooser = new JFileChooser();
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-		chooser.setFileFilter(filter);
-		int returnVal = chooser.showOpenDialog(this);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			text_input = new TextFileInput(chooser.getSelectedFile().toString(), this);
-			text_input.start();
-		}
-	}
-	
 	public void displayErrorDialog(String err_msg) {
 		JOptionPane.showMessageDialog(this, err_msg, "Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -355,12 +339,10 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	public void updateAllPanels(JSONObject obj) {
-		Date date = new Date();
 		all_data.updateCarData(obj);
 		device_panel.updatePanel(all_data.getCarData());
 		calculation_panel.updatePanel(all_data.getCarData());
 		graph_panel.updatePanel(all_data.getCarData());
-		obj.put("actual_time", date_format.format(date));
 		log.append("\n" + obj.toString() + "\n");
 		status_bar.setText(obj.toString());
 		if(aux_frame_on)
@@ -377,5 +359,9 @@ public class TelemetryFrame extends JFrame {
 		log.append("\n-----------------------------------------------------\n" 
 					+ "*INVALID* " + json_str + " " + date_format.format(date)
 					+ "\n-----------------------------------------------------\n");
+	}
+	
+	public LogWriter getLogger() {
+		return logger;
 	}
 }

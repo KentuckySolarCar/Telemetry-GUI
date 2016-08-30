@@ -5,10 +5,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.swing.*;
 
@@ -23,9 +21,6 @@ public class TimePanel extends JPanel {
 	private int hour = 0;
 	private int minute = 0;
 	private int second = 0;
-	private int stop_watch_hour = 0;
-	private int stop_watch_minute = 0;
-	private int stop_watch_second = 0;
 	
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
@@ -112,34 +107,10 @@ public class TimePanel extends JPanel {
 		repaint();
 	}
 	
-	public void updatePanel(String pi_time) {
-		List<String> parsed_string = Arrays.asList(pi_time.split(":"));
-
-		time_pi_l.setText(parsed_string.get(0) + ":" 
-							+ parsed_string.get(1) + ":" 
-							+ Tools.stringToInt(parsed_string.get(2)));
-		
-		validate();
-		repaint();
-	}
-	
-	public void updatePanel(HashMap<String, Integer[]> time_data, int dummy) {
+	public void updatePanel(HashMap<String, Integer[]> time_data) {
 		Integer[] pi_time = time_data.get("pi_time");
 		time_pi_l.setText(pi_time[0] + ":" + pi_time[1] + ":" + pi_time[2]);
 		validate();
 		repaint();
-	}
-	
-	public int[] getRunTime() {
-		int time[] = {hour, minute, second};
-		return time;
-	}
-	
-	public int[] getSystemTime() {
-		String system_time = time_computer_l.getText();
-		String[] split = system_time.split(":");
-		int time[] = {Integer.parseInt(split[0]), Integer.parseInt(split[1]), 
-					  Integer.parseInt(split[2])};
-		return time;
 	}
 }

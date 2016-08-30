@@ -47,13 +47,43 @@ public class AuxFrame extends JFrame {
 	private JScrollPane scroll_pane;
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	
-	// Temp until Motor BC is transmitted
 	private boolean flip_flop = true;
 	
 	public AuxFrame() {
 		setLayout(new BorderLayout());
-		
 		insertComponents();
+	}
+	
+	public void updatePanel(CarData data) {
+		// Kind of a weird way to indicate status of telemetry...
+		if(flip_flop) {
+			runtime_indicator.setBackground(Color.RED);
+			flip_flop = false;
+		}
+		else {
+			runtime_indicator.setBackground(Color.GREEN);
+			flip_flop = true;
+		}
+
+		HashMap<String, Double> motor_data = data.getMotorData();
+		HashMap<String, Double> battery_data = data.getBatteryData();
+		HashMap<String, Double> calculation_data = data.getCalculationData();
+		
+		speed_f.setText(Tools.roundDouble(motor_data.get("motor_speed")));
+
+		motor_power_f.setText(Tools.roundDouble(calculation_data.get("motor_power")));
+		bat_power_f.setText(Tools.roundDouble(calculation_data.get("battery_power")));
+		array_power_f.setText(Tools.roundDouble(calculation_data.get("array_power")));
+		soc_f.setText(Tools.roundDouble(calculation_data.get("state_of_charge")));
+
+		bat_volt_min_f.setText(Tools.roundDouble(battery_data.get("batt_volt_min")));
+		bat_volt_max_f.setText(Tools.roundDouble(battery_data.get("batt_volt_max")));
+		bat_temp_max_f.setText(Tools.roundDouble(battery_data.get("batt_temp_max")));
+	}
+	
+	public void updateRunTime() {
+		Date date = new Date();
+		time_f.setText(date_format.format(date));
 	}
 	
 	private void insertComponents() {
@@ -164,65 +194,10 @@ public class AuxFrame extends JFrame {
 		
 		add(text_fields, BorderLayout.NORTH);
 	}
-	
+
 	private JLabel initFieldLabel(JLabel label) {
 		label.setOpaque(true);
 		label.setFont(FIELD_FONT);
 		return label;
-	}
-	
-	public void updatePanel(CarData data) {
-		HashMap<String, Double> motor_data = data.getMotorData();
-		HashMap<String, Double> battery_data = data.getBatteryData();
-		HashMap<String, Double> calculation_data = data.getCalculationData();
-		
-		speed_f.setText(Tools.roundDouble(motor_data.get("motor_speed")));
-
-		motor_power_f.setText(Tools.roundDouble(calculation_data.get("motor_power")));
-		bat_power_f.setText(Tools.roundDouble(calculation_data.get("battery_power")));
-		array_power_f.setText(Tools.roundDouble(calculation_data.get("array_power")));
-		soc_f.setText(Tools.roundDouble(calculation_data.get("state_of_charge")));
-
-		bat_volt_min_f.setText(Tools.roundDouble(battery_data.get("batt_volt_min")));
-		bat_volt_max_f.setText(Tools.roundDouble(battery_data.get("batt_volt_max")));
-		bat_temp_max_f.setText(Tools.roundDouble(battery_data.get("batt_temp_max")));
-	}
-	
-	public void updatePanel(HashMap<String, Double> dataset) {
-		if(flip_flop) {
-			runtime_indicator.setBackground(Color.RED);
-			flip_flop = false;
-		}
-		else {
-			runtime_indicator.setBackground(Color.GREEN);
-			flip_flop = true;
-		}
-
-		double motor_power = dataset.get("motor_power");
-		double batt_power = dataset.get("batt_power");
-		double array_power = dataset.get("array_power");
-		double state_of_charge = dataset.get("state_of_charge");
-		double bat_volt_min = dataset.get("batt_v_min");
-		double bat_volt_max = dataset.get("batt_v_max");
-		double bat_temp_max = dataset.get("batt_temp_max");
-		double speed        = dataset.get("average_speed");
-		
-		motor_power_f.setText(Tools.roundDouble(motor_power));
-		bat_power_f.setText(Tools.roundDouble(batt_power));
-		array_power_f.setText(Tools.roundDouble(array_power));
-		bat_volt_min_f.setText(Tools.roundDouble(bat_volt_min));
-		bat_volt_max_f.setText(Tools.roundDouble(bat_volt_max));
-		bat_temp_max_f.setText(Tools.roundDouble(bat_temp_max));
-		speed_f.setText(Tools.roundDouble(speed));
-		soc_f.setText(Tools.roundDouble(state_of_charge));
-		
-		Tools.thresholdCheck(motor_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
-		Tools.thresholdCheck(bat_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
-		Tools.thresholdCheck(array_power_f, motor_power, 0D, Tools.RED, Tools.GREEN);
-	}
-	
-	public void updateRunTime() {
-		Date date = new Date();
-		time_f.setText(date_format.format(date));
 	}
 }

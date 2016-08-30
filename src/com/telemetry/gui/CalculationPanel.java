@@ -50,9 +50,14 @@ public class CalculationPanel extends JPanel{
 		insertComponents();
 	}
 	
+	/**
+	 * Updates the panel, given all the car's data
+	 * @param data
+	 */
 	public void updatePanel(CarData data) {
 		HashMap<String, Double> calculation_data = data.getCalculationData();
 		
+		// Currently only these values are verified to be somewhat correct
 		array_power_l.setText(Tools.roundDouble(calculation_data.get("array_power")));
 		motor_power_l.setText(Tools.roundDouble(calculation_data.get("motor_power")));
 		battery_power_l.setText(Tools.roundDouble(calculation_data.get("battery_power")));

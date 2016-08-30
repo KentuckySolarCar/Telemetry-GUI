@@ -1,11 +1,9 @@
 package com.telemetry.strategy;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
@@ -44,7 +42,7 @@ public class StateOfCharge {
 //		scaleNormalizedCapacity
 
 	public void initializeData() {
-		String mat_file = "C:\\Users\\William\\Documents\\GitHub\\Telemetry-GUI\\dataForHayden.mat";
+		String mat_file = "dataForHayden.mat";
 		try {
 			mat_reader = new MatFileReader(mat_file);
 		} catch (IOException e) {

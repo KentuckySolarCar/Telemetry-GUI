@@ -8,9 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
-import org.json.simple.JSONObject;
-
-import com.telemetry.util.SizedQueue;
 import com.telemetry.util.Tools;
 
 import javax.swing.JButton;
@@ -27,21 +24,12 @@ public class MotorPanel extends JPanel {
 	private JLabel average_speed_label  = new JLabel("VALUE");
 	private JButton energy_reset        = new JButton("Energy Reset");
 	private JButton average_speed_reset = new JButton("Speed Reset");
-
-	private SizedQueue<Double> speed;
-	private SizedQueue<Double> current;
 	
 	// Threshold for fields
-	private double speed_threshold = 50;
 	private double current_threshold = 0;
-	private double watt_sec_threshold = 0;
-	
-	private BatteryPanel battery_panel;
+	private double voltage_threshold = 0;
 	
 	public MotorPanel() {
-		speed = new SizedQueue<Double>(60);
-		current = new SizedQueue<Double>(60);
-		
 		insertComponents();
 	}
 
@@ -51,6 +39,10 @@ public class MotorPanel extends JPanel {
 		voltage_label.setText(Tools.roundDouble(data.get("motor_voltage")));
 		
 		// Change label color if threshold reached
+		Tools.thresholdCheck(current_label, data.get("motor_current"), 
+							 current_threshold, Tools.RED, Tools.GREEN);
+		Tools.thresholdCheck(voltage_label, data.get("motor_voltage"), 
+							 voltage_threshold, Tools.RED, Tools.GREEN);
 	}
 	
 	private void insertComponents() {
@@ -157,6 +149,7 @@ public class MotorPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// This listener will edit value in data container
+			// But for now this won't be used
 		}
 	}
 	
@@ -164,6 +157,7 @@ public class MotorPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// This listener will edit value in data container
+			// But for now this won't be used
 		}
 	}
 }

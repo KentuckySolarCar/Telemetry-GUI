@@ -13,6 +13,12 @@ import com.telemetry.strategy.EnergyModelFunctions;
 import com.telemetry.strategy.StateOfCharge;
 import com.telemetry.util.Tools;
 
+/**
+ * This class handles all data relating to the car itself, like battery, motor, and any strategy
+ * calculations, like power, target watt hours, etc.
+ * @author Weilian Song
+ *
+ */
 public class CarData {
 	// Battery Data
 	private double batt_temp_avg = 0D;
@@ -37,6 +43,8 @@ public class CarData {
 	private double battery_power = 0D;
 	private double time_seconds = 0D;
 	private double state_of_charge = 0D;
+	
+	// Unimplemented Calculation Data
 	private double average_speed;
 	private double solar_energy_remaining;
 	private double time_left_in_day = 0D;

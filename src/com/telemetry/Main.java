@@ -1,6 +1,5 @@
 package com.telemetry;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,7 +7,6 @@ import java.util.TimerTask;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.TelemetryFrame;
-import com.telemetry.strategy.StateOfCharge;
 
 public class Main implements Runnable {
 	
