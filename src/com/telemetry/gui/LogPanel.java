@@ -4,6 +4,11 @@ import javax.swing.*;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Currently not used, random bug that prevents this panel from updating
+ * @author Weilian Song
+ *
+ */
 public class LogPanel extends JScrollPane {
 
 	private static final long serialVersionUID = 4467077703107588725L;

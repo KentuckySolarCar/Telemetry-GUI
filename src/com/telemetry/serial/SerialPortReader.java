@@ -18,11 +18,11 @@ public class SerialPortReader extends Thread {
 	
 	private BufferedReader input_stream;
 	private JSONParser parser;
-	private boolean status;
+	private boolean thread_status;
 	private TelemetryFrame telem_frame;
 	
 	public SerialPortReader (InputStream input_stream, TelemetryFrame telem_frame) throws UnsupportedEncodingException {
-		status = false;
+		thread_status = false;
 		this.input_stream = new BufferedReader(new InputStreamReader(input_stream));
 		this.telem_frame = telem_frame;
 		parser = new JSONParser();
@@ -30,17 +30,17 @@ public class SerialPortReader extends Thread {
 	
 	public void stopThread() throws IOException {
 		input_stream.close();
-		status = false;
+		thread_status = false;
 	}
 	
 	public boolean getThreadStatus() {
-		return status;
+		return thread_status;
 	}
 
 	@Override
 	public synchronized void run() {
-		status = true;
-		while(status) {
+		thread_status = true;
+		while(thread_status) {
 			String line;
 			try {
 				line = input_stream.readLine();
@@ -77,10 +77,10 @@ public class SerialPortReader extends Thread {
 	}
 	
 	/**
-	 * This function literally tries to read every possible field for each type of message, and only 
+	 * This function literally tries to read every possible field for a given type of message, and only 
 	 * returns true if all fields can be read for that certain message type
 	 * @param line
-	 * @return
+	 * @return validity of JSON message
 	 */
 	@SuppressWarnings("unused")
 	private boolean isValidMessage(String line) {

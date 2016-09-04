@@ -19,6 +19,10 @@ public class Main implements Runnable {
 		thread.start();
 	}
 
+	/**
+	 * Ticker thread used to update various panel's system time
+	 * TODO Thread inside a thread??? Is this right?
+	 */
 	@Override
 	public void run() {
 		Timer T = new Timer();

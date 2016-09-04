@@ -10,6 +10,13 @@ import javax.swing.JPanel;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Assortment of helper functions used across a lot of the classes
+ * Mostly they are related to double to string coversion or vice-versa
+ * 
+ * @author Weilian Song
+ *
+ */
 public class Tools {
 	public static final Color GREEN = new Color(198, 224, 180);
 	public static final Color RED = new Color(224, 176, 132);
@@ -68,6 +75,11 @@ public class Tools {
 			label.setBackground(negative);
 	}
 	
+	/**
+	 * Will implement at later time...
+	 * @param frame
+	 * @param font
+	 */
 	public static void changeFrameFonts(JFrame frame, Font font) {
 		Component[] components = frame.getComponents();
 		for(Component component : components) {
@@ -84,6 +96,11 @@ public class Tools {
 		}
 	}
 	
+	/**
+	 * Will implement at later time...
+	 * @param frame
+	 * @param font
+	 */
 	public static void changePanelFonts(JPanel panel, Font font) {	
 		Component[] components = panel.getComponents();
 		for(Component component : components) {

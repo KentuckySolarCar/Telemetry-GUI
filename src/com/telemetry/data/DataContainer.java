@@ -2,6 +2,10 @@ package com.telemetry.data;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Container for all specific data containers
+ * @author Weilian Song
+ */
 public class DataContainer {
 	private CarData car_data;
 	private RaceData race_data;

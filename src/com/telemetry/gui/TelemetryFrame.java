@@ -46,7 +46,7 @@ public class TelemetryFrame extends JFrame {
 	private DataContainer all_data;
 	private LogWriter logger;
 
-	// Temp
+	// Temporary
 	JScrollPane log_pane;
 	JTextArea log;
 	
@@ -63,7 +63,7 @@ public class TelemetryFrame extends JFrame {
 		
 		serial_port = new SerialPortHandler(this);
 		all_data = new DataContainer();
-		logger = new LogWriter();
+		logger = new LogWriter(this);
 
 		// Let user pick which folder to store logs in
 		JFileChooser chooser = new JFileChooser();
@@ -184,6 +184,10 @@ public class TelemetryFrame extends JFrame {
 		setVisible(true);
 	}
 	
+	/**
+	 * Called by a ticking thread to update device panel's system and elapsed time, and update
+	 * aux frame's system time if the aux frame is currently displayed
+	 */
 	public void updateRunTime() {
 		device_panel.updateRunTime();
 		if(aux_frame_on)
@@ -247,6 +251,7 @@ public class TelemetryFrame extends JFrame {
 			String s = JOptionPane.showInputDialog("Please enter the port number", null); 
 			try {
 				serial_port.connect(s);
+				// Let user know which port they are connected to
 				DisplayCurrentPortDialog(s);
 			} catch (Exception e) {
 				displayErrorDialog("Cannot Connect to " + s);
@@ -258,6 +263,7 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
+				// Checks to see if aux_frame is initialized. If not, exception will be caught
 				aux_frame.getClass();
 				String s = JOptionPane.showInputDialog("Please enter the resolution\nSeparated by a comma (W/H)", null);
 				String resolution[] = s.split(",");
@@ -287,12 +293,18 @@ public class TelemetryFrame extends JFrame {
 		}
 	}
 
+	/**
+	 * Safely exits the GUI program
+	 * @author Weilian Song
+	 *
+	 */
 	class ExitMenuListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-				if(serial_port.getPortReadStatus())
-					serial_port.stopSerialPort();
+				// Stops serial port if it is currently listening
+				serial_port.stopSerialPort();
+				logger.closeWriter();
 				System.exit(0);
 			} catch(Exception e1) {
 				e1.printStackTrace();
@@ -303,11 +315,7 @@ public class TelemetryFrame extends JFrame {
 	class StartMonitorListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			try {
-				if(serial_port.getPortNum() == "")
-					displayErrorDialog("Port is Empty!");
-				else {
-					serial_port.startReadThread();
-				}
+				serial_port.startReadThread();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -339,7 +347,9 @@ public class TelemetryFrame extends JFrame {
 	}
 	
 	public void updateAllPanels(JSONObject obj) {
+		// Update data container first
 		all_data.updateCarData(obj);
+		// Then update all panels
 		device_panel.updatePanel(all_data.getCarData());
 		calculation_panel.updatePanel(all_data.getCarData());
 		graph_panel.updatePanel(all_data.getCarData());
@@ -349,7 +359,11 @@ public class TelemetryFrame extends JFrame {
 			aux_frame.updatePanel(all_data.getCarData());
 	}
 	
-	public void updateStatus(String text) {
+	/**
+	 * Sets status bar's message
+	 * @param text
+	 */
+	public synchronized void updateStatus(String text) {
 		status_bar.removeAll();
 		status_bar.setText(text);
 	}

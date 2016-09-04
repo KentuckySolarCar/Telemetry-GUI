@@ -65,6 +65,7 @@ public class AuxFrame extends JFrame {
 			flip_flop = true;
 		}
 
+		// Retrieve specific data containers
 		HashMap<String, Double> motor_data = data.getMotorData();
 		HashMap<String, Double> battery_data = data.getBatteryData();
 		HashMap<String, Double> calculation_data = data.getCalculationData();
@@ -81,6 +82,9 @@ public class AuxFrame extends JFrame {
 		bat_temp_max_f.setText(Tools.roundDouble(battery_data.get("batt_temp_max")));
 	}
 	
+	/**
+	 * Called by a ticking thread to update the current system time
+	 */
 	public void updateRunTime() {
 		Date date = new Date();
 		time_f.setText(date_format.format(date));
@@ -195,6 +199,11 @@ public class AuxFrame extends JFrame {
 		add(text_fields, BorderLayout.NORTH);
 	}
 
+	/**
+	 * Helper function to set properties of labels
+	 * @param label
+	 * @return
+	 */
 	private JLabel initFieldLabel(JLabel label) {
 		label.setOpaque(true);
 		label.setFont(FIELD_FONT);

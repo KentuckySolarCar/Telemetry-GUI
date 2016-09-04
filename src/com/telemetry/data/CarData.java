@@ -16,6 +16,7 @@ import com.telemetry.util.Tools;
 /**
  * This class handles all data relating to the car itself, like battery, motor, and any strategy
  * calculations, like power, target watt hours, etc.
+ * 
  * @author Weilian Song
  *
  */
@@ -84,7 +85,9 @@ public class CarData {
 	private long initial_time = 0;
 	
 	public CarData() {
+		// Initialize state of charge calculator
 		soc = new StateOfCharge();
+		// Initialize initial time so we know GUI's running time
 		initial_time = System.currentTimeMillis()/1000;
 	}
 	

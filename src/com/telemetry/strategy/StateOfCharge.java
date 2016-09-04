@@ -10,6 +10,11 @@ import com.jmatio.types.MLArray;
 import com.jmatio.types.MLDouble;
 import com.jmatio.types.MLStructure;
 
+/**
+ * This class is messy with comments, but strategy is still at experimental stage
+ * @author wsong
+ *
+ */
 public class StateOfCharge {
 	private MatFileReader mat_reader;
 	private Map<String, MLArray> mat_content;

@@ -92,6 +92,9 @@ public class TimePanel extends JPanel {
 		add(time_pi_l, gbc);
 	}
 	
+	/**
+	 * Called by a ticking thread to update system and elapsed time
+	 */
 	public void updateRunTime() {
 		Date date = new Date();
 		
@@ -107,6 +110,10 @@ public class TimePanel extends JPanel {
 		repaint();
 	}
 	
+	/**
+	 * This only update the time received from the pi
+	 * @param time_data
+	 */
 	public void updatePanel(HashMap<String, Integer[]> time_data) {
 		Integer[] pi_time = time_data.get("pi_time");
 		time_pi_l.setText(pi_time[0] + ":" + pi_time[1] + ":" + pi_time[2]);

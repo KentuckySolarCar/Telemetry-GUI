@@ -39,7 +39,7 @@ public class SerialPortHandler {
 	}
 	
 	/**
-	 * Get teh status of the read thread
+	 * Get the status of the read thread
 	 * @return whether the read thread is active or not
 	 */
 	public boolean getPortReadStatus() {
@@ -111,12 +111,19 @@ public class SerialPortHandler {
 		}
 	}
 	
+	/**
+	 * Start reading thread, only if a serial port is connected
+	 */
 	public void startReadThread() {
-		try {
-			read_thread = new SerialPortReader(input_stream, telem_frame);
-			read_thread.start();
-		} catch (UnsupportedEncodingException e) {
-			telem_frame.updateStatus("Failed to start read thread. Try again?");
+		if(!port_connected)
+			telem_frame.updateStatus("Serial Port Not Connected!");
+		else {
+			try {
+				read_thread = new SerialPortReader(input_stream, telem_frame);
+				read_thread.start();
+			} catch (UnsupportedEncodingException e) {
+				telem_frame.updateStatus("Failed to start read thread. Try again?");
+			}
 		}
 	}
 }

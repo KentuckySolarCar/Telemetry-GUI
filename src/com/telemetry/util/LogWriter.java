@@ -12,6 +12,7 @@ import java.util.Date;
 import com.telemetry.data.CarData;
 import com.telemetry.data.RaceData;
 import com.telemetry.data.WeatherData;
+import com.telemetry.gui.TelemetryFrame;
 
 /**
  * Handles all the logging needs, including telemetry car data, race information, and weather
@@ -33,11 +34,14 @@ public class LogWriter {
 
 	private DateFormat date_format = new SimpleDateFormat("yyyy-mm-dd_HH:mm:ss");
 	private boolean initialized_state = false;
+	private TelemetryFrame telemetry_frame;
 	
 	/**
 	 * Logger won't be active until writer is initialized
 	 */
-	public LogWriter() {}
+	public LogWriter(TelemetryFrame telemetry_frame) {
+		this.telemetry_frame = telemetry_frame;
+	}
 	
 
 	/**
@@ -78,7 +82,7 @@ public class LogWriter {
 	}
 	
 	/**
-	 * Close up all writers for clean-up
+	 * Close up all writers for safe exit
 	 * @throws IOException
 	 */
 	public void closeWriter() throws IOException {
@@ -95,7 +99,10 @@ public class LogWriter {
 	 * @throws IOException
 	 */
 	public synchronized void writeJSON(String json_str) throws IOException {
-		json_writer.write(json_str + "\n");
+		if(!initialized_state)
+			telemetry_frame.updateStatus("No writer is initialized!");
+		else
+			json_writer.write(json_str + "\n");
 	}
 	
 	/**
