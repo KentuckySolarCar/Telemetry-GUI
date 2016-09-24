@@ -46,8 +46,8 @@ public class CarData {
 	private double state_of_charge = 0D;
 	
 	// Unimplemented Calculation Data
-	private double average_speed;
-	private double solar_energy_remaining;
+	private double average_speed = 0D;
+	private double solar_energy_remaining = 0D;
 	private double time_left_in_day = 0D;
 	private double battery_only_runtime_60_sec = 0D;
 	private double battery_only_range_60_sec = 0D;

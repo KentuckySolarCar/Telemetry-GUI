@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.telemetry.gui.TelemetryFrame;
 
-import gnu.io.*;
+import com.fazecast.jSerialComm.*;
 
 /**
  * Class that handles the connection of the specified serial port and controls both
@@ -50,34 +50,48 @@ public class SerialPortHandler {
 			return false;
 	}
 	
-	/**
-	 * Connect to the specified port. If successful, create both a read and write stream from it
-	 * @param port_num
-	 * @throws Exception Thrown if any part of connection has failed
-	 */
+//	/**
+//	 * Connect to the specified port. If successful, create both a read and write stream from it
+//	 * @param port_num
+//	 * @throws Exception Thrown if any part of connection has failed
+//	 */
+//	public void connect(String port_num) throws Exception {
+//		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
+//        if ( portIdentifier.isCurrentlyOwned() )
+//        {
+//            System.out.println("Error: Port is currently in use");
+//        }
+//        else
+//        {
+//            CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
+//            
+//            if ( commPort instanceof SerialPort )
+//            {
+//                serial_port = (SerialPort) commPort;
+//                serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+//            	this.port_num = port_num;
+//                
+//                input_stream = serial_port.getInputStream();
+//                output_stream = serial_port.getOutputStream();
+//                port_connected = true;
+//            }
+//            else
+//            	System.out.println("Error: This is not a serial port!");
+//        }
+//	}
+	
 	public void connect(String port_num) throws Exception {
-		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
-        if ( portIdentifier.isCurrentlyOwned() )
-        {
-            System.out.println("Error: Port is currently in use");
-        }
-        else
-        {
-            CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
-            
-            if ( commPort instanceof SerialPort )
-            {
-                serial_port = (SerialPort) commPort;
-                serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-            	this.port_num = port_num;
-                
-                input_stream = serial_port.getInputStream();
-                output_stream = serial_port.getOutputStream();
-                port_connected = true;
-            }
-            else
-            	System.out.println("Error: This is not a serial port!");
-        }
+		serial_port = SerialPort.getCommPort(port_num);
+		if(serial_port.isOpen()) {
+			telem_frame.updateStatus("Port is currently in use!");
+			return;
+		}
+		serial_port.setComPortParameters(19200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+		serial_port.openPort();
+		input_stream = serial_port.getInputStream();
+		output_stream = serial_port.getOutputStream();
+		this.port_num = port_num;
+		port_connected = true;
 	}
 	
 	/**
@@ -89,7 +103,8 @@ public class SerialPortHandler {
 				read_thread.stopThread();
 				input_stream.close();
 				output_stream.close();
-				serial_port.close();
+//				serial_port.close();
+				serial_port.closePort();
 				port_connected = false;
 			} catch (IOException e) {
 				telem_frame.updateStatus("Failed to stop serial port. Try again?");

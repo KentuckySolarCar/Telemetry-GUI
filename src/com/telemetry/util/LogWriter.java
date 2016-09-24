@@ -86,11 +86,13 @@ public class LogWriter {
 	 * @throws IOException
 	 */
 	public void closeWriter() throws IOException {
-		json_writer.close();
-		car_data_writer.close();
-		race_data_writer.close();
-		weather_data_writer.close();
-		initialized_state = false;
+		if(initialized_state) {
+			json_writer.close();
+			car_data_writer.close();
+			race_data_writer.close();
+			weather_data_writer.close();
+			initialized_state = false;
+		}
 	}
 	
 	/**

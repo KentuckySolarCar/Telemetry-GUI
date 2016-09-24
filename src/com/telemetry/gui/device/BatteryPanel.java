@@ -74,7 +74,7 @@ public class BatteryPanel extends JPanel {
 		//--------------------------Title--------------------------//
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridwidth = 8;
+		gbc.gridwidth = 3;
 		JLabel title = new JLabel("Battery");
 		title.setFont(Tools.TITLE_FONT);
 		add(title, gbc);
