@@ -82,16 +82,18 @@ public class SerialPortHandler {
 	
 	public void connect(String port_num) throws Exception {
 		serial_port = SerialPort.getCommPort(port_num);
-		if(serial_port.isOpen()) {
-			telem_frame.updateStatus("Port is currently in use!");
-			return;
-		}
+		if(serial_port.isOpen())
+			throw new Exception("Port " + port_num + " is currently in use!");
+
 		serial_port.setComPortParameters(19200, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-		serial_port.openPort();
-		input_stream = serial_port.getInputStream();
-		output_stream = serial_port.getOutputStream();
-		this.port_num = port_num;
-		port_connected = true;
+		if(serial_port.openPort()) {
+			input_stream = serial_port.getInputStream();
+			output_stream = serial_port.getOutputStream();
+			this.port_num = port_num;
+			port_connected = true;
+		}
+		else
+			throw new Exception("Error in openeing port " + port_num + "!");
 	}
 	
 	/**

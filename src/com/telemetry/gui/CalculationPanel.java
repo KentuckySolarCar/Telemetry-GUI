@@ -24,11 +24,9 @@ public class CalculationPanel extends JPanel{
 	
 	// Unfinished
 	private JLabel average_speed                    = new JLabel("000.000"); 
-	// Comment
 	private JLabel solar_energy_remaining           = new JLabel("000.000"); 
 	private JLabel time_left_in_day                 = new JLabel("000.000"); 
 	private JLabel battery_only_runtime_60_sec      = new JLabel("000.000"); 
-	// Comment
 	private JLabel battery_only_range_60_sec        = new JLabel("000.000"); 
 	private JLabel motor_power_60_sec               = new JLabel("000.000"); 
 	private JLabel speed_60_sec                     = new JLabel("000.000"); 

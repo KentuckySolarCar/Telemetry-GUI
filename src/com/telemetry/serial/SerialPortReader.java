@@ -41,7 +41,7 @@ public class SerialPortReader extends Thread {
 	public synchronized void run() {
 		thread_status = true;
 		while(thread_status) {
-			String line;
+			String line = "";
 			try {
 				line = input_stream.readLine();
 				// Always print out the latest telemetry msg to telemetry frame's status bar
