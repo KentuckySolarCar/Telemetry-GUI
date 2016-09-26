@@ -103,7 +103,7 @@ public class TelemetryFrame extends JFrame {
 	    
 		tab_panel.add("Car Status", combined_panel);
 		tab_panel.add("Graphs", graph_panel);
-	    tab_panel.add("Log", log_pane);
+	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		
 		add(tab_panel, BorderLayout.CENTER);
@@ -254,7 +254,7 @@ public class TelemetryFrame extends JFrame {
 				// Let user know which port they are connected to
 				DisplayCurrentPortDialog(s);
 			} catch (Exception e) {
-				displayErrorDialog("Cannot Connect to " + s);
+				displayErrorDialog(e.getMessage());
 			}
 		}
 	}
