@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.calculation;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -13,7 +13,7 @@ import javax.swing.*;
 import com.telemetry.data.CarData;
 import com.telemetry.util.Tools; 
 
-public class CalculationPanel extends JPanel{
+public class CalculationPanel extends JPanel {
 	private static final long serialVersionUID = -2305051374349231050L;
 	
 	// Finished

@@ -5,14 +5,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.simple.JSONObject;
 
+import com.telemetry.gui.aux.AuxFrame;
+import com.telemetry.gui.calculation.CalculationPanel;
+import com.telemetry.gui.car_graph.GraphPanel;
 import com.telemetry.gui.device.DevicePanel;
+import com.telemetry.gui.misc.LogPanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 import com.telemetry.util.LogWriter;
 import com.telemetry.util.Tools;
 import com.sun.glass.events.KeyEvent;
 import com.telemetry.data.DataContainer;
-import com.telemetry.graphs.GraphPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

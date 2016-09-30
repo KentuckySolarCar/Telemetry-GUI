@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.misc;
 
 import javax.swing.*;
 

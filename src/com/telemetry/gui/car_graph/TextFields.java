@@ -1,4 +1,4 @@
-package com.telemetry.graphs;
+package com.telemetry.gui.car_graph;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;

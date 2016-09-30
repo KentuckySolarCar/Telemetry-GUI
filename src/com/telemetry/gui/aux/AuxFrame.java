@@ -1,4 +1,4 @@
-package com.telemetry.gui;
+package com.telemetry.gui.aux;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
