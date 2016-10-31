@@ -16,6 +16,7 @@ public class WeatherData {
 	private ArrayList<JSONObject> current_json;
 	private JSONArray minutely_json;
 	private JSONArray hourly_json;
+	private JSONArray daily_json;
 	
 	public WeatherData() {
 		weather_handler = new WeatherHandler();
@@ -26,12 +27,24 @@ public class WeatherData {
 		this.current_json.add((JSONObject) weather_data.get("currently"));
 		JSONObject minutely_temp = (JSONObject) weather_data.get("minutely");
 		JSONObject hourly_temp = (JSONObject) weather_data.get("hourly");
+		JSONObject daily_temp = (JSONObject) weather_data.get("daily");
 		minutely_json = (JSONArray) minutely_temp.get("data");
 		hourly_json   = (JSONArray) hourly_temp.get("data");
+		daily_json    = (JSONArray) daily_temp.get("data");
 	}
 	
-	public JSONObject getSingleCurrentData() {
-		return current_json.get(current_json.size()-1);
+	/**
+	 * Check to make sure that there's at least one data point available to grab
+	 * 
+	 * @return latest current weather data
+	 */
+	public JSONObject getLatestCurrentData() {
+		if(current_json.size() > 0)
+			return current_json.get(current_json.size()-1);
+		else {
+			System.err.println("No currently data points available yet");
+			return null;
+		}
 	}
 	
 	public ArrayList<JSONObject> getAllCurrentData() {
@@ -44,5 +57,9 @@ public class WeatherData {
 	
 	public JSONArray getHourlyData() {
 		return hourly_json;
+	}
+	
+	public JSONArray getDailyData() {
+		return daily_json;
 	}
 }

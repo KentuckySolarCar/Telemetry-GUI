@@ -10,10 +10,12 @@ import com.telemetry.gui.calculation.CalculationPanel;
 import com.telemetry.gui.car_graph.GraphPanel;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.gui.misc.LogPanel;
+import com.telemetry.gui.weather.WeatherPanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
 import com.telemetry.util.LogWriter;
 import com.telemetry.util.Tools;
+import com.telemetry.util.WeatherHandler;
 import com.sun.glass.events.KeyEvent;
 import com.telemetry.data.DataContainer;
 
@@ -41,6 +43,7 @@ public class TelemetryFrame extends JFrame {
 	private LogPanel log_panel;
 	private JTextArea status_bar;
 	private AuxFrame aux_frame;
+	private WeatherPanel weather_panel;
 	private boolean aux_frame_on = false;
 	
 	// Non-GUI Stuff
@@ -48,6 +51,7 @@ public class TelemetryFrame extends JFrame {
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	private DataContainer all_data;
 	private LogWriter logger;
+	private WeatherHandler weather_handler;
 
 	// Temporary
 	JScrollPane log_pane;
@@ -93,6 +97,7 @@ public class TelemetryFrame extends JFrame {
 	    graph_panel = new GraphPanel();
 	    log_panel = new LogPanel();
 	    calculation_panel = new CalculationPanel();
+	    weather_panel = new WeatherPanel();
 	    
 	    // Temp, need to make dedicated log class
 	    log = new JTextArea();
@@ -106,6 +111,7 @@ public class TelemetryFrame extends JFrame {
 	    
 		tab_panel.add("Car Status", combined_panel);
 		tab_panel.add("Graphs", graph_panel);
+		tab_panel.add("Weather", weather_panel);
 	    tab_panel.add("Log", log_panel);
 	    tab_panel.add("Map", new JLabel("This is just a sad stub..."));
 		

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +30,10 @@ public class Tools {
 		return Integer.parseInt(tokens[0]);
 	}
 
+	/**
+	 * @param double_str
+	 * @return A double string rounded to 3 decimal points
+	 */
 	public static String roundDouble(String double_str) {
 		String delimit = "[.]";
 		String[] tokens = double_str.split(delimit);
@@ -42,18 +47,13 @@ public class Tools {
 			return double_str;
 	}
 	
+	/**
+	 * @param d The double wanting to be rounded
+	 * @return A double string rounded to 3 decimal points
+	 */
 	public static String roundDouble(Double d) {
 		String double_str = d.toString();
-		String delimit = "[.]";
-		String[] tokens = double_str.split(delimit);
-		if(tokens.length > 1) {
-			if(tokens[1].length() >= 3)
-				return tokens[0] + "." + tokens[1].substring(0, 3);
-			else
-				return tokens[0] + "." + tokens[1];
-		}
-		else
-			return double_str;
+		return roundDouble(double_str);
 	}
 	
 	public static double getLabelDouble(JLabel label) {
@@ -66,6 +66,10 @@ public class Tools {
 	
 	public static double getJSONDouble(JSONObject obj, String key) {
 		return Double.parseDouble((String) obj.get(key));
+	}
+	
+	public static long getJSONLong(JSONObject obj, String key) {
+		return Long.parseLong((String) obj.get(key));
 	}
 
 	public static void thresholdCheck(JLabel label, Double value, Double threshold, Color positive, Color negative) {

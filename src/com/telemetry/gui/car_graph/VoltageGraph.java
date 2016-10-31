@@ -30,7 +30,11 @@ public class VoltageGraph extends JPanel {
 	public VoltageGraph() {
 		voltage_dataset = createVoltageDataSet();
 		
-		voltage_chart = ChartFactory.createXYLineChart("Voltage", "Time (sec)", "Volts (V)", voltage_dataset);
+		voltage_chart = ChartFactory.createXYLineChart(
+				"Voltage", 
+				"Time (sec)", 
+				"Volts (V)", 
+				voltage_dataset);
 		LegendTitle legend = voltage_chart.getLegend();
 		legend.setPosition(RectangleEdge.RIGHT);
 		
