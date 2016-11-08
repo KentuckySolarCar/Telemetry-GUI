@@ -136,6 +136,7 @@ public class TelemetryFrame extends JFrame {
 		JMenu control_menu = new JMenu("Control");
 		JMenu tool_menu = new JMenu("Tool");
 		JMenu aux_menu = new JMenu("Aux");
+		JMenu weather_menu = new JMenu("Weather");
 		
 		// Set shortcut for control menu
 		control_menu.setMnemonic(KeyEvent.VK_ALT);
@@ -151,6 +152,7 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem start_aux_frame    = new JMenuItem("Start Aux Frame");
 		JMenuItem aux_resolution     = new JMenuItem("Aux Resolution");
 		JMenuItem main_font          = new JMenuItem("Change Main Font");
+		JMenuItem update_weather     = new JMenuItem("Update Weather");
 
 		// Add menu button listeners
 		exit.addActionListener(new ExitMenuListener());
@@ -163,6 +165,7 @@ public class TelemetryFrame extends JFrame {
 		start_aux_frame.addActionListener(new StartAuxFrameListener());
 		aux_resolution.addActionListener(new AuxResolutionListener());
 		main_font.addActionListener(new ChangeMainFontListener());
+		update_weather.addActionListener(new UpdateWeatherListener());
 		
 		// Tool Menu Items
 		tool_menu.add(main_resolution);
@@ -181,12 +184,16 @@ public class TelemetryFrame extends JFrame {
 		control_menu.add(start_monitor);
 		control_menu.add(restart_monitor);
 		control_menu.add(stop_monitor);
+		
+		// add weather items to weather menu
+		weather_menu.add(update_weather);
 
 		// add menu to menu bar
 		menu_bar.add(file_menu);
 		menu_bar.add(control_menu);
 		menu_bar.add(tool_menu);
 		menu_bar.add(aux_menu);
+		menu_bar.add(weather_menu);
 		
 		// add menu bar to the frame
 		setJMenuBar(menu_bar);
@@ -344,6 +351,14 @@ public class TelemetryFrame extends JFrame {
 			// Placeholder for when needing to change font
 		}
 		
+	}
+	
+	class UpdateWeatherListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			all_data.updateWeatherData();
+			weather_panel.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
+		}
 	}
 	
 	public void displayErrorDialog(String err_msg) {

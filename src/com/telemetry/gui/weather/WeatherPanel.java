@@ -3,6 +3,7 @@ package com.telemetry.gui.weather;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,12 +77,39 @@ public class WeatherPanel extends JPanel {
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		// Temporary arrangement of currently components
+		JPanel currently_panel = new JPanel();
+		currently_panel.setLayout(new GridLayout(10,1));
+		currently_panel.add(current_nearest_storm_bearing);
+		currently_panel.add(current_nearest_storm_distance);
+		currently_panel.add(current_precip_intensity);
+		currently_panel.add(current_precip_probability);
+		currently_panel.add(current_cloud_cover);
+		currently_panel.add(current_humidity);
+		currently_panel.add(current_pressure);
+		currently_panel.add(current_visibility);
+		currently_panel.add(current_wind_bearing);
+		currently_panel.add(current_wind_speed);
+		
 		gbc.insets = new Insets(3,3,3,3);
+		gbc.fill = GridBagConstraints.VERTICAL;
 		
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 0;
+		gbc.gridheight = 2;
+		add(currently_panel, gbc);
+		gbc.gridheight = 1;
 		
-
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		add(minutely_graph, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		add(hourly_graph, gbc);
+		
+		validate();
+		repaint();
 	}
 	
 	public void updateDailyPanel(JSONArray current_json) {
@@ -109,7 +137,7 @@ public class WeatherPanel extends JPanel {
 		// not be defined
 		long unix_seconds = Tools.getJSONLong(currently_json, "time");
 		String weather_description = (String) currently_json.get("icon");
-		double nearest_storm_dist = Tools.getJSONDouble(currently_json, "nearestStormDistance");
+		double nearest_storm_dist = Tools.getJSONLong(currently_json, "nearestStormDistance");
 		double precip_intensity = Tools.getJSONDouble(currently_json, "precipIntensity");
 		double precip_prob = Tools.getJSONDouble(currently_json, "precipProbability");
 		double cloud_coverage = Tools.getJSONDouble(currently_json, "cloudCover");

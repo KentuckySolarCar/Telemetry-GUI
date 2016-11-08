@@ -65,11 +65,13 @@ public class Tools {
 	}
 	
 	public static double getJSONDouble(JSONObject obj, String key) {
-		return Double.parseDouble((String) obj.get(key));
+		// return Double.parseDouble((String) obj.get(key));
+		return (double) obj.get(key);
 	}
 	
 	public static long getJSONLong(JSONObject obj, String key) {
-		return Long.parseLong((String) obj.get(key));
+		// return Long.parseLong((String) obj.get(key));
+		return (long) obj.get(key);
 	}
 
 	public static void thresholdCheck(JLabel label, Double value, Double threshold, Color positive, Color negative) {

@@ -28,14 +28,16 @@ public class WeatherHandler {
 	
 	public JSONObject getWeatherData(double latitude, double longitude) {
 		String url_str = url_prefix + Double.toString(latitude) + "," 
-									+ Double.toString(longitude) + ","
-									+ url_excludes;
+									+ Double.toString(longitude);
+									// + Double.toString(longitude) + ","
+									// + url_excludes;
 		try {
 			String content = getHTML(url_str);
 			System.out.println(content);
 			JSONObject json_content = (JSONObject) parser.parse(content);
 			return json_content;
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

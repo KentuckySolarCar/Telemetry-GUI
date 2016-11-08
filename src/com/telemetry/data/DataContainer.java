@@ -11,6 +11,10 @@ public class DataContainer {
 	private RaceData race_data;
 	private WeatherData weather_data;
 	
+	// Hard coding lat long for testing purposes
+	private double latitude = 38.040584;
+	private double longitude = -84.503716;
+	
 	public DataContainer() {
 		car_data = new CarData();
 		race_data = new RaceData();
@@ -38,6 +42,6 @@ public class DataContainer {
 	}
 
 	public void updateWeatherData() {
-		return;
+		weather_data.updateWeatherData(latitude, longitude);
 	}
 }

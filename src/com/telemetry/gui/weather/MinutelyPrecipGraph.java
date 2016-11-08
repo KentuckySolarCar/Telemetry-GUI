@@ -1,5 +1,6 @@
 package com.telemetry.gui.weather;
 
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JPanel;
@@ -34,6 +35,7 @@ public class MinutelyPrecipGraph extends JPanel {
 	
 	public MinutelyPrecipGraph() {
 		initDataset();
+		setMinimumSize(new Dimension(400,400));
 		
 		precip_chart = ChartFactory.createTimeSeriesChart(
 				"Minutely Precipitation", 

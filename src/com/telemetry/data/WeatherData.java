@@ -20,6 +20,10 @@ public class WeatherData {
 	
 	public WeatherData() {
 		weather_handler = new WeatherHandler();
+		current_json = new ArrayList<JSONObject>();
+		minutely_json = new JSONArray();
+		hourly_json = new JSONArray();
+		daily_json = new JSONArray();
 	}
 	
 	public void updateWeatherData(Double latitude, Double longitude) {
