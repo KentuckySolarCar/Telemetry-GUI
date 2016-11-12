@@ -29,7 +29,7 @@ public class SerialPortHandler {
 	public SerialPortHandler(TelemetryFrame telem_frame) {
 		this.telem_frame = telem_frame;
 	}
-	
+
 	/**
 	 * Get the current port name
 	 * @return the current port
@@ -37,7 +37,7 @@ public class SerialPortHandler {
 	public String getPortNum() {
 		return port_num;
 	}
-	
+
 	/**
 	 * Get the status of the read thread
 	 * @return whether the read thread is active or not
@@ -49,37 +49,37 @@ public class SerialPortHandler {
 		else
 			return false;
 	}
-	
-//	/**
-//	 * Connect to the specified port. If successful, create both a read and write stream from it
-//	 * @param port_num
-//	 * @throws Exception Thrown if any part of connection has failed
-//	 */
-//	public void connect(String port_num) throws Exception {
-//		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
-//        if ( portIdentifier.isCurrentlyOwned() )
-//        {
-//            System.out.println("Error: Port is currently in use");
-//        }
-//        else
-//        {
-//            CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
-//            
-//            if ( commPort instanceof SerialPort )
-//            {
-//                serial_port = (SerialPort) commPort;
-//                serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
-//            	this.port_num = port_num;
-//                
-//                input_stream = serial_port.getInputStream();
-//                output_stream = serial_port.getOutputStream();
-//                port_connected = true;
-//            }
-//            else
-//            	System.out.println("Error: This is not a serial port!");
-//        }
-//	}
-	
+
+	//	/**
+	//	 * Connect to the specified port. If successful, create both a read and write stream from it
+	//	 * @param port_num
+	//	 * @throws Exception Thrown if any part of connection has failed
+	//	 */
+	//	public void connect(String port_num) throws Exception {
+	//		CommPortIdentifier portIdentifier = CommPortIdentifier.getPortIdentifier(port_num);
+	//        if ( portIdentifier.isCurrentlyOwned() )
+	//        {
+	//            System.out.println("Error: Port is currently in use");
+	//        }
+	//        else
+	//        {
+	//            CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
+	//            
+	//            if ( commPort instanceof SerialPort )
+	//            {
+	//                serial_port = (SerialPort) commPort;
+	//                serial_port.setSerialPortParams(19200,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
+	//            	this.port_num = port_num;
+	//                
+	//                input_stream = serial_port.getInputStream();
+	//                output_stream = serial_port.getOutputStream();
+	//                port_connected = true;
+	//            }
+	//            else
+	//            	System.out.println("Error: This is not a serial port!");
+	//        }
+	//	}
+
 	public void connect(String port_num) throws Exception {
 		serial_port = SerialPort.getCommPort(port_num);
 		if(serial_port.isOpen())
@@ -95,7 +95,7 @@ public class SerialPortHandler {
 		else
 			throw new Exception("Error in openeing port " + port_num + "!");
 	}
-	
+
 	/**
 	 * Stops all connections to the serial port if one is connected
 	 */
@@ -103,19 +103,20 @@ public class SerialPortHandler {
 		if(port_connected) {
 			try {
 				read_thread.stopThread();
+				read_thread.join();
 				input_stream.close();
 				output_stream.close();
-//				serial_port.close();
+				//				serial_port.close();
 				serial_port.closePort();
 				port_connected = false;
-			} catch (IOException e) {
+			} catch (IOException | InterruptedException e) {
 				telem_frame.updateStatus("Failed to stop serial port. Try again?");
 			}
 		}
 		else
 			telem_frame.updateStatus("No Serial Port Connected");
 	}
-	
+
 	/**
 	 * Restarts all connections to the last serial port connected
 	 * @throws Exception
@@ -127,7 +128,7 @@ public class SerialPortHandler {
 			startReadThread();
 		}
 	}
-	
+
 	/**
 	 * Start reading thread, only if a serial port is connected
 	 */

@@ -29,7 +29,6 @@ public class SerialPortReader extends Thread {
 	}
 	
 	public void stopThread() throws IOException {
-		input_stream.close();
 		thread_status = false;
 	}
 	

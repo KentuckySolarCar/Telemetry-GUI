@@ -23,13 +23,10 @@ public class LogPanel extends JPanel {
 		text_area = new JTextArea();
 		text_area.setEditable(false);
 		add(text_area, BorderLayout.SOUTH);
-		validate();
-		repaint();
 	}
 	
 	public void updatePanel(JSONObject obj) {
 		String line = obj.toString();
 		text_area.append(line + "\n\n");
-
 	}
 }

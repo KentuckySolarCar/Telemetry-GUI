@@ -62,9 +62,6 @@ public class CalculationPanel extends JPanel {
 		motor_power_l.setText(Tools.roundDouble(calculation_data.get("motor_power")));
 		battery_power_l.setText(Tools.roundDouble(calculation_data.get("battery_power")));
 		soc_l.setText(Tools.roundDouble(calculation_data.get("state_of_charge")));
-		
-		validate();
-		repaint();
 	}
 	
 	private void insertComponents() {

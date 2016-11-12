@@ -59,8 +59,5 @@ public class GraphPanel extends JPanel {
 		power_graph			.updateDataSet(calculation_data);
 		temperature_graph	.updateDataSet(battery_data);
 		voltage_graph		.updateDataSet(battery_data);
-
-		validate();
-		repaint();
 	}
 }

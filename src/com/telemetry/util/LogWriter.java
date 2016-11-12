@@ -100,7 +100,7 @@ public class LogWriter {
 	 * @param obj JSON object wanting to be written
 	 * @throws IOException
 	 */
-	public synchronized void writeJSON(String json_str) throws IOException {
+	public void writeJSON(String json_str) throws IOException {
 		if(!initialized_state)
 			telemetry_frame.updateStatus("No writer is initialized!");
 		else
@@ -111,17 +111,17 @@ public class LogWriter {
 	 * Not yet implemented
 	 * @param data
 	 */
-	public synchronized void writeCarData(CarData data) {}
+	public void writeCarData(CarData data) {}
 	
 	/**
 	 * Not yet implemented
 	 * @param data
 	 */
-	public synchronized void writeRaceData(RaceData data) {}
+	public void writeRaceData(RaceData data) {}
 	
 	/**
 	 * Not yet implemented
 	 * @param data
 	 */
-	public synchronized void writeWeatherData(WeatherData data) {}
+	public void writeWeatherData(WeatherData data) {}
 }

@@ -59,7 +59,5 @@ public class EnergyGraph extends JPanel {
 		double seconds_elapsed = calculation_data.get("time_seconds");
 		double soc = calculation_data.get("state_of_charge");
 		soc_series.add(seconds_elapsed, soc);
-		validate();
-		repaint();
 	}
 }

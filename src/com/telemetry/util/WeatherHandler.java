@@ -42,7 +42,6 @@ public class WeatherHandler {
 		}
 	}
 	
-	// Done
 	public static String getHTML(String url_str) throws Exception {
 		StringBuilder content = new StringBuilder();
 		URL url = new URL(url_str);

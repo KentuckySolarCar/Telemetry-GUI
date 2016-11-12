@@ -69,8 +69,5 @@ public class PowerGraph extends JPanel {
 		motor.add(time_seconds, motor_power);
 		array.add(time_seconds, array_power);
 		battery.add(time_seconds, batt_power);
-
-		validate();
-		repaint();
 	}
 }

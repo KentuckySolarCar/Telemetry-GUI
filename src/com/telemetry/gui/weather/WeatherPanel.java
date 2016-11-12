@@ -29,6 +29,9 @@ public class WeatherPanel extends JPanel {
 	// TODO Find a placeholder icon to use when GUI is not active
 	private JLabel current_weather_icon = new JLabel("Place holder");
 	
+	// Current Temperature in Farenheit
+	private JLabel current_temperature = new JLabel("000.00");
+	
 	// Current time in HH:MM:SS
 	private JLabel current_time = new JLabel("00-00-00 00:00:00");
 
@@ -70,32 +73,46 @@ public class WeatherPanel extends JPanel {
 	//---------------------------Hourly components---------------------------//
 	HourlyPrecipGraph hourly_graph = new HourlyPrecipGraph();
 	
-	//---------------------------End Variable Declaration---------------------------//
-	
 	public WeatherPanel() {
 		setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		// Temporary arrangement of currently components
+		// Temporary arrangement of components
 		JPanel currently_panel = new JPanel();
-		currently_panel.setLayout(new GridLayout(10,1));
+		currently_panel.setLayout(new GridLayout(11,2));
+		currently_panel.add(new JLabel("Current Nearest Storm Bearing"));
 		currently_panel.add(current_nearest_storm_bearing);
+		currently_panel.add(new JLabel("Current Nearest Storm Distance  "));
 		currently_panel.add(current_nearest_storm_distance);
+		currently_panel.add(new JLabel("Current Precip Intensity"));
 		currently_panel.add(current_precip_intensity);
+		currently_panel.add(new JLabel("Current Precip Probability"));
 		currently_panel.add(current_precip_probability);
+		currently_panel.add(new JLabel("Current Cloud Cover"));
 		currently_panel.add(current_cloud_cover);
+		currently_panel.add(new JLabel("Current Humidity"));
 		currently_panel.add(current_humidity);
+		currently_panel.add(new JLabel("Current Pressure"));
 		currently_panel.add(current_pressure);
+		currently_panel.add(new JLabel("Current Visibility"));
 		currently_panel.add(current_visibility);
+		currently_panel.add(new JLabel("Current Wind Bearing"));
 		currently_panel.add(current_wind_bearing);
+		currently_panel.add(new JLabel("Current Wind Speed"));
 		currently_panel.add(current_wind_speed);
+		currently_panel.add(new JLabel("Current Temperature"));
+		currently_panel.add(current_temperature);
 		
 		gbc.insets = new Insets(3,3,3,3);
 		gbc.fill = GridBagConstraints.VERTICAL;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		add(current_weather_icon, gbc);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 1;
 		gbc.gridheight = 2;
 		add(currently_panel, gbc);
 		gbc.gridheight = 1;
@@ -107,9 +124,6 @@ public class WeatherPanel extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		add(hourly_graph, gbc);
-		
-		validate();
-		repaint();
 	}
 	
 	public void updateDailyPanel(JSONArray current_json) {
@@ -145,6 +159,7 @@ public class WeatherPanel extends JPanel {
 		double pressure = Tools.getJSONDouble(currently_json, "pressure");
 		double visibility = Tools.getJSONDouble(currently_json, "visibility");
 		double wind_speed = Tools.getJSONDouble(currently_json, "windSpeed");
+		double temperature = Tools.getJSONDouble(currently_json, "temperature");
 		
 		// Placeholder values for things that might not be defined
 		double nearest_storm_bearing = -1D;
@@ -173,6 +188,7 @@ public class WeatherPanel extends JPanel {
 		current_pressure.setText(Tools.roundDouble(pressure));
 		current_visibility.setText(Tools.roundDouble(visibility));
 		current_wind_speed.setText(Tools.roundDouble(wind_speed));
+		current_temperature.setText(Tools.roundDouble(temperature));
 		
 		// Update all currently values that might not be defined
 		if(nearest_storm_bearing != -1)
@@ -182,7 +198,7 @@ public class WeatherPanel extends JPanel {
 	}
 
 	private ImageIcon getImageIcon(String weather_description) {
-		String path = weather_description + ".jpg";
+		String path = "icons/" + weather_description + ".jpg";
 		java.net.URL imgURL = getClass().getResource(path);
 		if(imgURL != null)
 			return new ImageIcon(imgURL, weather_description);

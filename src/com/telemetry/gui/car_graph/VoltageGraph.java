@@ -73,7 +73,5 @@ public class VoltageGraph extends JPanel {
 		v_max.add(time_seconds, batt_v_max);
 		v_min.add(time_seconds, batt_v_min);
 		v_avg.add(time_seconds, batt_v_avg);
-		validate();
-		repaint();
 	}
 }

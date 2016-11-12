@@ -77,15 +77,12 @@ public class MinutelyPrecipGraph extends JPanel {
 		
 		for(int i = 0; i < NUM_MINUTE_FORECASTS; i++) {
 			JSONObject data_point = (JSONObject) minutely_data.get(i);
-			precip_intensity.add(new Minute(i,0,0,0,0), 
+			precip_intensity.add(new Minute(i,1,1,1,2000), 
 								 Tools.getJSONDouble(data_point, 
 								 "precipIntensity"));
-			precip_probability.add(new Minute(i,0,0,0,0), 
+			precip_probability.add(new Minute(i,1,1,1,2000), 
 								 Tools.getJSONDouble(data_point, 
 								 "precipProbability"));
 		}
-		
-		validate();
-		repaint();
 	}
 }

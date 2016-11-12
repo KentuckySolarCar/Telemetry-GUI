@@ -1,6 +1,5 @@
 package com.telemetry.gui.weather;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 
@@ -12,7 +11,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Minute;
+import org.jfree.data.time.Hour;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.json.simple.JSONArray;
@@ -32,7 +31,7 @@ public class HourlyPrecipGraph extends JPanel {
 	private TimeSeries precip_intensity;
 	private TimeSeries precip_probability;
 	
-	private static final int NUM_MINUTE_FORECASTS = 60;
+	private static final int NUM_HOUR_FORECASTS = 48;
 	
 	public HourlyPrecipGraph() {
 		initDataset();
@@ -40,7 +39,7 @@ public class HourlyPrecipGraph extends JPanel {
 		
 		precip_chart = ChartFactory.createTimeSeriesChart(
 				"Hourly Precipitation", 
-				"Time (Minute)", 
+				"Time (Hour)", 
 				"Precip Intensity", 
 				intensity_dataset,
 				true,
@@ -55,7 +54,7 @@ public class HourlyPrecipGraph extends JPanel {
 		probability_plot.mapDatasetToRangeAxis(1, 1);
 		
 		final DateAxis axis = (DateAxis) probability_plot.getDomainAxis();
-		axis.setDateFormatOverride(new SimpleDateFormat("mm"));
+		axis.setDateFormatOverride(new SimpleDateFormat("HH"));
 		
 		precip_chart_panel = new ChartPanel(precip_chart);
 		add(precip_chart_panel);
@@ -76,17 +75,14 @@ public class HourlyPrecipGraph extends JPanel {
 		precip_intensity.clear();
 		precip_probability.clear();
 		
-		for(int i = 0; i < NUM_MINUTE_FORECASTS; i++) {
+		for(int i = 0; i < NUM_HOUR_FORECASTS; i++) {
 			JSONObject data_point = (JSONObject) hourly_data.get(i);
-			precip_intensity.add(new Minute(i,0,0,0,0), 
+			precip_intensity.add(new Hour(i,1,1,2000), 
 								 Tools.getJSONDouble(data_point, 
 								 "precipIntensity"));
-			precip_probability.add(new Minute(i,0,0,0,0), 
+			precip_probability.add(new Hour(i,1,1,2000), 
 								 Tools.getJSONDouble(data_point, 
 								 "precipProbability"));
 		}
-		
-		validate();
-		repaint();
 	}
 }

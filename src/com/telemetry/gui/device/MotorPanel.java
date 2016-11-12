@@ -40,9 +40,9 @@ public class MotorPanel extends JPanel {
 		
 		// Change label color if threshold reached
 		Tools.thresholdCheck(current_label, data.get("motor_current"), 
-							 current_threshold, Tools.RED, Tools.GREEN);
+							 current_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 		Tools.thresholdCheck(voltage_label, data.get("motor_voltage"), 
-							 voltage_threshold, Tools.RED, Tools.GREEN);
+							 voltage_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 	}
 	
 	private void insertComponents() {

@@ -19,8 +19,8 @@ import org.json.simple.JSONObject;
  *
  */
 public class Tools {
-	public static final Color GREEN = new Color(198, 224, 180);
-	public static final Color RED = new Color(224, 176, 132);
+	public static final Color NOT_GREEN = new Color(198, 224, 180);
+	public static final Color NOT_RED = new Color(224, 176, 132);
 	public static final Font TITLE_FONT = new Font("Consolas", Font.BOLD, 22);
 	public static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 20);
 
@@ -38,7 +38,7 @@ public class Tools {
 		String delimit = "[.]";
 		String[] tokens = double_str.split(delimit);
 		if(tokens.length > 1) {
-			if(tokens[1].length() >= 2)
+			if(tokens[1].length() > 2)
 				return tokens[0] + "." + tokens[1].substring(0, 3);
 			else
 				return tokens[0] + "." + tokens[1];
@@ -65,7 +65,9 @@ public class Tools {
 	}
 	
 	public static double getJSONDouble(JSONObject obj, String key) {
-		// return Double.parseDouble((String) obj.get(key));
+		if(obj.get(key) instanceof Long) {
+			return Double.parseDouble(Long.toString((long) obj.get(key)));
+		}
 		return (double) obj.get(key);
 	}
 	

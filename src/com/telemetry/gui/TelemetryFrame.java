@@ -51,7 +51,7 @@ public class TelemetryFrame extends JFrame {
 	private DateFormat date_format = new SimpleDateFormat("HH:mm:ss");
 	private DataContainer all_data;
 	private LogWriter logger;
-	private WeatherHandler weather_handler;
+	private JFileChooser chooser;
 
 	// Temporary
 	JScrollPane log_pane;
@@ -63,6 +63,7 @@ public class TelemetryFrame extends JFrame {
 		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
+		setLocationRelativeTo(null);
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,9 +72,9 @@ public class TelemetryFrame extends JFrame {
 		serial_port = new SerialPortHandler(this);
 		all_data = new DataContainer();
 		logger = new LogWriter(this);
+		chooser = new JFileChooser();
 
 		// Let user pick which folder to store logs in
-		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -83,9 +84,6 @@ public class TelemetryFrame extends JFrame {
 		
 		// Reveals main_frame
 		setVisible(true);
-		setLocationRelativeTo(null);
-		validate();
-		repaint();
 	}
 	
 	private void insertComponents() {
@@ -214,7 +212,6 @@ public class TelemetryFrame extends JFrame {
 	class reinitializeLogger implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser chooser = new JFileChooser();
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -295,7 +292,6 @@ public class TelemetryFrame extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				JFileChooser chooser = new JFileChooser();
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
@@ -358,6 +354,8 @@ public class TelemetryFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			all_data.updateWeatherData();
 			weather_panel.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
+			weather_panel.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
+			weather_panel.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
 		}
 	}
 	

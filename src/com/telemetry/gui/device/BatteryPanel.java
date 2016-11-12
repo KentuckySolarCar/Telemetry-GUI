@@ -47,21 +47,19 @@ public class BatteryPanel extends JPanel {
 		
 		// Change label color if threshold reached
 		Tools.thresholdCheck(v_average_l, data.get("batt_volt_avg"), 
-							 v_avg_threshold, Tools.GREEN, Tools.RED);
+							 v_avg_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
 		Tools.thresholdCheck(v_max_l, data.get("batt_volt_max"), 
-							 v_max_threshold, Tools.GREEN, Tools.RED);
+							 v_max_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
 		Tools.thresholdCheck(v_min_l, data.get("batt_volt_min"), 
-							 v_min_threshold, Tools.GREEN, Tools.RED);
+							 v_min_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
 		Tools.thresholdCheck(t_average_l, data.get("batt_temp_avg"), 
-							 t_avg_threshold, Tools.RED, Tools.GREEN);
+							 t_avg_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 		Tools.thresholdCheck(t_max_l, data.get("batt_temp_max"), 
-							 t_max_threshold, Tools.RED, Tools.GREEN);
+							 t_max_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 		Tools.thresholdCheck(t_min_l, data.get("batt_temp_min"), 
-							 t_min_threshold, Tools.RED, Tools.GREEN);
+							 t_min_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 		Tools.thresholdCheck(current_l, data.get("batt_current"), 
-							 current_threshold, Tools.RED, Tools.GREEN);
-		validate();
-		repaint();
+							 current_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 	}
 	
 	private void insertComponents() {

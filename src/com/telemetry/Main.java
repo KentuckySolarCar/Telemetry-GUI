@@ -30,13 +30,7 @@ public class Main implements Runnable {
 
 			@Override
 			public void run() {
-				try {
-					window.updateRunTime();
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				window.updateRunTime();
 			}
 			
 		}, 0, 1000/30);

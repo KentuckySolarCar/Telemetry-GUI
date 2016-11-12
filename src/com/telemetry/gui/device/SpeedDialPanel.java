@@ -81,8 +81,6 @@ public class SpeedDialPanel extends JPanel {
 		double new_speed = motor_data.get("motor_speed");
 		if(new_speed != 0D) {
 			speed_dataset.setValue(new_speed);
-			validate();
-			repaint();
 		}
 	}
 }

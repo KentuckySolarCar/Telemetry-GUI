@@ -60,7 +60,5 @@ public class TemperatureGraph extends JPanel {
 		double seconds_elapsed = battery_data.get("time_seconds");
 		double batt_temp   = battery_data.get("batt_temp_avg");
 		batt_temp_avg.add(seconds_elapsed, batt_temp);
-		validate();
-		repaint();
 	}
 }

@@ -37,7 +37,5 @@ public class MpptPanel extends JPanel {
 	
 	public void updatePanel() {
 		out_current.setText("Need Implementing!");
-		validate();
-		repaint();
 	}
 }

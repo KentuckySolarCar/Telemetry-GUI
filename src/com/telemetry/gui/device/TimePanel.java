@@ -105,9 +105,6 @@ public class TimePanel extends JPanel {
 		
 		time_computer_l.setText(date_format.format(date));
 		time_counter_l.setText(hour + " H " + minute + " M " + second + " S ");
-
-		validate();
-		repaint();
 	}
 	
 	/**
@@ -117,7 +114,5 @@ public class TimePanel extends JPanel {
 	public void updatePanel(HashMap<String, Integer[]> time_data) {
 		Integer[] pi_time = time_data.get("pi_time");
 		time_pi_l.setText(pi_time[0] + ":" + pi_time[1] + ":" + pi_time[2]);
-		validate();
-		repaint();
 	}
 }

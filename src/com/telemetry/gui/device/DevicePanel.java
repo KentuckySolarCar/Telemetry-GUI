@@ -55,7 +55,6 @@ public class DevicePanel extends JPanel{
 		gbc.gridy = 2;
 		gbc.gridwidth = 2;
 		add(battery_panel, gbc);
-		
 	}
 	
 	/**
