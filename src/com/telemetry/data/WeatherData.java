@@ -34,7 +34,7 @@ public class WeatherData {
 		JSONObject daily_temp = (JSONObject) weather_data.get("daily");
 		minutely_json = (JSONArray) minutely_temp.get("data");
 		hourly_json   = (JSONArray) hourly_temp.get("data");
-		daily_json    = (JSONArray) daily_temp.get("data");
+		// daily_json    = (JSONArray) daily_temp.get("data");
 	}
 	
 	/**

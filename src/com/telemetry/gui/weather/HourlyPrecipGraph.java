@@ -31,7 +31,7 @@ public class HourlyPrecipGraph extends JPanel {
 	private TimeSeries precip_intensity;
 	private TimeSeries precip_probability;
 	
-	private static final int NUM_HOUR_FORECASTS = 48;
+	private static final int NUM_HOUR_FORECASTS = 24;
 	
 	public HourlyPrecipGraph() {
 		initDataset();
@@ -40,7 +40,7 @@ public class HourlyPrecipGraph extends JPanel {
 		precip_chart = ChartFactory.createTimeSeriesChart(
 				"Hourly Precipitation", 
 				"Time (Hour)", 
-				"Precip Intensity", 
+				"Precip Intensity (in./hour)", 
 				intensity_dataset,
 				true,
 				true,

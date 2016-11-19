@@ -10,8 +10,8 @@ import com.telemetry.util.Tools;
 
 /**
  * Currently not used, random bug that prevents this panel from updating
+ * 
  * @author Weilian Song
- *
  */
 public class LogPanel extends JPanel {
 
