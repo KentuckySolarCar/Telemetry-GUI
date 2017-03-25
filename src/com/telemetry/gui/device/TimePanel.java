@@ -57,6 +57,7 @@ public class TimePanel extends JPanel {
 		gbc.gridwidth = 1;
 		
 		//------------------------Labels----------------------------//
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		JLabel run_time = new JLabel("Run Time:");
@@ -76,6 +77,7 @@ public class TimePanel extends JPanel {
 		add(pi_time, gbc);
 		
 		//-----------------------Fields-------------------------//
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		time_counter_l.setFont(Tools.FIELD_FONT);

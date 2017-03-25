@@ -61,6 +61,8 @@ public class MotorPanel extends JPanel {
 		add(motor_controller, gbc);
 		
 		//----------------------Labels------------------------//
+		gbc.anchor = GridBagConstraints.WEST;
+		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		JLabel speed = new JLabel("Speed:");

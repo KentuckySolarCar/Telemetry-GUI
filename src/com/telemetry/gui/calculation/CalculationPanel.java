@@ -96,6 +96,7 @@ public class CalculationPanel extends JPanel {
 		labels.add(new JLabel("Predicted Array Power"));              
 		labels.add(new JLabel("Motor Watt Hours"));                   
 		
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		int i = 0;
