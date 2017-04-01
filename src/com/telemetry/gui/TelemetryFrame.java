@@ -10,6 +10,7 @@ import com.telemetry.gui.calculation.CalculationPanel;
 import com.telemetry.gui.car_graph.GraphPanel;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.gui.misc.LogPanel;
+import com.telemetry.gui.weather.WeatherFrame;
 import com.telemetry.gui.weather.WeatherPanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
@@ -42,7 +43,9 @@ public class TelemetryFrame extends JFrame {
 	private LogPanel log_panel;
 	private JTextArea status_bar;
 	private AuxFrame aux_frame;
+	private WeatherFrame weather_frame;
 	private WeatherPanel weather_panel;
+	private boolean weather_frame_on = false;
 	private boolean aux_frame_on = false;
 	
 	// Non-GUI Stuff
@@ -147,6 +150,7 @@ public class TelemetryFrame extends JFrame {
 		JMenuItem main_resolution    = new JMenuItem("Main Resolution");
 		JMenuItem test_monitor       = new JMenuItem("Test Monitor");
 		JMenuItem start_aux_frame    = new JMenuItem("Start Aux Frame");
+		JMenuItem start_weather_frame    = new JMenuItem("Start Weather Frame");
 		JMenuItem aux_resolution     = new JMenuItem("Aux Resolution");
 		JMenuItem main_font          = new JMenuItem("Change Main Font");
 		JMenuItem update_weather     = new JMenuItem("Update Weather");
@@ -160,6 +164,7 @@ public class TelemetryFrame extends JFrame {
 		main_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
 		start_aux_frame.addActionListener(new StartAuxFrameListener());
+		start_weather_frame.addActionListener(new StartWeatherFrameListener());
 		aux_resolution.addActionListener(new AuxResolutionListener());
 		main_font.addActionListener(new ChangeMainFontListener());
 		update_weather.addActionListener(new UpdateWeatherListener());
@@ -172,6 +177,7 @@ public class TelemetryFrame extends JFrame {
 		// Aux Menu Items
 		aux_menu.add(start_aux_frame);
 		aux_menu.add(aux_resolution);
+		aux_menu.add(start_weather_frame);
 		
 		// add menu items file menu
 		file_menu.add(exit);
@@ -232,6 +238,16 @@ public class TelemetryFrame extends JFrame {
 			aux_frame.setLocationRelativeTo(null);
 			aux_frame.setVisible(true);
 			aux_frame_on = true;
+		}
+	}
+	
+	class StartWeatherFrameListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			weather_frame = new WeatherFrame();
+			weather_frame.setSize(1080, 1080);
+			weather_frame.setVisible(true);
+			weather_frame_on = true;
 		}
 	}
 	
@@ -355,6 +371,14 @@ public class TelemetryFrame extends JFrame {
 			weather_panel.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
 			weather_panel.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
 			weather_panel.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
+			
+			//update weather panel if it is currently open
+			if(weather_frame_on){
+				all_data.updateWeatherData();
+				weather_frame.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
+				weather_frame.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
+				weather_frame.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
+			}
 		}
 	}
 	

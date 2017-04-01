@@ -1,26 +1,38 @@
 package com.telemetry.gui.weather;
 
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.telemetry.templates.OneSeriesTimeGraph;
+import com.telemetry.data.CarData;
+import com.telemetry.gui.TelemetryFrame;
 import com.telemetry.templates.TwoSeriesTimeGraph;
 import com.telemetry.util.Tools;
 
-public class WeatherPanel extends JPanel {
+	
+public class WeatherFrame extends JFrame {
 	// Misc. Stuff
-	private static final long serialVersionUID = -3880688547665804873L;
+	private static final long serialVersionUID = -1158799673596849959L;
 	private SimpleDateFormat sdf = new SimpleDateFormat("YY-MM-dd HH:mm:ss");
 
 	//---------------------------Currently components---------------------------//
@@ -28,10 +40,10 @@ public class WeatherPanel extends JPanel {
 	// Weather Icon
 	// TODO Find a placeholder icon to use when GUI is not active
 	private JLabel current_weather_icon = new JLabel("Place holder");
-	
+		
 	// Current Temperature in Farenheit
 	private JLabel current_temperature = new JLabel("000.00");
-	
+		
 	// Current time in HH:MM:SS
 	private JLabel current_time = new JLabel("00-00-00 00:00:00");
 
@@ -79,12 +91,13 @@ public class WeatherPanel extends JPanel {
 														"mm",
 														24);
 	HourlyTempGraph   hourly_temp  = new HourlyTempGraph();
-	
-	public WeatherPanel() {
+		
+	public WeatherFrame() {
+		
 		setLayout(new GridBagLayout());
-		
+			
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+			
 		// Temporary arrangement of components
 		JPanel currently_panel = new JPanel();
 		currently_panel.setLayout(new GridLayout(9,2));
@@ -106,48 +119,48 @@ public class WeatherPanel extends JPanel {
 		currently_panel.add(current_wind_speed);
 		currently_panel.add(new JLabel("Current Temperature"));
 		currently_panel.add(current_temperature);
-		
+			
 		gbc.insets = new Insets(3,3,3,3);
 		gbc.fill = GridBagConstraints.VERTICAL;
-		
+			
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(hourly_temp, gbc);
-		
+			
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridheight = 2;
 		add(currently_panel, gbc);
 		gbc.gridheight = 1;
-		
+			
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		add(minutely_precip, gbc);
-		
+			
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		add(hourly_precip, gbc);
 	}
-	
-	public void updateDailyPanel(JSONArray current_json) {
 		
+	public void updateDailyPanel(JSONArray current_json) {
+			
 	}
 
 	public void updateHourlyPanel(JSONArray hourly_json) {
 		// Graph does its own updating, so push all data directly to object
 		hourly_precip.updateDataset(hourly_json, 
-									"precipIntensity",
-									"precipProbability");
+								"precipIntensity",
+								"precipProbability");
 		hourly_temp.updateDataset(hourly_json);
 	}
-	
+		
 	public void updateMinutelyPanel(JSONArray minutely_json) {
 		// Graph does its own updating, so push all data directly to object
 		minutely_precip.updateDataset(minutely_json, 
-									  "precipIntensity",
-									  "precipProbability");
+								  "precipIntensity",
+								  "precipProbability");
 	}
-	
+		
 	/**
 	 * TODO sdf needs to have timezone set dynamically
 	 * 
@@ -167,15 +180,15 @@ public class WeatherPanel extends JPanel {
 		double visibility = Tools.getJSONDouble(currently_json, "visibility");
 		double wind_speed = Tools.getJSONDouble(currently_json, "windSpeed");
 		double temperature = Tools.getJSONDouble(currently_json, "temperature");
-		
+			
 		// Placeholder values for things that might not be defined
 		// double nearest_storm_bearing = -1D;
 		double wind_bearing = -1D;
-		
+			
 		// Check if some values should be defined
 		if(wind_speed != 0)
 			wind_bearing = Tools.getJSONDouble(currently_json, "windBearing");
-		
+			
 		// Update current time
 		Date date = new Date(unix_seconds * 1000L);
 		current_time.setText(sdf.format(date));
@@ -183,7 +196,7 @@ public class WeatherPanel extends JPanel {
 		// Update weather icon
 		ImageIcon weather_icon = getImageIcon(weather_description);
 		current_weather_icon = new JLabel(weather_icon);
-		
+			
 		// Update all currently values
 		current_precip_intensity.setText(Tools.roundDouble(precip_intensity));
 		current_precip_probability.setText(Tools.roundDouble(precip_prob));
@@ -193,7 +206,7 @@ public class WeatherPanel extends JPanel {
 		current_visibility.setText(Tools.roundDouble(visibility));
 		current_wind_speed.setText(Tools.roundDouble(wind_speed));
 		current_temperature.setText(Tools.roundDouble(temperature));
-		
+			
 		// Update all currently values that might not be defined
 		if(wind_bearing != -1)
 			current_wind_bearing.setText(Tools.roundDouble(wind_speed));
@@ -210,3 +223,5 @@ public class WeatherPanel extends JPanel {
 		}
 	}
 }
+
+	
