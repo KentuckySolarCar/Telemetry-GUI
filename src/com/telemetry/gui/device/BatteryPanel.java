@@ -92,6 +92,7 @@ public class BatteryPanel extends JPanel {
 		labels.add(new JLabel("Temp. Min:"));
 		
 		// Initial position
+		gbc.anchor = GridBagConstraints.WEST;
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		
@@ -112,6 +113,7 @@ public class BatteryPanel extends JPanel {
 		units.add(new JLabel(" C"));
 		units.add(new JLabel(" C"));
 		
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx = 2;
 		gbc.gridy = 2;
 		
