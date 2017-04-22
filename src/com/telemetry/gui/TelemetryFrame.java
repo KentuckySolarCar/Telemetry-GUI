@@ -10,7 +10,6 @@ import com.telemetry.gui.calculation.CalculationPanel;
 import com.telemetry.gui.car_graph.GraphPanel;
 import com.telemetry.gui.device.DevicePanel;
 import com.telemetry.gui.misc.LogPanel;
-import com.telemetry.gui.weather.WeatherFrame;
 import com.telemetry.gui.weather.WeatherPanel;
 import com.telemetry.serial.SerialPortHandler;
 import com.telemetry.serial.TextFileInput;
@@ -43,7 +42,6 @@ public class TelemetryFrame extends JFrame {
 	private LogPanel log_panel;
 	private JTextArea status_bar;
 	private AuxFrame aux_frame;
-	private WeatherFrame weather_frame;
 	private WeatherPanel weather_panel;
 	private boolean weather_frame_on = false;
 	private boolean aux_frame_on = false;
@@ -62,7 +60,6 @@ public class TelemetryFrame extends JFrame {
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
 		super("University of Kentucky Solar Car Telemetry");
-		
 		// Initializes and edits the main window frame of GUI
 		setSize(WIDTH, HEIGHT);
 		setLocationRelativeTo(null);
@@ -77,7 +74,7 @@ public class TelemetryFrame extends JFrame {
 		chooser = new JFileChooser();
 
 		// Let user pick which folder to store logs in
-		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		// chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String dest_dir = chooser.getSelectedFile().toString();
@@ -164,7 +161,7 @@ public class TelemetryFrame extends JFrame {
 		main_resolution.addActionListener(new ChangeResolutionListener());
 		test_monitor.addActionListener(new TestMonitorListener());
 		start_aux_frame.addActionListener(new StartAuxFrameListener());
-		start_weather_frame.addActionListener(new StartWeatherFrameListener());
+//		start_weather_frame.addActionListener(new StartWeatherFrameListener());
 		aux_resolution.addActionListener(new AuxResolutionListener());
 		main_font.addActionListener(new ChangeMainFontListener());
 		update_weather.addActionListener(new UpdateWeatherListener());
@@ -217,7 +214,7 @@ public class TelemetryFrame extends JFrame {
 	class reinitializeLogger implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			// chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -241,15 +238,15 @@ public class TelemetryFrame extends JFrame {
 		}
 	}
 	
-	class StartWeatherFrameListener implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			weather_frame = new WeatherFrame();
-			weather_frame.setSize(1080, 1080);
-			weather_frame.setVisible(true);
-			weather_frame_on = true;
-		}
-	}
+//	class StartWeatherFrameListener implements ActionListener {
+//		@Override
+//		public void actionPerformed(ActionEvent arg0) {
+//			weather_frame = new WeatherFrame();
+//			weather_frame.setSize(1080, 1080);
+//			weather_frame.setVisible(true);
+//			weather_frame_on = true;
+//		}
+//	}
 	
 	class RestartMonitorListener implements ActionListener {
 		@Override
@@ -308,7 +305,7 @@ public class TelemetryFrame extends JFrame {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-				chooser.setFileFilter(filter);
+				chooser.addChoosableFileFilter(filter);
 				int returnVal = chooser.showOpenDialog(TelemetryFrame.this);
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					text_input = new TextFileInput(chooser.getSelectedFile().toString(), TelemetryFrame.this);
@@ -372,13 +369,13 @@ public class TelemetryFrame extends JFrame {
 			weather_panel.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
 			weather_panel.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
 			
-			//update weather panel if it is currently open
-			if(weather_frame_on){
-				all_data.updateWeatherData();
-				weather_frame.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
-				weather_frame.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
-				weather_frame.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
-			}
+//			//update weather panel if it is currently open
+//			if(weather_frame_on){
+//				all_data.updateWeatherData();
+//				weather_frame.updateCurrentlyPanel(all_data.getWeatherData().getLatestCurrentData());
+//				weather_frame.updateMinutelyPanel(all_data.getWeatherData().getMinutelyData());
+//				weather_frame.updateHourlyPanel(all_data.getWeatherData().getHourlyData());
+//			}
 		}
 	}
 	

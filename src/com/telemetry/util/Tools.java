@@ -25,9 +25,13 @@ public class Tools {
 	public static final Font FIELD_FONT = new Font("Consolas", Font.PLAIN, 20);
 
 	public static int stringToInt(String str_num) {
-		String delimit = "[.]";
-		String[] tokens = str_num.split(delimit);
-		return Integer.parseInt(tokens[0]);
+		try {
+			String delimit = "[.]";
+			String[] tokens = str_num.split(delimit);
+			return Integer.parseInt(tokens[0]);
+		} catch(Exception e) {
+			return 0;
+		}
 	}
 
 	/**
@@ -35,16 +39,20 @@ public class Tools {
 	 * @return A double string rounded to 3 decimal points
 	 */
 	public static String roundDouble(String double_str) {
-		String delimit = "[.]";
-		String[] tokens = double_str.split(delimit);
-		if(tokens.length > 1) {
-			if(tokens[1].length() > 2)
-				return tokens[0] + "." + tokens[1].substring(0, 3);
+		try {
+			String delimit = "[.]";
+			String[] tokens = double_str.split(delimit);
+			if(tokens.length > 1) {
+				if(tokens[1].length() > 2)
+					return tokens[0] + "." + tokens[1].substring(0, 3);
+				else
+					return tokens[0] + "." + tokens[1];
+			}
 			else
-				return tokens[0] + "." + tokens[1];
+				return double_str;
+		} catch(Exception e) {
+			return "0.0";
 		}
-		else
-			return double_str;
 	}
 	
 	/**
@@ -65,15 +73,24 @@ public class Tools {
 	}
 	
 	public static double getJSONDouble(JSONObject obj, String key) {
-		if(obj.get(key) instanceof Long) {
-			return Double.parseDouble(Long.toString((long) obj.get(key)));
+//		if(obj.get(key) instanceof Long) {
+//			return Double.parseDouble(Long.toString((long) obj.get(key)));
+//		}
+//		return Double.parseDouble((String) obj.get(key));
+		try {
+			return Double.parseDouble((String) obj.get(key));
+		} catch(Exception e) {
+			return 0D;
 		}
-		return (double) obj.get(key);
 	}
 	
 	public static long getJSONLong(JSONObject obj, String key) {
 		// return Long.parseLong((String) obj.get(key));
-		return (long) obj.get(key);
+		try {
+			return Long.parseLong((String) obj.get(key));
+		} catch(Exception e) {
+			return 0L;
+		}
 	}
 
 	public static void thresholdCheck(JLabel label, Double value, Double threshold, Color positive, Color negative) {
