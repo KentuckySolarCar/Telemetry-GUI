@@ -1,6 +1,3 @@
-*.pyc
 *.csv
-*.sublime*
 *.class
 bin/*
-/bin/
