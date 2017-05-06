@@ -7,7 +7,6 @@ import java.util.TimerTask;
 import org.json.simple.parser.ParseException;
 
 import com.telemetry.gui.TelemetryFrame;
-import com.telemetry.serial.TextFileInput;
 
 public class Main implements Runnable {
 	
@@ -20,6 +19,10 @@ public class Main implements Runnable {
 		thread.start();
 	}
 
+	/**
+	 * Ticker thread used to update various panel's system time
+	 * TODO Thread inside a thread??? Is this right?
+	 */
 	@Override
 	public void run() {
 		Timer T = new Timer();
@@ -27,12 +30,7 @@ public class Main implements Runnable {
 
 			@Override
 			public void run() {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				window.updateRunTime();
 			}
 			
 		}, 0, 1000/30);

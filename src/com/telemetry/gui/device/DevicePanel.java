@@ -2,79 +2,80 @@ package com.telemetry.gui.device;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.util.HashMap;
+
 import javax.swing.*;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.telemetry.data.CarData;
 
 public class DevicePanel extends JPanel{
 	private static final long serialVersionUID = -7422627351609719543L;
-	private String separator = "----------------------------------------------------------------------------------------------------------------";
 	
-	MotorPanel motor_panel = new MotorPanel();
-	MpptPanel mppt_panel = new MpptPanel();
-	TimePanel time_panel = new TimePanel();
-	BatteryPanel battery_panel = new BatteryPanel();
+	// MPPT panel not used right now
+	private TimePanel time_panel;
+	private SpeedDialPanel speed_dial_panel;
+	private BatteryPanel battery_panel;
+	private MotorPanel motor_panel;
 	
-	GridBagConstraints gbc = new GridBagConstraints();
-	
-	public DevicePanel(int tab_panel_x, int tab_panel_y) {
-		super();
-		
-		setSize(tab_panel_x, tab_panel_y);
+	public DevicePanel() {
 		setLayout(new GridBagLayout());
+
+		// Panel initialization
+		time_panel = new TimePanel();
+		speed_dial_panel = new SpeedDialPanel();
+		battery_panel = new BatteryPanel();
+		motor_panel = new MotorPanel();
+
+		// Speed dial and time panel will be within same sub-panel
+		JPanel time_speed_panel = new JPanel(new GridLayout(1, 2));
+		time_speed_panel.add(time_panel);
+		time_speed_panel.add(speed_dial_panel);
 		
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+		// Insert panels
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(10, 0, 10, 0);
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(time_panel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		add(new JLabel(separator), gbc);
+		add(motor_panel, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridheight = 2;
+		add(speed_dial_panel, gbc);
+		gbc.gridheight = 1;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 2;
-		add(motor_panel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		add(new JLabel(separator), gbc);
-	
-		gbc.gridx = 0;
-		gbc.gridy = 4;
-		add(mppt_panel, gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 5;
-		add(new JLabel(separator), gbc);
-		
-		gbc.gridx = 0;
-		gbc.gridy = 6;
+		gbc.gridwidth = 2;
 		add(battery_panel, gbc);
 	}
 	
-	public void updatePanel(JSONObject obj, String type) {
-		time_panel.updatePanel();
-		switch(type) {
-		case "motor": {
-			motor_panel.updatePanel(obj);
-			break;
-		}
-		case "bat_volt": 
-		case "bat_temp": {
-			battery_panel.updatePanel(obj, type);
-			break;
-		}
-		default:
-			break;
-		}
-		
-		validate();
-		repaint();
+	/**
+	 * Update each panel with input car data. Currently only passing necessary data
+	 * to each panel.
+	 * @param data Most recent car data
+	 */
+	public void updatePanel(CarData data) {
+		HashMap<String, Double> motor_data = data.getMotorData();
+		HashMap<String, Double> batt_data = data.getBatteryData();
+		HashMap<String, Integer[]> time_data = data.getTimeData();
+		motor_panel.updatePanel(motor_data);
+		battery_panel.updatePanel(batt_data);
+		time_panel.updatePanel(time_data);
+		speed_dial_panel.updateDial(motor_data);
 	}
 	
-	public int[] getTime() {
-		return time_panel.getTime();
+	/**
+	 * Updates the run time of time_panel, call interval controlled by main thread
+	 */
+	public void updateRunTime() {
+		time_panel.updateRunTime();
 	}
 }

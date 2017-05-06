@@ -1,8 +1,15 @@
 package com.telemetry.gui.device;
 
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 import javax.swing.*;
 
+/**
+ * This panel is not currently used... 
+ * @author Weilian Song
+ */
 public class MpptPanel extends JPanel {
 	private static final long serialVersionUID = 4997694178272359227L;
 	private JPanel mppt_label_panel = new JPanel();
@@ -10,18 +17,16 @@ public class MpptPanel extends JPanel {
 	private JLabel out_current = new JLabel("Out Current");
 	
 	public MpptPanel() {
-		setLayout(new GridLayout(1, 2));
-		mppt_label_panel.setLayout(new GridLayout(2, 1, 10, 10));
-		mppt_data_panel.setLayout(new GridLayout(2, 1, 10, 10));
-		
-		insertLabelPanel();
-		insertDataPanel();
+		setLayout(new GridBagLayout());
+		insertComponents();
 	}
 	
-	private void insertLabelPanel() {
-		mppt_label_panel.add(new JLabel("MPPTs"));
-		mppt_label_panel.add(new JLabel("    #"));
-		add(mppt_label_panel);
+	private void insertComponents() {
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		// GBC constants
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.anchor = GridBagConstraints.CENTER;
 	}
 	
 	private void insertDataPanel() {
@@ -32,7 +37,5 @@ public class MpptPanel extends JPanel {
 	
 	public void updatePanel() {
 		out_current.setText("Need Implementing!");
-		validate();
-		repaint();
 	}
 }

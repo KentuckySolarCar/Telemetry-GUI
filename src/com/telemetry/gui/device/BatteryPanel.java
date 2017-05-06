@@ -1,170 +1,178 @@
 package com.telemetry.gui.device;
 
-import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.*;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import com.telemetry.util.Tools;
 
 public class BatteryPanel extends JPanel {
 	private static final long serialVersionUID = 3458289157169322167L;
-	private JPanel batman_unit_panel = new JPanel();
-	private JPanel batman_label_panel = new JPanel();
-	private JPanel batman_data_panel = new JPanel();
-	private JPanel robin_unit_panel = new JPanel();
-	private JPanel robin_label_panel = new JPanel();
-	private JPanel robin_data_panel = new JPanel();
 	
-	private JLabel batman_v_average_l = new JLabel("VALUE");
-	private JLabel batman_v_max_l = new JLabel("VALUE");
-	private JLabel batman_v_min_l = new JLabel("VALUE");
-	private JLabel batman_current_l = new JLabel("VALUE");
-	private JLabel batman_t_average_l = new JLabel("VALUE");
-	private JLabel batman_t_max_l = new JLabel("VALUE");
-	private JLabel batman_t_min_l = new JLabel("VALUE");
-	private double batman_ave_temp = 0;
-	private double batman_v_average = 0;
-	private double batman_v_min = 0;
-	private double batman_current_average = 0;
+	private JLabel v_average_l = new JLabel("0000.000");
+	private JLabel v_max_l     = new JLabel("0000.000");
+	private JLabel v_min_l     = new JLabel("0000.000");
+	private JLabel current_l   = new JLabel("0000.000");
+	private JLabel t_average_l = new JLabel("0000.000");
+	private JLabel t_max_l     = new JLabel("0000.000");
+	private JLabel t_min_l     = new JLabel("0000.000");
 	
-	private JLabel robin_v_average_l = new JLabel("VALUE");
-	private JLabel robin_v_max_l = new JLabel("VALUE");
-	private JLabel robin_v_min_l = new JLabel("VALUE");
-	private JLabel robin_current_l = new JLabel("VALUE");
-	private JLabel robin_t_average_l = new JLabel("VALUE");
-	private JLabel robin_t_max_l = new JLabel("VALUE");
-	private JLabel robin_t_min_l = new JLabel("VALUE");
-	private double robin_ave_temp = 0;
-	private double robin_v_average = 0;
-	private double robin_v_min = 0;
-	private double robin_current_average = 0;
+	// Temp. thresholds for fields
+	private double v_max_threshold   = 9999999;
+	private double v_min_threshold   = 0;
+	private double v_avg_threshold   = 9999999;
+	private double t_max_threshold   = 9999999;
+	private double t_min_threshold   = 0;
+	private double t_avg_threshold   = 9999999;
+	private double current_threshold = 9999999;
 	
 	public BatteryPanel() {
-		setLayout(new GridLayout(1, 6));
-		batman_unit_panel.setLayout(new GridLayout(8, 1));
-		batman_label_panel.setLayout(new GridLayout(8, 1));
-		batman_data_panel.setLayout(new GridLayout(8, 1));
-		robin_label_panel.setLayout(new GridLayout(8, 1));
-		robin_data_panel.setLayout(new GridLayout(8, 1));
-		robin_unit_panel.setLayout(new GridLayout(8, 1));
+		setLayout(new GridBagLayout());
+		insertComponents();
+	}
+	
+	public void updatePanel(HashMap<String, Double> data) {
+		v_average_l.setText(Tools.roundDouble(data.get("batt_volt_avg")));
+		v_max_l.setText(Tools.roundDouble(data.get("batt_volt_max")));
+		v_min_l.setText(Tools.roundDouble(data.get("batt_volt_min")));
+		t_average_l.setText(Tools.roundDouble(data.get("batt_temp_avg")));
+		t_max_l.setText(Tools.roundDouble(data.get("batt_temp_max")));
+		t_min_l.setText(Tools.roundDouble(data.get("batt_temp_min")));
+		current_l.setText(Tools.roundDouble(data.get("batt_current")));
 		
-		insertBatmanLabelPanel();
-		insertBatmanDataPanel();
-		insertBatmanUnitPanel();
-		insertRobinLabelPanel();
-		insertRobinDataPanel();
-		insertRobinUnitPanel();
+		// Change label color if threshold reached
+		Tools.thresholdCheck(v_average_l, data.get("batt_volt_avg"), 
+							 v_avg_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
+		Tools.thresholdCheck(v_max_l, data.get("batt_volt_max"), 
+							 v_max_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
+		Tools.thresholdCheck(v_min_l, data.get("batt_volt_min"), 
+							 v_min_threshold, Tools.NOT_GREEN, Tools.NOT_RED);
+		Tools.thresholdCheck(t_average_l, data.get("batt_temp_avg"), 
+							 t_avg_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
+		Tools.thresholdCheck(t_max_l, data.get("batt_temp_max"), 
+							 t_max_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
+		Tools.thresholdCheck(t_min_l, data.get("batt_temp_min"), 
+							 t_min_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
+		Tools.thresholdCheck(current_l, data.get("batt_current"), 
+							 current_threshold, Tools.NOT_RED, Tools.NOT_GREEN);
 	}
 	
-	public void updatePanel(JSONObject obj, String type) {
-		if(type.equals("bat_temp")) {
-			if(((String) obj.get("name")).equals("0")) {
-				batman_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-				batman_t_average_l.setText((String) obj.get("Tavg"));
-				batman_t_max_l.setText((String) obj.get("Tmin"));
-				batman_t_min_l.setText((String) obj.get("Tmax"));
-			}
-			else {
-				robin_ave_temp = Double.parseDouble((String) obj.get("Tavg"));
-				robin_t_average_l.setText((String) obj.get("Tavg"));
-				robin_t_max_l.setText((String) obj.get("Tmin"));
-				robin_t_min_l.setText((String) obj.get("Tmax"));
-			}
-		}
-		else if(type.equals("bat_volt")) {
-			if(((String) obj.get("name")).equals("0")) {
-				batman_v_average       = Double.parseDouble((String) obj.get("Vavg"));
-				batman_v_min           = Double.parseDouble((String) obj.get("Vmin"));
-				batman_current_average = Double.parseDouble((String) obj.get("BC"));
-				batman_v_average_l.setText((String) obj.get("Vavg"));
-				batman_v_max_l.setText((String) obj.get("Vmax"));
-				batman_v_min_l.setText((String) obj.get("Vmin"));
-				batman_current_l.setText((String) obj.get("BC"));
-			}
-			else {
-				robin_v_average       = Double.parseDouble((String) obj.get("Vavg"));
-				robin_v_min           = Double.parseDouble((String) obj.get("Vmin"));
-				robin_current_average = Double.parseDouble((String) obj.get("BC"));
-				robin_v_average_l.setText((String) obj.get("Vavg"));
-				robin_v_max_l.setText((String) obj.get("Vmax"));
-				robin_v_min_l.setText((String) obj.get("Vmin"));
-				robin_current_l.setText((String) obj.get("BC"));
-			}
-		}
+	private void insertComponents() {
+		GridBagConstraints gbc = new GridBagConstraints();
 		
-		validate();
-		repaint();
-	}
-	
-	private void insertBatmanLabelPanel() {
-		batman_label_panel.add(new JLabel("    Batman"));
-		batman_label_panel.add(new JLabel("V_Average:"));
-		batman_label_panel.add(new JLabel("V_Max:"));
-		batman_label_panel.add(new JLabel("V_Min:"));
-		batman_label_panel.add(new JLabel("Current:"));
-		batman_label_panel.add(new JLabel("T_Average:"));
-		batman_label_panel.add(new JLabel("T_Max:"));
-		batman_label_panel.add(new JLabel("T_Min:"));
-		add(batman_label_panel);
-	}
-	
-	private void insertBatmanDataPanel() {
-		batman_data_panel.add(new JLabel(" "));
-		batman_data_panel.add(batman_v_average_l);
-		batman_data_panel.add(batman_v_max_l);
-		batman_data_panel.add(batman_v_min_l);
-		batman_data_panel.add(batman_current_l);
-		batman_data_panel.add(batman_t_average_l);
-		batman_data_panel.add(batman_t_max_l);
-		batman_data_panel.add(batman_t_min_l);
-		add(batman_data_panel);
-	}
-	
-	private void insertBatmanUnitPanel() {
-		batman_unit_panel.add(new JLabel(" "));
-		batman_unit_panel.add(new JLabel(" V"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" V (#)"));
-		batman_unit_panel.add(new JLabel(" A"));
-		batman_unit_panel.add(new JLabel(" C"));
-		batman_unit_panel.add(new JLabel(" C"));
-		batman_unit_panel.add(new JLabel(" C"));
-		add(batman_unit_panel);
-	}
-	
-	private void insertRobinLabelPanel() {
-		robin_label_panel.add(new JLabel("    Robin"));
-		robin_label_panel.add(new JLabel("V_Average:"));
-		robin_label_panel.add(new JLabel("V_Max:"));
-		robin_label_panel.add(new JLabel("V_Min:"));
-		robin_label_panel.add(new JLabel("Current:"));
-		robin_label_panel.add(new JLabel("T_Average:"));
-		robin_label_panel.add(new JLabel("T_Max:"));
-		robin_label_panel.add(new JLabel("T_Min:"));
-		add(robin_label_panel);
-	}
-	
-	private void insertRobinDataPanel() {
-		robin_data_panel.add(new JLabel(" "));
-		robin_data_panel.add(robin_v_average_l);
-		robin_data_panel.add(robin_v_max_l);
-		robin_data_panel.add(robin_v_min_l);
-		robin_data_panel.add(robin_current_l);
-		robin_data_panel.add(robin_t_average_l);
-		robin_data_panel.add(robin_t_max_l);
-		robin_data_panel.add(robin_t_min_l);
-		add(robin_data_panel);
-	}
-	
-	private void insertRobinUnitPanel() {
-		robin_unit_panel.add(new JLabel(" "));
-		robin_unit_panel.add(new JLabel(" V"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" V (#)"));
-		robin_unit_panel.add(new JLabel(" A"));
-		robin_unit_panel.add(new JLabel(" C"));
-		robin_unit_panel.add(new JLabel(" C"));
-		robin_unit_panel.add(new JLabel(" C"));
-		add(robin_unit_panel);
+		// GBC constants
+		gbc.insets = new Insets(3, 3, 3, 3);
+		gbc.anchor = GridBagConstraints.CENTER;
+
+		//--------------------------Title--------------------------//
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 3;
+		JLabel title = new JLabel("Battery");
+		title.setFont(Tools.TITLE_FONT);
+		add(title, gbc);
+
+		// Set the grid width back to 1
+		gbc.gridwidth = 1;
+
+		//----------------------Labels----------------------//
+		ArrayList<JLabel> labels = new ArrayList<JLabel>();
+		
+		labels.add(new JLabel("Voltage Average:"));
+		labels.add(new JLabel("Voltage Max:"));
+		labels.add(new JLabel("Voltage Min:"));
+		labels.add(new JLabel("Current:"));
+		labels.add(new JLabel("Temp. Average:"));
+		labels.add(new JLabel("Temp. Max:"));
+		labels.add(new JLabel("Temp. Min:"));
+		
+		// Initial position
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		
+		for(JLabel label : labels) {
+			label.setFont(Tools.FIELD_FONT);
+			add(label, gbc);
+			gbc.gridy++;
+		}
+
+		//----------------------Unit Labels----------------------//
+		ArrayList<JLabel> units = new ArrayList<JLabel>();
+
+		units.add(new JLabel(" V"));
+		units.add(new JLabel(" V (#)"));
+		units.add(new JLabel(" V (#)"));
+		units.add(new JLabel(" A"));
+		units.add(new JLabel(" C"));
+		units.add(new JLabel(" C"));
+		units.add(new JLabel(" C"));
+		
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.gridx = 2;
+		gbc.gridy = 2;
+		
+		for(JLabel unit_label : units) {
+			unit_label.setFont(Tools.FIELD_FONT);
+			add(unit_label, gbc);
+			gbc.gridy++;
+		}
+
+		//-------------------Fields--------------------//
+		gbc.insets = new Insets(3, 30, 3, 30);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		v_average_l.setFont(Tools.FIELD_FONT);
+		v_average_l.setOpaque(true);
+		v_average_l.setBackground(Color.ORANGE);
+		add(v_average_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		v_max_l.setFont(Tools.FIELD_FONT);
+		v_max_l.setOpaque(true);
+		v_max_l.setBackground(Color.ORANGE);
+		add(v_max_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		v_min_l.setFont(Tools.FIELD_FONT);
+		v_min_l.setOpaque(true);
+		v_min_l.setBackground(Color.ORANGE);
+		add(v_min_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		current_l.setFont(Tools.FIELD_FONT);
+		current_l.setOpaque(true);
+		current_l.setBackground(Color.ORANGE);
+		add(current_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 6;
+		t_average_l.setFont(Tools.FIELD_FONT);
+		t_average_l.setOpaque(true);
+		t_average_l.setBackground(Color.ORANGE);
+		add(t_average_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 7;
+		t_max_l.setFont(Tools.FIELD_FONT);
+		t_max_l.setOpaque(true);
+		t_max_l.setBackground(Color.ORANGE);
+		add(t_max_l, gbc);
+		
+		gbc.gridx = 1;
+		gbc.gridy = 8;
+		t_min_l.setFont(Tools.FIELD_FONT);
+		t_min_l.setOpaque(true);
+		t_min_l.setBackground(Color.ORANGE);
+		add(t_min_l, gbc);
 	}
 }
