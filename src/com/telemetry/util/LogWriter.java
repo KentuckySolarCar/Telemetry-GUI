@@ -32,7 +32,7 @@ public class LogWriter {
 	private BufferedWriter race_data_writer;
 	private BufferedWriter weather_data_writer;
 
-	private DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+	private DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 	private boolean initialized_state = false;
 	private TelemetryFrame telemetry_frame;
 	
