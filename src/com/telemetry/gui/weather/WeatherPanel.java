@@ -107,8 +107,11 @@ public class WeatherPanel extends JPanel {
 		currently_panel.add(new JLabel("Current Temperature"));
 		currently_panel.add(current_temperature);
 		
-		gbc.insets = new Insets(3,3,3,3);
-		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -116,9 +119,7 @@ public class WeatherPanel extends JPanel {
 		
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridheight = 2;
 		add(currently_panel, gbc);
-		gbc.gridheight = 1;
 		
 		gbc.gridx = 1;
 		gbc.gridy = 0;

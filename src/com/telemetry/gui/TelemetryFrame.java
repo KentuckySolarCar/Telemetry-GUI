@@ -52,10 +52,6 @@ public class TelemetryFrame extends JFrame {
 	private DataContainer all_data;
 	private LogWriter logger;
 	private JFileChooser chooser;
-
-	// Temporary
-	JScrollPane log_pane;
-	JTextArea log;
 	
 	// Constructor to initialize the GUI
 	public TelemetryFrame() {
@@ -73,13 +69,17 @@ public class TelemetryFrame extends JFrame {
 		logger = new LogWriter(this);
 		chooser = new JFileChooser();
 
-		// Let user pick which folder to store logs in
-		// chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    chooser.setAcceptAllFileFilterUsed(false);
+
 		int returnVal = chooser.showOpenDialog(this);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String dest_dir = chooser.getSelectedFile().toString();
 			logger.initializeWriter(dest_dir);
 		}
+		
+		chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		chooser.setAcceptAllFileFilterUsed(true);
 		
 		// Reveals main_frame
 		setVisible(true);
@@ -95,10 +95,6 @@ public class TelemetryFrame extends JFrame {
 	    log_panel = new LogPanel();
 	    calculation_panel = new CalculationPanel();
 	    weather_panel = new WeatherPanel();
-	    
-	    // Temp, need to make dedicated log class
-	    log = new JTextArea();
-	    log_pane = new JScrollPane(log);
 	    
 	    // Combining device and calculation panel into one
 	    JPanel combined_panel = new JPanel();
@@ -136,7 +132,7 @@ public class TelemetryFrame extends JFrame {
 		JMenu weather_menu = new JMenu("Weather");
 		
 		// Set shortcut for control menu
-		control_menu.setMnemonic(KeyEvent.VK_ALT);
+		// control_menu.setMnemonic(KeyEvent.VK_ALT);
 		
 		// create menu items
 		JMenuItem exit               = new JMenuItem("Exit");
@@ -331,6 +327,7 @@ public class TelemetryFrame extends JFrame {
 				logger.closeWriter();
 				System.exit(0);
 			} catch(Exception e1) {
+				displayErrorDialog("Cannot exit, try again");
 				e1.printStackTrace();
 			}
 		}
@@ -388,14 +385,20 @@ public class TelemetryFrame extends JFrame {
 		JOptionPane.showMessageDialog(this, msg, "Port Number", JOptionPane.PLAIN_MESSAGE);
 	}
 	
-	public void updateAllPanels(JSONObject obj) {
+	public void updateAllPanels(JSONObject obj) throws IOException {
 		// Update data container first
 		all_data.updateCarData(obj);
+		
+		// Write msg to log
+		if(logger.getState() == true) {
+			logger.writeJSON(obj.toString());
+		}
+		
 		// Then update all panels
 		device_panel.updatePanel(all_data.getCarData());
 		calculation_panel.updatePanel(all_data.getCarData());
 		graph_panel.updatePanel(all_data.getCarData());
-		log.append("\n" + obj.toString() + "\n");
+		log_panel.updatePanel(obj.toString());
 		status_bar.setText(obj.toString());
 		if(aux_frame_on)
 			aux_frame.updatePanel(all_data.getCarData());
@@ -412,9 +415,9 @@ public class TelemetryFrame extends JFrame {
 	
 	public void processInvalidData(String json_str) {
 		Date date = new Date();
-		log.append("\n-----------------------------------------------------\n" 
-					+ "*INVALID* " + json_str + " " + date_format.format(date)
-					+ "\n-----------------------------------------------------\n");
+//		log_panel.append("\n-----------------------------------------------------\n" 
+//					+ "*INVALID* " + json_str + " " + date_format.format(date)
+//					+ "\n-----------------------------------------------------\n");
 	}
 	
 	public LogWriter getLogger() {

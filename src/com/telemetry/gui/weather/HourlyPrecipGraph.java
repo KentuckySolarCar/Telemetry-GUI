@@ -35,7 +35,6 @@ public class HourlyPrecipGraph extends JPanel {
 	
 	public HourlyPrecipGraph() {
 		initDataset();
-		setMinimumSize(new Dimension(400,400));
 		
 		precip_chart = ChartFactory.createTimeSeriesChart(
 				"Hourly Precipitation", 

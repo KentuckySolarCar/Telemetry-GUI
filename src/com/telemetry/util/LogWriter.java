@@ -32,7 +32,7 @@ public class LogWriter {
 	private BufferedWriter race_data_writer;
 	private BufferedWriter weather_data_writer;
 
-	private DateFormat date_format = new SimpleDateFormat("yyyy-mm-dd_HH:mm:ss");
+	private DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 	private boolean initialized_state = false;
 	private TelemetryFrame telemetry_frame;
 	
@@ -57,10 +57,10 @@ public class LogWriter {
 		
 		// 4 different log writer, one for raw json, one for car telemetry data, one for race data
 		// (laps, penalties, etc.), and weather data at time of logging (if enabled)
-		json_file         = new File(root_folder.getAbsolutePath() + File.separator + "json.txt");
-		car_data_file     = new File(root_folder.getAbsolutePath() + File.separator + "data.csv");
-		race_data_file    = new File(root_folder.getAbsolutePath() + File.separator + "data.csv");
-		weather_data_file = new File(root_folder.getAbsolutePath() + File.separator + "data.csv");
+		json_file         = new File(root_folder.getAbsolutePath() + File.separator + "telemetry.json");
+		car_data_file     = new File(root_folder.getAbsolutePath() + File.separator + "car_data.csv");
+		race_data_file    = new File(root_folder.getAbsolutePath() + File.separator + "race_data.csv");
+		weather_data_file = new File(root_folder.getAbsolutePath() + File.separator + "weather_data.csv");
 		try {
 			json_file.createNewFile();
 			car_data_file.createNewFile();
@@ -103,8 +103,10 @@ public class LogWriter {
 	public void writeJSON(String json_str) throws IOException {
 		if(!initialized_state)
 			telemetry_frame.updateStatus("No writer is initialized!");
-		else
+		else {
 			json_writer.write(json_str + "\n");
+			json_writer.flush();
+		}
 	}
 	
 	/**

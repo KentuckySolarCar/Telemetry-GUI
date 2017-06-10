@@ -25,8 +25,7 @@ public class LogPanel extends JPanel {
 		add(text_area, BorderLayout.SOUTH);
 	}
 	
-	public void updatePanel(JSONObject obj) {
-		String line = obj.toString();
+	public void updatePanel(String line) {
 		text_area.append(line + "\n\n");
 	}
 }

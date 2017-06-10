@@ -33,7 +33,6 @@ public class HourlyTempGraph extends JPanel {
 	
 	public HourlyTempGraph() {
 		initDataset();
-		setMinimumSize(new Dimension(400,400));
 		
 		temp_chart = ChartFactory.createTimeSeriesChart(
 				"Hourly Temperature", 

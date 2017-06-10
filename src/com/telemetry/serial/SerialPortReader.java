@@ -43,23 +43,22 @@ public class SerialPortReader extends Thread {
 			String line = "";
 			try {
 				line = input_stream.readLine();
+
 				// Always print out the latest telemetry msg to telemetry frame's status bar
 				telem_frame.updateStatus(line);
+
 				// Check to see if message is valid
 				if(isValidMessage(line)) {
 					JSONObject obj = (JSONObject) parser.parse(line);
 					telem_frame.updateAllPanels(obj);
 				}
+
 				// Do something speical if message is invalid, as in don't update panel and just add
 				// received message to the log panel, with an ERROR prefix
 				else {
 					telem_frame.processInvalidData(line);
-					line = "*ERROR* " + line;
 				}
-				// Let telem_frame's logger handle the logging of raw telemetry message to a file
-				if(telem_frame.getLogger().getState() == true) {
-					telem_frame.getLogger().writeJSON(line);
-				}
+
 			} catch (IOException e) {
 				// If this catch is reached, that means we are getting no bytes through telemetry,
 				// which the thread will wait indefinitely until new data is sent over.
