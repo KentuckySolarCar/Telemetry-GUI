@@ -43,6 +43,7 @@ public class SerialPortReader extends Thread {
 			String line = "";
 			try {
 				line = input_stream.readLine();
+				System.out.println(line);
 
 				// Always print out the latest telemetry msg to telemetry frame's status bar
 				telem_frame.updateStatus(line);
@@ -64,7 +65,7 @@ public class SerialPortReader extends Thread {
 				// which the thread will wait indefinitely until new data is sent over.
 				telem_frame.updateStatus("Waiting on Serial Port");
 				try {
-					Thread.sleep(50);
+					Thread.sleep(1200);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
