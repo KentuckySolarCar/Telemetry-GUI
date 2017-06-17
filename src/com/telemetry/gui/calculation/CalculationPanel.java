@@ -74,6 +74,7 @@ public class CalculationPanel extends JPanel {
 		ArrayList<JLabel> labels = new ArrayList<JLabel>();
 		
 		labels.add(new JLabel("Array Power"));                        
+		labels.add(new JLabel("State of Charge"));
 		labels.add(new JLabel("Average Speed"));                      
 		labels.add(new JLabel("Battery Only Run Time (60 secs)"));    
 		labels.add(new JLabel("Battery Only Range (60 secs)"));       
@@ -120,6 +121,7 @@ public class CalculationPanel extends JPanel {
 		ArrayList<JLabel> fields = new ArrayList<JLabel>();
 
 		fields.add(array_power_l);                       
+		fields.add(soc_l);
 		fields.add(average_speed);                      
 		fields.add(battery_only_runtime_60_sec);      
 		fields.add(battery_only_range_60_sec);         
